@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<portlets>
+    <portlet
+            addview="exhibicion_portlet"
+            title="Exhibicion Home"
+            description="Este portlet se utiliza solo en la home"
+            />
+    <portlet
+            addview="colecciones_portlet"
+            title="Colecciones Home"
+            description="Este portlet se utiliza solo en la home"
+            />
+</portlets>

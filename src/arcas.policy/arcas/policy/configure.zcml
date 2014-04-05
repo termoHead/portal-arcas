@@ -1,0 +1,58 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="arcas.policy">
+
+  <five:registerPackage package="." initialize=".initialize" />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="arcas.policy"
+      directory="profiles/default"
+      description="Installs the arcas.policy package"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+
+    <genericsetup:importStep
+            name="arcas-various"
+            title="Additional Arcas site policy setup"
+            description="Arcas site policy configuration"
+            handler="arcas.policy.setuphandler.importVarious">
+        <depends name="rolemap"/>
+    </genericsetup:importStep>
+
+    <utility
+            component=".vocabulario.ColeccionesVocabFactory"
+            name="arcas.policy.ColeccionesVocab"
+            />
+
+
+    <subscriber
+            for="plone.app.controlpanel.interfaces.IConfigurationChangedEvent"
+            handler=".events.on_save"
+            />
+
+    <!-- Local roles managed in the @@roles view -->
+
+
+  <!-- -*- extra stuff goes here
+      <genericsetup:importStep
+            name="arcas-various"
+            title="Additional Arcas site policy setup"
+            description="Arcas site policy configuration"
+            handler="arcas.policy.setuphandlers.importVarious">
+        <depends name="rolemap"/>
+    </genericsetup:importStep>    <browser:page
+            for="*"
+            class=".browser.kss_roles.KSSRolesView"
+            name="updateRolesInfo"
+            attribute="updateRolesInfo"
+            permission="zope2.View"
+            />
+   -*- -->
+  
+</configure>

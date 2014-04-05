@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<object name="portal_workflow">
+    <object name="coleccion_workflow"
+            meta_type="Workflow"/>
+    <bindings>
+        <default>
+            <bound-workflow
+                    workflow_id="simple_publication_workflow"/>
+        </default>
+        <type type_id="arcas.coleccion">
+            <bound-workflow workflow_id="coleccion_workflow"/>
+        </type>
+        <type type_id="arcas.exhibicion">
+            <bound-workflow workflow_id="coleccion_workflow"/>
+        </type>
+        <type type_id="arcas.sugerencia">
+            <bound-workflow workflow_id="coleccion_workflow"/>
+        </type>
+    </bindings>
+</object>

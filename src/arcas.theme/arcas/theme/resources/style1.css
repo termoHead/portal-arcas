@@ -1,0 +1,782 @@
+@font-face {
+	font-family: 'Florencesans';
+	src: url('fuentes/florencesans.eot');
+	src: local('☺'), url('fuentes/florencesans.woff') format('woff'), url('fuentes/florencesans.ttf') format('truetype'), url('fuentes/florencesans.svg') format('svg'), url('fuentes/florencesans.otf') format('otf');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Calibri';
+	src: url('fuentes/calibri.eot');
+	src: local('☺'), url('fuentes/calibri.woff') format('woff'), url('fuentes/calibri.ttf') format('truetype'), url('fuentes/calibri.svg') format('svg'), url('fuentes/calibri.otf') format('otf');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Attic';
+	src: url('fuentes/attic.eot');
+	src: local('☺'), url('fuentes/attic.woff') format('woff'), url('fuentes/attic.ttf') format('truetype'), url('fuentes/attic.svg') format('svg'), url('fuentes/attic.otf') format('otf');
+	font-weight: normal;
+	font-style: normal;
+}
+p,h1,h2,h3,h4,h5,ul,li{
+margin:0;
+padding:0;
+list-style:none;
+}
+.clr{
+clear:both;
+margin:0;
+padding:0;
+line-height:0;
+font-size:0;
+height:0;
+}
+body{
+font-family:"Arial",sans-serif;
+}
+h2{
+display:inline;
+}
+h3{
+display:inline;
+}
+body{
+background-color:#c0c0c0;
+margin:0 auto;
+text-align:center;
+}
+#container{
+background-color:#6d6558;
+width:1024px;
+margin:0 auto;
+text-align:left;
+}
+body.home #header{
+height:107px;
+background:url("images/bgHeaderHome.jpg") no-repeat left top #403a31;
+border-bottom:1px solid #ffffff;
+}
+#header{
+border-bottom:1px solid #ffffff;
+background-color:#403a31;
+}
+ul.menu{
+float:right;
+margin-right:24px;
+}
+body.home ul.menu{
+margin-right:14px;
+}
+ul.menu li{
+float:left;
+font-family:"Florencesans","Arial",sans-serif;
+font-size:12px;
+height:20px;
+background:url("images/separadorMenu.gif") no-repeat left top transparent;
+padding:0 9px;
+}
+ul.menu li a{
+color:#ffcc66;
+text-decoration:none;
+line-height:31px;
+}
+ul.menu li.login a{
+color:#ffffff;
+}
+ul.menu li a:hover{
+text-decoration:underline;
+}
+h1.tituloPrincipal{
+    float: left;
+    font-family: "Florencesans","Arial",sans-serif;
+    font-size: 51px;
+    font-weight: normal;
+    margin: 10px 0 0 71px;
+}
+body.home h1.tituloPrincipal{
+    margin: 25px 0 0 71px;
+    clear: right;
+}
+h1.tituloPrincipal a{
+color:#ffcc66;
+text-decoration:none;
+}
+body.home  .buscador{
+float:right;
+margin: 42px 60px 0 0;
+}
+.buscador{
+    clear: right;
+    float: right;
+    margin: 12px 31px 0 0;
+}
+.buscador input{
+    background: url("images/buscar.gif") no-repeat scroll 195px 4px #1C160D;
+    border: 1px solid #5A544B;
+    color: #D0CAC1;
+    font-size: 11px;
+    padding: 6px;
+    width: 205px;
+}
+#exhibicionHome{
+	height:270px;
+    background: url("images/excibicionPuig.jpg") no-repeat scroll top left transparent;
+	border-bottom:1px solid #ffffff;
+}
+.volanta{
+font-family:"Calibri","Arial",sans-serif;
+font-size:12px;
+color:#ffffff;
+float:left;
+clear:both;
+margin: 0 0 0 348px;
+}
+.tituloExhibicion{
+float:left;
+clear:left;
+font-family:"Attic",serif;
+text-align:left;
+margin: 20px 50px 0 345px;
+}
+.tituloExhibicion h2{
+font-size:48px;
+color:#ffffff;
+font-weight:normal;
+line-height: 41px;
+}
+.tituloExhibicion h2 span.size1{
+font-size:40px;
+}
+.tituloExhibicion h3{
+font-size:26px;
+color:#ffffff;
+font-weight:normal;
+line-height: 25px;
+}
+.tituloExhibicion h3 .size2{
+font-size:45px;
+color:#f4eba6;
+}
+.tituloExhibicion h3 .size3{
+font-size:37px;
+color:#f4eba6;
+line-height: 45px;
+}
+.tituloExhibicion h3 .size4{
+font-size:23px;
+}
+.datosExcibicion{
+    color: #FFFFFF;
+    float: right;
+    font-family: "Calibri",sans-serif;
+    margin-right: 25px;
+    margin-top: 34px;
+    text-align: left;
+    width: 357px;
+}
+.datosExcibicion p{
+font-size:14px;
+font-style:italic;
+}
+.datosExcibicion p.curador{
+font-style:normal;
+}
+.datosExcibicion p.colaboradores{
+font-style:normal;
+font-size:12px;
+}
+a.masExhibiciones{
+    color: #FFFFFF;
+    font-family: "Arial",sans-serif;
+    font-size: 11px;
+    position: relative;
+    right: -200px;
+    text-decoration: none;
+    top: 255px;
+}
+#coleccionesHome{
+background:url(images/bgColeccionesHomeTop.png) left top repeat-x #23231f;
+text-align:center;
+border-bottom:1px solid #bfb5a4;
+margin-bottom:33px;
+}
+#coleccionesHome h3{
+background:url(images/tabColeccionesHome.png) center top no-repeat transparent;
+font-family:"Florencesans","Arial",sans-serif;
+font-weight:normal;
+font-size:14px;
+color:#ffcc66;
+display:block;
+height:22px;
+float:left;
+width:100%;
+margin-top:24px;
+padding-top:7px;
+margin-bottom: 7px;
+}
+#coleccionesHome .separador{
+float:left;
+width:2px;
+height:265px;
+background-color:#da7d2b;
+margin:0 19px;
+}
+.bloqueColeccion{
+float:left;
+width:424px;
+height:263px;
+border:1px solid #999999;
+}
+#coleccionesHome .manuelPuig{
+background:url(images/coleccionPuigHome.jpg) left top no-repeat transparent;
+margin-left:67px;
+}
+#coleccionesHome .edgardoVigo{
+background:url(images/coleccionVigo.jpg) left top no-repeat transparent;
+}
+.bloqueColeccion .textoInterno{
+float:right;
+width:259px;
+height:263px;
+text-align:left;
+background-color:#6f6c5c;
+} 
+.bloqueColeccion .textoInterno h4{
+font-family:"Attic","Arial",sans-serif;
+display:block;
+width:100%;
+height:27px;
+background-color:#1a1915;
+color:#c46053;
+font-weight:normal;
+font-size:14px;
+line-height:24px;
+text-indent:11px;
+} 
+.bloqueColeccion .textoInterno .parrafo{
+margin:11px;
+height:177px;
+} 
+.bloqueColeccion .textoInterno .parrafo p{
+font-size:11px;
+color:#ffffff;
+line-height:17px;
+} 
+.bloqueColeccion .textoInterno .links{
+margin:11px;
+border-top:1px dotted #a59e92;
+padding-top:12px;
+font-size:10px;
+} 
+.bloqueColeccion .textoInterno .links a{
+color:#ffcc66;
+text-decoration:none;
+} 
+.bloqueColeccion .textoInterno .links a:hover{
+text-decoration:underline;
+} 
+.bloqueColeccion .textoInterno .links a.izq{
+float:left;
+} 
+.bloqueColeccion .textoInterno .links a.der{
+float:right;
+} 
+.buscarEnColecciones{
+float:left;
+width:100%;
+background:url(images/bgBuscarColecciones.png) left top no-repeat transparent;
+margin:5px 0;
+height:27px;
+}
+.buscarEnColecciones input{
+    background-color: transparent;
+    border: medium none;
+    color: #FFFFFF;
+    float: right;
+    font-family: "Arial",sans-serif;
+    font-size: 12px;
+    margin: 5px 93px 0;
+    width: 180px;
+}
+#contenido{
+border-bottom:1px solid #99928b;
+padding-bottom:38px;
+}
+#contenido .novedades{
+float:left;
+width:260px;
+margin-left:66px;
+display:inline;
+background-color:#4a4239;
+font-size:12px;
+}
+#contenido .presentacion{
+float:right;
+width:598px;
+margin-right:65px;
+display:inline;
+background-color:transparent;
+}
+#contenido .novedades .top{
+background-color:#1c130c;
+border:2px solid #4a4239;
+border-left-width:1px;
+height:30px;
+}
+#contenido .novedades .top h3{
+color:#ffcc66;
+font-size:14px;
+font-family:"Arial",sans-serif;
+font-weight:normal;
+line-height:29px;
+margin-left:14px;
+letter-spacing:1px;
+}
+#contenido .pie{
+height:15px;
+background:url(images/pieNovedades.png) right top no-repeat transparent;
+}
+body.home #contenido .pie{
+background:url(images/pieNovedadesHome.png) right top no-repeat transparent;
+}
+#contenido .pie a{
+float:right;
+color:#ffffff;
+font-size:11px;
+text-decoration:none;
+letter-spacing:1px;
+margin-right: 10px;
+}
+#contenido .novedades .centro{
+margin:15px;
+height:250px;
+}
+#contenido .novedades h4 a{
+color:#e1b35a;
+text-decoration:none;
+}
+#contenido .novedades h4 a:hover{
+text-decoration:underline;
+}
+#contenido .novedades p{
+color:#ffffff;
+margin-bottom:15px;
+}
+#contenido .presentacion{
+border-top:1px solid #4a4239;
+padding-top:7px;
+}
+#contenido .presentacion h3{
+font-family:"Florencesans","Arial",sans-serif;
+font-weight:normal;
+color:#ffcc66;
+margin-bottom:10px;
+float:left;
+}
+#contenido .presentacion p{
+float:left;
+font-size:12px;
+color:#ffffff;
+-moz-column-count: 2;
+-moz-column-gap: 27px;
+-webkit-column-count: 2;
+-webkit-column-gap: 27px;
+column-count: 2;
+column-gap: 27px;
+line-height: 19px;	
+}
+
+#contenido .presentacion .pie{
+float:right;
+width:100%;
+}
+#contenido .presentacion .centro{
+height:306px;
+}
+#pie{
+background:url(images/bgTopPie.png) right top repeat-x #99928b;
+height:188px;
+}
+#final{
+background-color:#8a837c;
+height:62px;
+}
+#pie .licencia{
+float:left;
+margin: 10px;
+}
+#pie .licencia span{
+float:left;
+font-family:"Florencesans","Arial",sans-serif;
+color:#6d6558;
+font-size:28px;
+margin: 12px 15px 3px 13px;
+}
+#pie .licencia a{
+float:left;
+clear:left;
+}
+#pie .links{
+float:left;
+margin-top: 20px;
+}
+#pie .logos{
+float:right;
+margin:25px 65px 0 0;
+}
+#pie .logos a{
+display:block;
+float:left;
+}
+#pie .logos a:first-child{
+margin-right:30px;
+}
+#pie .institucional{
+    clear: right;
+    color: #FFFFFF;
+    float: right;
+    font-family: "Calibri",sans-serif;
+    font-size: 11px;
+    line-height: 15px;
+    margin: 10px 74px 0 0;
+}
+#pie .institucional a{
+color:#ffffff;
+text-decoration:none;
+}
+#pie .institucional a:hover{
+text-decoration:underline;
+}
+#pie .links li{
+font-family:"Arial",sans-serif;
+font-weight:normal;
+font-size:11px;
+letter-spacing:1px;
+height:22px;
+border-bottom:1px solid #beb9b5;
+line-height: 21px;
+}
+#pie .links li a{
+color:#ffffff;
+text-decoration:none;
+}
+a.plone{
+margin:5px 0 0 10px;
+display:block;
+float:left;
+}
+.breadcrumb{
+float:left;
+clear:left;
+font-size:13px;
+color:#FFCC66;
+padding-left:27px;
+background:url("images/homeBreadcrumb.gif") left center transparent no-repeat;
+margin: 10px 0 5px 44px;
+}
+.breadcrumb a{
+color:#FFCC66;
+text-decoration:none;
+}
+.columnaIzquierda{
+width:445px;
+float:left;
+margin-left:67px;
+}
+.columnaDerecha{
+width:349px;
+float:right;
+margin-right:67px;
+}
+/**********internas*************/
+#presentacionColeccion{
+height:269px;
+}
+body.coleccion-puig #presentacionColeccion{
+
+border-bottom: 1px solid #FFFFFF;
+}
+.acerca h4{
+font-family:"Florencesans",sans-serif;
+font-size:24px;
+font-weight:normal;
+color:#ffcc66;
+}
+.acerca p{
+font-family:"Arial",sans-serif;
+font-size:14px;
+font-weight:normal;
+color:#ffffff;
+}
+.subtituloColeccion{
+font-family:"Florencesans",sans-serif;
+color:#ffffff;
+font-size:14px;
+font-weight:normal;
+float:left;
+clear:left;
+margin:0 0 5px 4px;
+}
+.tituloColeccion{
+float:left;
+margin:26px 0 0 66px;
+}
+.tituloColeccion h2{
+font-family:"Attic",serif;
+color:#ffffff;
+font-size:59px;
+font-weight:normal;
+float:left;
+clear:left;
+line-height: 57px;
+margin-bottom: 5px;
+width: 420px;
+}
+#presentacionColeccion .busqueda{
+float:left;
+clear:left;
+}
+.busquedaColeccion{
+float:left;
+clear:both;
+margin: 20px 0 0 10px;
+margin: 20px 0 0 70px;
+}
+.busquedaColeccion select{
+    background-color: #403A31;
+    border: none !important;
+    color: #FFFFFF;
+    font-size: 11px;
+    height: 22px;
+    padding: 3px;
+    width: 217px;
+	float:left;
+}
+.busquedaColeccion select option,
+.busquedaColeccion select option:checked,
+.busquedaColeccion select option:hover,
+.busquedaColeccion select option:focus,
+.busquedaColeccion select option:active{
+    background-color: #403A31 !important;
+    border: none !important;
+    color: #FFFFFF;
+    font-size: 11px;
+}
+.busquedaColeccion input,.buscaTexto{
+float:left;
+clear:both;
+background: url("images/buscarColeccion.gif") no-repeat scroll 195px 4px #241201;
+    border: 1px solid #904401;
+    color: #fc9f4d;
+    font-size: 11px;
+    padding: 6px;
+    width: 203px;
+	margin-top: 13px;
+}
+.acerca{
+margin-top:20px;
+}
+.acerca h4{
+margin-bottom:10px;
+}
+.acerca p{
+margin-bottom:15px;
+}
+.coordinador{
+margin-top:14px;
+margin-bottom:22px;
+}
+.coordinador img{
+border:4px solid #ecbe64;
+float:left;
+}
+.coordinador .datos img{
+border:none;
+float:none;
+}
+.coordinador .datos{
+float: left;
+margin-left: 7px;
+margin-top: 5px;
+font-family:"Florencesans",sans-serif;
+}
+.coordinador .datos span{
+font-size:14px;
+color:#ffcc66;
+display:block;
+margin-top: 9px;
+}
+.coordinador .datos h4{
+font-size:24px;
+color:#ffcc66;
+font-weight:normal;
+}
+a.cv{
+font-size:12px;
+text-decoration:none;
+color:#000000;
+margin-left:8px;
+}
+a.cv:hover{
+text-decoration:underline;
+}
+.recomendacion{
+
+}
+.recomendacion span.intro{
+    color: #CCCCCC;
+    display: block;
+    font-family: "Florencesans",sans-serif;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+.listadoRecomendacion .top{
+border-bottom:6px solid #99928b;
+}
+.listadoRecomendacion .top .solapa{
+-webkit-border-top-left-radius: 7px;
+-webkit-border-top-right-radius: 7px;
+-moz-border-radius-topleft: 7px;
+-moz-border-radius-topright: 7px;
+border-top-left-radius: 7px;
+border-top-right-radius: 7px;
+float:left;
+width:auto;
+height:22px;
+
+background-color:#403a31;
+margin-right:2px;
+    padding: 0 4px;
+text-align:center;
+color:#cc9966;
+font-size:12px;
+line-height:22px;
+
+}
+.listadoRecomendacion .top .solapa.activa{
+background-color:#99928b;
+
+font-size:16px;
+}
+.listadoRecomendacion .top a{color:#fff;text-decoration: none;}
+.listadoRecomendacion .top .activa a{
+    color:#241201;
+    text-decoration: none;
+}
+.listadoRecomendacion .centro{
+margin-top:1px;
+border-top:1px solid #ffffff;
+background-color:#99928b;
+padding:15px 7px;
+}
+.listadoRecomendacion .centro span{
+display:block;
+}
+.listadoRecomendacion .centro span.tipo{
+font-size:10px;
+color:#ffffff;
+}
+.listadoRecomendacion .centro span.autores{
+font-size:10px;
+color:#000000;
+}
+.listadoRecomendacion .centro a{
+font-size:12px;
+color:#403a31;
+text-decoration:none;
+}
+.listadoRecomendacion .centro a span{
+display:inline;
+font-size:11px;
+}
+.listadoRecomendacion .centro .bloque{
+margin-bottom:10px;
+}
+.bannerExhibicion{
+margin-top:3px;
+}
+.licencia{
+margin-top:32px;
+}
+.licencia img{
+float:left;
+}
+.licencia p{
+font-size:10px;
+color:#c1b9b1;
+float:left;
+width:305px;
+line-height:16px;
+margin:3px 0 0 14px;
+}
+.galeriaImagenes{
+margin-top:20px;
+border-bottom:1px solid #ffcc66;
+padding-bottom:2px;
+}
+.galeriaImagenes .botonera{
+text-align:center;
+}
+.galeriaImagenes .botonera span{
+	color:#f5a661;
+    font-family: "Florencesans",sans-serif;
+	font-size:18px;
+}
+.galeriaImagenes .imagenes{
+	text-align:justify;
+    margin-top: 6px;
+	border-bottom:1px solid #ffcc66;
+}
+.galeriaImagenes .imagenes img{
+	margin-bottom:10px;
+
+}
+.biografia{
+margin-top:20px;
+}
+.biografia h4{
+color:#f5a661;
+font-weight:normal;
+font-size:19px;
+    font-family: "Florencesans",sans-serif;
+margin-bottom:7px;
+}
+.biografia p{
+font-size:12px;
+color:#ffffff;
+margin-bottom:15px;
+line-height:15px;
+    font-family: "Calibri",sans-serif;
+}
+.produccion{
+margin-top: 15px;
+}
+.produccion h4{
+color:#f5a661;
+font-size:14px;
+font-weight:normal;
+}
+.produccion .bloque{
+margin:10px 0;
+padding-bottom:10px;
+border-bottom:1px dotted #afaca8;
+    font-family: "Calibri",sans-serif;
+}
+.produccion .bloque span{
+font-size:14px;
+color:#cccccc;
+display:block;
+}
+.produccion .bloque a{
+font-size:14px;
+color:#ff9933;
+display:block;
+text-decoration:none;
+}
+.produccion .bloque a:hover{
+font-size:14px;
+color:#ff9933;
+display:block;
+text-decoration:none;
+}

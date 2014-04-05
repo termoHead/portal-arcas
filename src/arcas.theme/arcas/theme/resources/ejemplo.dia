@@ -1,0 +1,7 @@
+<replace css:content="#visual-portal-wrapper">
+        <xsl:copy-of css:select="#edit-bar"/>
+        <div id="visual-portal-wrapper">
+            <xsl:apply-templates/>
+        </div>
+    </replace>
+    <replace css:content="#edit-bar"/>

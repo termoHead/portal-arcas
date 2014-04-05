@@ -1,0 +1,134 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:grok="http://namespaces.zope.org/grok"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="arcas.content">
+
+
+  <include package="plone.behavior" file="meta.zcml" />
+  <include package="plone.directives.form" file="meta.zcml" />
+  <include package="plone.directives.form" />
+  <grok:grok package="." />
+  <includeDependencies package="." />
+  <include file="permissions.zcml" />
+  <include package="plone.app.portlets" />
+  <browser:resourceDirectory
+            name="arcas.content"
+            directory="static"
+            />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="arcas.content"
+      directory="profiles/default"
+      description="Installs the arcas.content package"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <!-- -*- extra stuff goes here <plone:behavior
+            title="GroupColeccion"
+            description="Agrega un campo nombre de grupo."
+            provides=".behaviors.IColecGroupName"
+            factory =".behaviors.ColecGroupName"
+            />-*- -->
+
+    <browser:page
+          name="gsSearch"
+          for="*"
+          class=".testWs.TestWs"
+          permission="zope2.View"
+          template="templates/gsSearch.pt"
+          />
+    <browser:page
+            name="coleccionesView"
+            for="*"
+            class=".browser.ListadoColeccion"
+            permission="zope2.View"
+            template="templates/listaC.pt"
+            />
+    <browser:page
+            name="exhibPorColeccion"
+            for="arcas.content.exhibicionesFolder.IExhibicionesFolder"
+            class=".browser.BuscarExhibiciones"
+            permission="zope2.View"
+            template="templates/exhibPorColeccion.pt"
+            />
+
+    <utility
+            component=".vocabularios.GroupMembersVocabFactory"
+            name="arcas.CoorMembersVocab"
+            />
+    <utility
+            component=".vocabularios.InvestigadoresVocabFactory"
+            name="arcas.InvestMembersVocab"
+            />
+    <utility
+            component=".utils.ExhibicionesVocabFactory"
+            name="arcas.ExhibicionesVocab"
+            />
+    <!--eventos coleccion -->
+    <subscriber
+            for="arcas.content.coleccion.IColeccion
+                 Products.CMFCore.interfaces.IActionSucceededEvent"
+            handler=".eventos.onSetupColeccion"
+            />
+    <subscriber
+            for="arcas.content.coleccion.IColeccion
+                 zope.lifecycleevent.interfaces.IObjectAddedEvent"
+            handler=".eventos.onSaveColeccion"
+            />
+    <subscriber
+            for="arcas.content.coleccion.IColeccion
+                 zope.lifecycleevent.IObjectModifiedEvent"
+            handler=".eventos.onModificaColeccion"
+            />
+    <subscriber
+            for="arcas.content.coleccion.IColeccion
+                zope.app.container.interfaces.IObjectRemovedEvent"
+            handler=".eventos.onDelColeccion"
+            />
+    <subscriber
+            for="Products.PluggableAuthService.interfaces.authservice.IPropertiedUser
+            Products.PluggableAuthService.interfaces.events.IPrincipalCreatedEvent"
+            handler=".eventos.onCreaPerfil"
+            />
+    <subscriber
+            for="Products.PluggableAuthService.interfaces.authservice.IBasicUser
+                 Products.PluggableAuthService.interfaces.events.ICredentialsUpdatedEvent"
+            handler=".eventos.onModificaPerfil"
+            />
+
+    <!--eventos exhibicion-->
+    <subscriber
+            for="arcas.content.exhibicion.IExhibicion
+                 Products.CMFCore.interfaces.IActionSucceededEvent"
+            handler=".eventos.onSetupExhibicion"
+            />
+    <plone:behavior
+            title="GroupColeccion"
+            description="Agrega un campo nombre de grupo."
+            provides=".behaviors.IColecGroupName"
+            factory =".behaviors.ColecGroupName"
+            />
+
+    <plone:portlet
+            name        ="exhibicion_portlet"
+            interface   ="arcas.content.portlets.exhibiciones_portlet.IExhibPortlet"
+            assignment  ="arcas.content.portlets.exhibiciones_portlet.Assignment"
+            renderer    ="arcas.content.portlets.exhibiciones_portlet.Renderer"
+            addview     ="arcas.content.portlets.exhibiciones_portlet.AddForm"
+            editview    ="arcas.content.portlets.exhibiciones_portlet.EditForm"
+            />
+    <plone:portlet
+            name        ="colecciones_portlet"
+            interface   ="arcas.content.portlets.colecciones_portlet.IColeccionPortlest"
+            assignment  ="arcas.content.portlets.colecciones_portlet.Assignment"
+            renderer    ="arcas.content.portlets.colecciones_portlet.Renderer"
+            addview     ="arcas.content.portlets.colecciones_portlet.AddForm"
+            editview    ="arcas.content.portlets.colecciones_portlet.EditForm"
+            />
+</configure>

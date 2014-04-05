@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules
+        xmlns="http://namespaces.plone.org/diazo"
+        xmlns:css="http://namespaces.plone.org/diazo/css"
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <!-- Rules applying to standard Plone pages -->
+    <notheme if-path="/inicio/@@manage-portlets" />
+    <notheme if-path="folder_contents" />
+    <notheme if-path="@@gsSearch?" />
+    <notheme if-path="edit" />
+    <notheme if-path="@@images" />
+    <notheme if-path="images" />
+
+    <replace
+            theme-children="//div[@id='header']/ul"
+            css:content-children="ul#portal-globalnav"
+            />
+    <after theme-children="//link">
+        <xsl:copy-of css:select="link"/>
+        <link href="++theme++arcas.theme/arcas.css" media="screen" type="text/css" rel="stylesheet" />
+        <link href="++theme++arcas.theme/style.css" media="screen" type="text/css" rel="stylesheet" />
+    </after>
+    <after theme-children="//link">
+        <xsl:copy-of css:select="head script"/>
+    </after>
+    <after theme-children="//div[@id='header']/ul">
+        <li><xsl:copy-of css:select="#portal-personaltools"/></li>
+    </after>
+    <replace css:theme-children="div.breadcrumb" css:content-children="#portal-breadcrumbs"></replace>
+    <replace css:theme-children="#header h1">
+        <xsl:copy-of css:select="#portal-logo"/>
+    </replace>
+    <replace css:theme-children="title" css:content-children="title"></replace>
+
+    <before css:theme="#presentacionColeccion" css:content="#edit-bar"></before>
+    <before css:theme="#presentacionExhibicion" css:content="#edit-bar"></before>
+    <before css:theme=".cabezalInterno" css:content="#edit-bar"></before>
+    <before css:theme="#exhibicionHome" css:content="#edit-bar"></before>
+
+    <xsl:template match="input[name='buscar']">
+        <xsl:attribute name="value">Epa</xsl:attribute>
+    </xsl:template>
+
+    <!--replace css:theme-children=".buscador" css:content-children="#portal-searchbox" /-->
+
+
+
+
+</rules>

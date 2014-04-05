@@ -1,0 +1,35 @@
+<tal:main tal:define="colecciones view/getColecciones| nothing" >
+    <h3>
+        <a href="#" tal:attributes="href string:${view/listColeccUrl}"
+                title="Listado completo de colecciones">Colecciones en ARCAS</a>
+    </h3>
+    <div class="boxColecciones">
+        <tal:rte tal:condition="colecciones"
+                tal:repeat="artDestacado colecciones">
+            <div class="colecc_componente">
+                <img src="" tal:attributes="src string:${artDestacado/url}/@@images/imagenHome" />
+
+                <div class="label">
+                    <a href="#" title="Titulo de la colección"
+                       tal:content="artDestacado/titulo"
+                       tal:attributes="href artDestacado/url">Apoyo a la Educación</a>
+                </div>
+                <div class="article_descr" tal:content="artDestacado/description" />
+                <div class="listExhiSolapa">
+                    <a href="#" title="Enlace a la colección" tal:attributes="href artDestacado/url">Ver COLECCION</a>
+                    <a href="#" tal:attributes="href artDestacado/extraFolderUrl"
+                                tal:content="string:Ver ${artDestacado/extraFolderTitulo}">Ver COLECCION</a>
+                </div>
+            </div>
+        </tal:rte>
+
+        <tal:rte tal:condition="not:colecciones">
+            <div class="colecc_componente">No se encontraron colecciones</div>
+        </tal:rte>
+        <div class="buscadorColecciones">
+            <form>
+                <input type="text" value="Buscar en las colecciones"/><img class="lupa" src="++theme++arcas.theme/img/lupa-negra.jpg"/>
+            </form>
+        </div>
+    </div>
+</tal:main>

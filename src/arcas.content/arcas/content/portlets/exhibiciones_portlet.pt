@@ -1,0 +1,41 @@
+
+<tal:main tal:define="artDestacado view/getDestacado | nothing"  tal:condition="artDestacado">
+
+    <div class="exhibicio_componenet"
+         tal:attributes="style string:background-image:url(${artDestacado/exhiurl}/@@images/bgCabezalHome)">
+
+        <div class="exhisolapa">
+            <a href="#" tal:attributes="href artDestacado/exhiurl">exhibicion virtual</a>
+        </div>
+
+        <div class="label">
+            <a href="#"
+               tal:content="artDestacado/titulo"
+               tal:attributes="href artDestacado/exhiurl">Apoyo a la Educación</a>
+        </div>
+        <div>
+
+            <div class="article_descr" tal:content="artDestacado/descri" />
+
+            <div class="responsables" tal:define="curas artDestacado/curador|nothing">
+                <tal:r tal:condition="curas">
+                    <span>Curador:</span>
+                    <tal:rr tal:repeat="cura curas">
+                        <span tal:content="cura/title"></span>
+                    </tal:rr>
+                </tal:r>
+                <div class="integrantes">
+                    <span>Integrantes</span>
+                    <tal:ri tal:repeat="int artDestacado/integrantes">
+                        <span tal:content="int/title ">Hernesto Corona</span>
+                        <span tal:replace="string:," tal:condition="not: repeat/int/end"></span>
+                    </tal:ri>
+
+                </div>
+            </div>
+
+            <div class="clr"></div>
+        </div>
+    </div>
+
+</tal:main>

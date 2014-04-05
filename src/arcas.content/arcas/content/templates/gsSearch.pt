@@ -1,0 +1,48 @@
+<html metal:use-macro="views/standard_macros/view">
+<meta charset="utf-8">
+<body>
+<div metal:fill-slot="body">
+
+    <div class="row">
+        <div class="label"><span tal:replace="structure view/consulta" /></div>
+    </div>
+    <form method="get" tal:attributes="action string:${context/absolute_url}/${view/__name__}">
+        <span tal:replace="structure context/@@authenticator/authenticator" />
+        <span>Buscar</span>
+        <input name="buscaTexto" id="buscaTexto" type="text"
+                tal:attributes="value python:context.REQUEST['buscaTexto']"/>
+
+        <input name="idColec" id="idColec"  type="hidden"
+               tal:attributes="value python:context.REQUEST['idColec']" />
+
+        <input type="submit" class="context"
+                   name="form.button.Search"
+                   value="Search"/>
+
+
+    </form>
+    <div class="resultBox" tal:define="listResult view/buscaTexto|nothing">
+        <div tal:repeat="dato listResult"
+             tal:condition="listResult">
+            <tal:def tal:define="titulo  python:dato['titulo'].encode('utf-8') or None;
+                                 filTitulo python:dato['preserva'];
+                                 fullText python:dato['texto'].encode('utf-8') or None">
+                <div class="labelR" >
+                    <a href="#" tal:attributes="href string:${view/dameRutaDocGS}/${dato/hash};
+                                                title titulo"
+                       tal:content="titulo">Titulo</a>
+                </div>
+                <div tal:content="filTitulo">Full text</div>
+                <div tal:content="fullText">Full text</div>
+            </tal:def>
+
+        </div>
+        <div tal:condition="python: not listResult and view.error!=''">
+            <div class="msj" tal:condition="python:view.error=='urlError'">No se pudo acceder al servicio de Greenstone. Inténtelo más tarde</div>
+            <div class="msj" tal:condition="python:view.error!='urlError'"
+                    tal:content="view/error"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

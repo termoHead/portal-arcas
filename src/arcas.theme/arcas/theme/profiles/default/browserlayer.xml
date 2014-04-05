@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<layers>
+    <layer
+            name="arcas.theme"
+            interface="arcas.theme.interfaces.IArcasTheme"
+            />
+</layers>

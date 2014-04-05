@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="example.conference">
+<body>
+<metal:content-core fill-slot="main">
+    <metal:content-core define-macro="main">
+        <div class="cabezalInterno">
+            <h2>EXHIBICIONES VIRTUALES</h2>
+            <div class="clr"></div>
+        </div>
+        <div class="texto">
+            <p  tal:content="structure context/cuerpo/output">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </p>
+        </div>
+
+        <div class="lista"  tal:define="listado view/dameListaExhi|nothing">
+            <tal:r tal:repeat="colec listado">
+
+            <div class="bloque bloqueSaer"  tal:attributes="style string:background:url(${colec/url}/images/bgCabezalLista) no-repeat"
+                 tal:define="listado view/dameListaExhi|nothing" tal:condition="listado">
+                <div class="tituloExhibicion">
+                        <a class="size1" href="#" tal:attributes="href colec/url;
+                                                title colec/titulo"
+                                 ><img src="++theme++arcas.theme/images/emptyList.gif" alt=""/></a>
+
+                </div>
+                <div class="containerRight">
+                    <p tal:content="colec/descri">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                    <tal:cu tal:repeat="curador colec/curador">
+                        <div class="datosExtra">
+                            <img src=""  tal:replace="structure curador/@@images/retrato/thumb"/>
+                            <div>
+                                <h4>Curador</h4>
+                                <h3 class="special" tal:content="curador/title">Camilo Peretti</h3>
+
+                                <h4>Colaboradores</h4>
+                                <tal:rC tal:repeat="coor colec/coors">
+                                    <h3> <a href="#" tal:attributes="href string:mailto:${coor/email}; title coor/title"
+                                       tal:content="coor/title">Nombre coordinador</a></h3>
+                                </tal:rC>
+                            </div>
+                            <div class="clr"></div>
+                        </div>
+                    </tal:cu>
+                    <div class="clr"></div>
+                </div>
+                <div class="clr"></div>
+            </div>
+            </tal:r>
+        </div>
+    </metal:content-core>
+</metal:content-core>
+
+</body>
+</html>

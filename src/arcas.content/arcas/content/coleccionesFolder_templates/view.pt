@@ -1,0 +1,76 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="example.conference">
+<body>
+<metal:content-core fill-slot="main">
+    <metal:content-core define-macro="main">
+        <div class="cabezalInterno">
+            <h2>COLECCIONES</h2>
+            <div class="clr"></div>
+        </div>
+        <div class="texto">
+            <p tal:content="structure context/cuerpo/output">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </p>
+        </div>
+        <div class="lista" tal:define="listado view/dameListaColecciones|nothing">
+
+            <tal:r tal:condition="listado"
+                    tal:repeat="colec listado">
+                <div class="bloque" >
+
+                    <div class="tituloColeccion" tal:attributes="style string:background:url(${colec/url}/@@images/imagenLista) no-repeat">
+                        <h2 >
+                        <a href="" tal:attributes="href colec/url;
+                                                title colec/titulo"
+                           tal:content="colec/titulo">Titulo coleccion</a>
+                        </h2 >
+                    </div>
+
+                    <div class="containerRight">
+                        <div class="acercaColeccion">
+                            <h3>Acerca de esta colecci&oacute;n</h3>
+                            <p  tal:content="colec/descri"></p>
+                        </div>
+                        <div class="coordinador">
+                            <tal:rC tal:repeat="coor colec/coors">
+                                <img class="coordinador" src="images/horacioPrekel.jpg" tal:replace="structure coor/img" />
+                                <div class="datos">
+                                    <span>Coordinador de la Colecci&oacute;n</span>
+
+                                    <h4> <a href="#" tal:attributes="href string:mailto${coor/email}; title coor/title"
+                                            tal:content="coor/title">Nombre coordinador</a></h4>
+
+                                </div>
+                            </tal:rC>
+                            <div class="clr"></div>
+                        </div>
+                        <div class="busquedaColeccion ">
+                            <a href="#" target="_blank"  class="linkFuentes" tal:attributes="href colec/urlFuente">Navegar Fuentes</a>
+                            <form  method="get" tal:attributes="action string:${context/absolute_url}/@@gsSearch">
+
+                                <span tal:replace="structure context/@@authenticator/authenticator" />
+                                <input name="buscaTexto" id="buscaTexto" type="text"/>
+                                <input name="idColec" id="idColec"  type="hidden" tal:attributes="value colec/idColec" />
+
+                            </form>
+                            <div class="clr"></div>
+                        </div>
+                        <div class="clr"></div>
+                    </div>
+
+
+
+                </div>
+
+            </tal:r>
+
+        </div>
+
+    </metal:content-core>
+</metal:content-core>
+
+</body>
+</html>

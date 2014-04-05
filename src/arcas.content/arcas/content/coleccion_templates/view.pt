@@ -1,0 +1,202 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="example.conference">
+<body>
+
+
+
+<metal:content-core fill-slot="main">
+    <metal:content-core define-macro="main">
+
+        <div class="boxHeader"
+                tal:attributes="style string:background:url(${context/absolute_url}/images/imagenCabecera) no-repeat">
+            <div class="bloqH">
+                <div class="tituloColeccion">
+                    <span class="subtituloColeccion">COLECCION</span>
+                    <h2  tal:content="context/title">Manuel<br>Puig</h2>
+                    <div class="clr"></div>
+                </div>
+                <a href="navFuentes.php"  class="linkFuentes" tal:attributes="href view/getUrlAFuente">Navegar Fuentes</a>
+                <div class="colecBox">
+                    <form method="get" tal:attributes="action string:${context/absolute_url}/@@gsSearch">
+                       <span tal:replace="structure context/@@authenticator/authenticator" />
+                       <input name="buscaTexto" id="buscaTexto"  value="Buscar en la coleccion" type="text"/>
+                       <input name="idColec" id="idColec"  type="hidden" tal:attributes="value context/GS_ID" />
+                       <input type="hidden" class="context"
+                               name="form.button.Search"
+                               value="Search"/>
+                    </form>
+                </div>
+            </div>
+
+            <div class="clr"></div>
+        </div>
+        <div class="busquedaColeccion ">
+            <form>
+                <select><option>Navegar Fuentes</option></select><input name="buscar" value="Buscar en la coleccion" type="text"></form>
+            <div class="clr"></div>
+        </div>
+        <div class="clr"></div>
+        <div class="boxColumnas">
+            <div class="columnaUno">
+                <div class="descriColect">
+                    <h4>Acerca de esta Coleccion</h4>
+                    <p tal:content="context/description">Descripción de la colección</p>
+                    <div class="pie">
+                        <a href="#" tal:attributes="href string: ${context/absolute_url}/@@coleccionDataView;
+                    title context/title">(+) sobre esta colecci&oacute;n</a>
+                    </div>
+
+                </div>
+                <div class="boxCoord">
+                    <tal:coordinadores tal:define="coors view/getCoordinadores | nothing"
+                                       tal:condition="coors">
+
+
+
+                        <div class="coordinador"
+                                tal:repeat="coor coors">
+
+                            <img src="" tal:replace="structure coor/img" />
+                            <div class="datos">
+                                <div class="contacto">
+                                    <a href="mailto:mail@mail.com"
+                                       tal:attributes="title coor/title;
+                                                       href string:mailto:${coor/email}">
+                                            <img src="++images/mail.gif" tal:attributes="src string:/++theme++arcas.theme/images/mail.gif;title coor/title;"/> cv</a>
+                                </div>
+                                <span>Coordinador de la Colecci&oacute;n</span>
+                                <h4 tal:content="coor/title">Horacio A. Prekel</h4>
+                            </div>
+                            <div class="clr"></div>
+                        </div>
+                    </tal:coordinadores>
+                </div>
+                <div class="boxRecomienda">
+                    <span class="label">Lecturas que profundizan en este tema</span>
+                    <div id="tabs"
+                            tal:define="listadoReco view/dameDicRecomendados">
+                        <div class="top">
+                            <tal:rra tal:repeat="item listadoReco" >
+                                <div tal:define="activola repeat/item/start"
+                                     tal:attributes="class python:activola and 'solapa activa' or 'solapa'">
+                                    <a href="" tal:attributes="href string:#enlace${repeat/item/index}"
+                                   tal:content="item/titulo"></a>
+                                </div>
+                            </tal:rra>
+                            <div class="clr"></div>
+                        </div>
+                        <div class="centro">
+                            <tal:recm tal:repeat="box listadoReco">
+                                <div tal:define="esPri repeat/box/start "
+                                     tal:attributes="id string:enlace${repeat/box/index};
+                                     class python: not esPri and 'oculto'" >
+                                    <div class="item" tal:repeat="subI box/content">
+                                        <tal:define tal:define="tipo subI/tipo|nothing;
+                                                                lautores subI/autores | nothing">
+                                            <span class="tipo" tal:condition="tipo" >(<tal:tip tal:replace="python:subI['tipo'].upper()" />)</span>
+                                            <span class="autores" tal:repeat="autorA lautores"
+                                                    tal:content="autorA" tal:condition="lautores">Forasteli, Fabrici
+                                            </span>
+                                            <a href="#" tal:attributes="href subI/url" tal:content="subI/titulo"></a>
+                                        </tal:define>
+                                    </div>
+                                </div>
+                            </tal:recm>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bannerExhibicion"
+                        tal:define="banners view/dameBanners | nothing"
+                        tal:condition="banners">
+                    <tal:a tal:repeat="baner banners ">
+
+                        <a href="#" tal:attributes="href baner/url;title baner/titulo">
+                            <img src="images/bannerExhibicionPuig.jpg"
+                                 tal:attributes="src string:${baner/url}/images/baner;
+                                                title baner/titulo"/></a>
+
+                    </tal:a>
+                </div>
+
+            </div>
+            <div class="columnaDos">
+                <div class="galeriaBox"
+                     tal:define="imags view/getImagenes|nothing"
+                     tal:condition="imags">
+                    <div class="botonera">
+                        <a href="#" id="moveLeft"> <img src="++theme++arcas.theme/img/flechaL.gif" class="oculto" title="Mostrar más" /> </a>
+                        <span>GALERIA DE IMAGENES</span>	&nbsp;
+                        <a href="#" id="moveRight"> <img src="++theme++arcas.theme/img/flechaR.gif" class="oculto"  title="Mostrar más" /> </a>
+                        <div class="clr"></div>
+                    </div>
+                    <div class="marcoImgs">
+                        <tal:repite tal:repeat="img imags">
+
+                            <img src="" alt="" tal:attributes="src string:${img/getURL}/image_thumb;
+                                                                alt img/Title" />
+
+                            <script language="javascript" tal:condition="repeat/img/end">
+                                comodaGaleria()
+                            </script>
+
+                        </tal:repite>
+                    </div>
+                </div>
+                <div class="boxBio" tal:define="listBios view/getBioList|nothing"
+                       tal:condition="listBios">
+                    <tal:unBio tal:condition="python:len(listBios)<2"
+                            tal:define="unAutor python:listBios[0]">
+
+                        <div class="bio">
+                            <h4>BREVE BIOGRAFIA</h4>
+                            <p tal:content="unAutor/descri"></p>
+                            <div class="pie">
+                                <a href="#" tal:attributes="href unAutor/url;alt string:ver más sobre ${unAutor/nombre}"
+                                   alt="más sobre su vida">(+) sobre su vida</a>
+                            </div>
+                        </div>
+                        <div class="produccion">
+                            <h4>PRODUCCION</h4>
+                            <div class="produccion" tal:content="structure unAutor/listado"></div>
+                        </div>
+
+
+                    </tal:unBio>
+                    <tal:unBio tal:condition="python:len(listBios)>1">
+                        <h4>BREVES BIOGRAFIAS</h4>
+
+                        <tal:rep tal:repeat="autor listBios">
+                            <div class="bio">
+                                <h4>BREVE BIOGRAFIA</h4>
+                                <p tal:content="autor/descri"></p>
+                                <div class="pie">
+                                    <a href="#" tal:attributes="href autor/url;alt string:ver más sobre ${autro/nombre}"
+                                       alt="más sobre su vida">(+) sobre su vida</a>
+                                </div>
+                            </div>
+                            <div class="produccion">
+                                <h4>PRODUCCION</h4>
+                                <div class="produccion" tal:content="structure autor/listado"></div>
+                            </div>
+                        </tal:rep>
+                    </tal:unBio>
+                </div>
+
+
+
+
+                    <!--fin col2-->
+            </div>
+        </div>
+
+    </metal:content-core>
+</metal:content-core>
+
+</body>
+</html>

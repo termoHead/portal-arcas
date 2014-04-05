@@ -1,0 +1,144 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="example.conference">
+<body>
+<metal:content-core fill-slot="main">
+    <metal:content-core define-macro="main">
+        <div class="boxTop">
+
+            <div class="exhiV"  tal:define="artDestacado view/getExhiDestacado | nothing" tal:condition="artDestacado">
+                <div  id="exhibicionHome" class="exhibicio_componenet"
+                      tal:attributes="style string:background:url(${artDestacado/exhiurl}/@@images/bgCabezalHome) no-repeat">
+
+                    <div class="volanta">
+                        <a href="#" tal:attributes="href artDestacado/exhiurl">exhibicion virtual</a>
+                    </div>
+                    <div class="bloqueExhi">
+                        <div class="tituloExhibicion">
+                            <h2 tal:content="artDestacado/tituloColec">Jumbol</h2>
+                            <h3 tal:content="artDestacado/titulo">Apoyo a la Educación</h3>
+                        </div>
+                        <div class="datosExcibicion">
+
+                            <p tal:content="artDestacado/descri" />
+
+                            <div class="responsables" tal:define="curas artDestacado/curador|nothing">
+                                <p class="curador" tal:condition="curas">
+                                    <span>Curador:</span>
+                                    <tal:rr tal:repeat="cura curas">
+                                        <span tal:content="cura/title"></span>
+                                    </tal:rr>
+                                </p>
+                                <div class="colaboradores">
+                                    <span>Colaboradores: </span>
+                                    <tal:ri tal:repeat="int artDestacado/integrantes">
+                                        <span tal:content="int/title ">Hernesto Corona</span>
+                                        <span tal:replace="string:," tal:condition="not: repeat/int/end"></span>
+                                    </tal:ri>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="masExhibiciones" href="#" tal:attributes="href view/listExhiUrl;title string:exhibiciones virtuales">exhibiciones virtuales</a>
+                    <div class="clr>"></div>
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="boxColec">
+            <div tal:define="colecciones view/getColecciones | nothing"
+                    id="coleccionesHome">
+                <h3>
+                    <a href="#" tal:attributes="href string:${view/listColeccUrl}"
+                       title="Listado completo de colecciones">COLECCIONES EN ARCAS</a>
+                </h3>
+                <div id="boxColecciones">
+                    <tal:rte tal:condition="colecciones"
+                             tal:repeat="artDestacado colecciones">
+                        <tal:odd tal:define="oddrow repeat/artDestacado/odd">
+                        <div class="bloqueColeccion manuelPuig"
+
+                             tal:attributes="style string:background:url('${artDestacado/url}/@@images/imagenHome') no-repeat;
+                             class python:oddrow and 'bloqueColeccion edgardoVigo' or 'bloqueColeccion manuelPuig'">
+                            <div class="textoInterno">
+                                <h4>
+                                    <a href="#" title="Titulo de la colección"
+                                       tal:content="artDestacado/titulo"
+                                       tal:attributes="href artDestacado/url">Apoyo a la Educación</a>
+                                </h4>
+                                <div class="parrafo" >
+                                <p tal:content="artDestacado/description"/>
+                                </div>
+                                <div class="links">
+                                    <a href="#" class="izq" title="Enlace a la colección" tal:attributes="href artDestacado/url">Ver COLECCION</a>
+                                    <a href="#" class="der" tal:attributes="href string:${artDestacado/extraFolderUrl}/exhibiciones/exhibPorColeccion?idCol=${artDestacado/id}"
+                                       tal:content="string:Ver ${artDestacado/extraFolderTitulo}">Ver COLECCION</a>
+                                </div>
+                                <div class="clr"></div>
+                            </div>
+
+                        </div>
+                        <div class="separador" tal:condition="not: repeat/artDestacado/end">&nbsp</div>
+                        </tal:odd>
+                    </tal:rte>
+
+                    <tal:rte tal:condition="not:colecciones">
+                        <div class="colecc_componente">No se encontraron colecciones</div>
+                    </tal:rte>
+                    <div class="buscadorColecciones">
+                        <form>
+                            <input type="text" value="Buscar en las colecciones"/><img class="lupa" src="++theme++arcas.theme/img/lupa-negra.jpg"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="contenido">
+            <div class="novedades" tal:define="noticias view/dameNoticias | nothing">
+                <div class="top">
+                    <h3>NOVEDADES EN ARCAS</h3>
+                </div>
+                <div class="centro" tal:condition="noticias">
+
+                    <tal:li tal:repeat="noticia noticias">
+                        <h4>
+                            <a href="#"
+                           tal:attributes="href noticia/getURL;
+                                           title noticia/Title"
+                           tal:content="noticia/Title">aaaa</a>
+                        </h4>
+                        <p tal:content="noticia/Description"></p>
+                    </tal:li>
+
+                </div>
+                <div class="centro" tal:condition="not: noticias">No se encontraron noticias.</div>
+                <div class="pie">
+                    <a href="#" tal:attributes="href view/dameNotiUrl"
+                       title="Novedades anteriores">(+) novedades anteriores</a>
+                </div>
+            </div>
+            <div class="presentacion">
+                <h3>PRESENTACION de ARCAS</h3>
+                <div class="centro">
+                    <p tal:replace="structure context/cuerpo/output"></p>
+                </div>
+                <div class="pie">
+                    <a href="#" tal:attributes="href view/dameProyectoUrl"
+                    title="Proyecto Arcas">(+) sobre este proyecto</a>
+                </div>
+            </div>
+            <div class="clr"></div>
+        </div>
+
+    </metal:content-core>
+</metal:content-core>
+
+</body>
+</html>

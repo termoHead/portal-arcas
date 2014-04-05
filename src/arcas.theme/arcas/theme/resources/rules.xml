@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules
+        xmlns="http://namespaces.plone.org/diazo"
+        xmlns:css="http://namespaces.plone.org/diazo/css"
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+        xmlns:xi="http://www.w3.org/2001/XInclude">
+    <!-- Rules applying to standard Plone pages  -->
+    <rules css:if-content=".portaltype-arcas-rootfolder">
+        <notheme if-path="/inicio/@@manage-portlets" />
+        <notheme if-path="folder_contents" />
+        <xi:include href="arcas-header.xml" />
+        <theme href="index.html" />
+
+        <replace css:theme-children="#exhibicionHome" css:content-children="div.exhiV"></replace>
+        <drop css:content-children=".buscadorColecciones"></drop>
+
+        <replace
+                css:theme-children="div#vi"
+                css:content-children="div#boxColecciones"
+                />
+        <replace css:theme-children="#contenido .novedades" css:content-children="#contenido .novedades"/>
+        <replace css:theme-children="#contenido .presentacion .centro" css:content-children="div#contenido div.presentacion .centro  " />
+        <replace css:theme-children="#contenido .presentacion .pie" css:content-children="div#contenido div.presentacion .pie" />
+
+    </rules>
+
+    <rules css:if-content=".portaltype-arcas-coleccion">
+        <theme href="internaColeccion.html" />
+
+
+        <xi:include href="arcas-header.xml" />
+        <replace css:theme-children="#exhibicionHome" css:content-children="div.exhiV"></replace>
+        <replace css:theme-children=".tituloColeccion" css:content-children=".tituloColeccion"></replace>
+        <replace css:theme-children=".busquedaColeccion" css:content-children=".colecBox"/>
+        <replace css:theme-children=".columnaIzquierda .acerca" css:content-children=".descriColect"/>
+        <replace css:content-children=".boxCoord" css:theme-children=".coordinador"></replace>
+        <drop css:content-children=".buscadorColecciones"></drop>
+        <drop css:theme-children=".produccion"></drop>
+        <replace css:theme-children=".centro" css:content-children=".centro"/>
+        <replace css:theme-children=".top" css:content-children=".top"/>
+        <replace css:theme-children=".galeriaImagenes" css:content-children=".galeriaBox"/>
+        <replace css:theme-children=".biografia" css:content-children=".boxBio"/>
+
+        <merge attributes="style" css:theme="#presentacionColeccion" css:content=".boxHeader" />
+        <replace css:theme-children=".bannerExhibicion" css:content-children=".bannerExhibicion"/>
+        <replace
+                css:theme-children="div#vi"
+                css:content-children="div#boxColecciones"
+                />
+        <replace css:theme-children="#contenido .novedades" css:content-children="#contenido .novedades"/>
+        <replace css:theme-children="#contenido .presentacion .centro" css:content-children="div#contenido div.presentacion .centro  " />
+        <replace css:theme-children="#contenido .presentacion .pie" css:content-children="div#contenido div.presentacion .pie" />
+
+    </rules>
+
+    <rules css:if-content=".portaltype-arcas-exhibicion">
+        <theme href="internaExhibicion.html" />
+        <xi:include href="arcas-header.xml" />
+
+        <merge attributes="style" css:theme="#presentacionExhibicion" css:content=".boxHeader" />
+
+        <replace css:content-children=".boxTitulo" css:theme-children=".tituloExhibicion"/>
+        <replace css:theme-children=".datosExtra" css:content-children=".boxResponsables"/>
+        <replace css:theme-children=".introExhibicion" css:content-children=".boxDescri"/>
+
+        <replace css:content-children=".boxSlide" css:theme-children=".obra"/>
+        <replace css:content-children=".columnaIzquierda .indice" css:theme-children=".columnaIzquierda .indice"/>
+        <replace css:content-children=".listadoEnlaces" css:theme-children=".listadoEnlaces"/>
+
+
+    </rules>
+
+    <rules css:if-content=".portaltype-arcas-coleccionesfolder">
+        <theme href="listadoColecciones.html" />
+        <xi:include href="arcas-header.xml" />
+        <replace css:content-children=".texto" css:theme-children=".texto"/>
+        <replace css:content-children=".lista" css:theme-children=".lista"/>
+    </rules>
+
+    <rules css:if-content=".portaltype-arcas-exhibicionesfolder">
+        <theme href="listadoExhibiciones.html" />
+        <xi:include href="arcas-header.xml" />
+        <replace css:content-children=".texto" css:theme-children=".texto"/>
+        <replace css:content-children=".lista" css:theme-children=".lista"/>
+    </rules>
+
+
+
+
+
+    <rules if-path="folder_contents" >
+        <theme href="internaExhibicion.html"  />
+        <replace
+                theme-children="//div[@id='header']/ul"
+                css:content-children="ul#portal-globalnav"
+                />
+        <after theme-children="//link">
+            <xsl:copy-of css:select="link"/>
+            <link href="++theme++arcas.theme/arcas.css" media="screen" type="text/css" rel="stylesheet" />
+            <link href="++theme++arcas.theme/style.css" media="screen" type="text/css" rel="stylesheet" />
+        </after>
+        <after theme-children="//link">
+            <xsl:copy-of css:select="head script"/>
+        </after>
+        <after theme-children="//div[@id='header']/ul">
+            <li><xsl:copy-of css:select="#portal-personaltools"/></li>
+        </after>
+        <replace css:theme-children="div.breadcrumb" css:content-children="#portal-breadcrumbs"></replace>
+        <replace css:theme-children="#header h1">
+            <xsl:copy-of css:select="#portal-logo"/>
+        </replace>
+        <drop theme-children="//*/div[@id='presentacionExhibicion']"></drop>
+        <strip css:theme="#presentacionExhibicion" />
+        <replace css:theme-children="#contenido" css:content-children="#portal-column-content"/>
+    </rules>
+
+
+
+</rules>

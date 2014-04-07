@@ -46,8 +46,14 @@ class IEnlacegs(form.Schema):
         required=True,
     )
     cuerpo = RichText(
-        title=_(u"Texto principal"),
+        title=u"Enlace a la fuente primaria",
         required=True,
+    )
+    ficha = schema.TextLine(
+        title=_(u"Enlace al documento"),
+        description=u"Enlace al documento Greenstone (debe incluir el http://)",
+        required=False,
+        constraint=isValidURL,
     )
     urlRemoto= schema.TextLine(
         title=u"Enlace a la fuente primaria",

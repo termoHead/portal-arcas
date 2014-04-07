@@ -160,4 +160,27 @@ class View(DisplayForm):
         if cierre<apertura:
             str=str+" ...</p>"
         return str
+        
+    def dameDatosImgFull(self):
+        """devuelve un diccionario con los datos de la primera hoja
+        de la exhibiciòn:
+        urlImg: full imagen
+        ficha: url a la ficha en GS3
+        """
+        recu=self.listadoDeImagenesGS3()[0]
+        obj=self.context.unrestrictedTraverse(recu.getPath())
+        if obj.tipoMedio=="imagen":
+            urlT=obj.urlRemoto
+            if obj.ficha and obj.ficha!='':
+                ficha=obj.ficha
+            else:
+                ficha = None
+            
+            urlN=urlT.replace("_screen","")
+            urlN=urlN.replace("jpeg","jpg")
+            
+            return {"urlImg":urlN,"ficha":ficha}
+
+        return []
+        
 

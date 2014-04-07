@@ -13,7 +13,8 @@
         <metal:content-core define-macro="main">
             <tal:def tal:define="curadorObj view/dameCurador|nothing;
                                 coors view/dameCoords|nothing;
-                                listaFotos  view/listadoDeImagenesGS3|nothing">
+                                listaFotos  view/listadoDeImagenesGS3|nothing;
+								datosFull view/dameDatosImgFull | nothing ">
 
             <div class="boxHeader" tal:define="ruta string:${context/absolute_url}/@@images/bgCabezalVista"
                  tal:attributes="style string:background-image:url(${ruta})">
@@ -80,12 +81,17 @@
                     </div>
 
 
-                    <div class="pagina" tal:condition="listaFotos">
+                    <div class="pagina" tal:condition="datosFull">
                         <img class="scan" src="++theme++arcas.theme/images/paginaEj.jpg"
                               tal:attributes="src python:listaFotos[0].urlRemoto;
                                               title python:listaFotos[0].Description" />
-                        <a href="#">Ir a la ficha de la Fuente</a>
-                        <a href="#" class="fullSize"><img src="++theme++arcas.theme/images/maximizar.gif"></a>
+                       <tal:cond tal:condition="datosFull/ficha">
+						<a href="#" target="_blank"
+						tal:attributes="href datosFull/ficha"
+						>Ir a la ficha de la Fuente</a>
+						</tal:cond>
+                        <a href="#" class="fullSize" target="_blank"
+						tal:attributes="href datosFull/urlImg"><img src="++theme++arcas.theme/images/maximizar.gif"></a>
                         <div class="clr"></div>
                     </div>
                     <div class="clr"></div>

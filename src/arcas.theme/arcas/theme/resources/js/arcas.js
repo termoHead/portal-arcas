@@ -6,52 +6,90 @@
  * To change this template use File | Settings | File Templates.
  */
 jQuery.fn.exists = function(){return this.length>0;}
-
-
+var solapaActiva
+var hojaActiva
 $(document).ready(function() {
     var lastSlide=""
-    $(".colThum li").click(
-        function(ev){
-            ev.preventDefault()
+	if ($(".thumbnails li")[0]){
+		hojaActiva=$(".thumbnails li")[0]
+	}
+    $(".thumbnails li").click(
+        function(ev){		   		
             cambiaSlide (ev)
+			return false;
         }
     )
-    if ($(".galeriaBox").exists()) {
-//
-    }
-
-
+	if ($(".listadoRecomendacion")[0]){
+		activaSolapas();		
+	}
 });
+
 function cambiaSlide(ev){
     /*Cambia slide de la exhibición*/
-    var src=$("img",ev.currentTarget).attr("src")
-    var idM=$(ev.currentTarget).attr("class")
-    var titulo=$(".titulo",ev.currentTarget).text()
-    var texto=$(".cuerpo",ev.currentTarget).text()
-    //console.log(idM.substr(idM.indexOf("_")+1,100))
-
-    $("#fullIMG").remove()
-    $(".tituloSlide").text("")
-    $(".textoSlide").text("")
-    $('<img />').attr({ 'id': 'fullIMG', 'src': src, 'alt':'MyAlt' }).appendTo($('.colImg'));
-    $(".tituloSlide").text(titulo)
-    $(".textoSlide").text(texto)
+	if (ev.currentTarget!=hojaActiva){
+		var src=$("img",ev.currentTarget).attr("src")
+		var idM=$(ev.currentTarget).attr("class")
+		var titulo=$(".titulo",ev.currentTarget).text()
+		var texto=$(".cuerpo",ev.currentTarget).text() 
+		
+		$("#fullIMG").remove()
+		$(".tituloSlide").text("")
+		$(".textoSlide").text("")
+		$('<img />').attr({ 'id': 'fullIMG', 'src': src, 'alt':'MyAlt' }).appendTo($('.colImg'));
+		$('.pagina .scan').attr("src",src)	
+		$(".tituloSlide").text(titulo)
+		$(".textoSlide").text(texto)
+		$("a",ev.currentTarget).addClass("activo")
+		$("a",hojaActiva).removeClass("activo")
+		hojaActiva=ev.currentTarget
+	}
 }
+function activaSolapas(){
+	solapaActiva=$(".listadoRecomendacion .solapa")[0]
+    $(".listadoRecomendacion .solapa").click(function(evt){		
+		if(evt.currentTarget!=solapaActiva){
+			$(solapaActiva).removeClass("activa")
+			$(evt.currentTarget).addClass("activa")
+			var ventanaCierra=$($("a",solapaActiva).attr("rel"))
+			var ventanaAbre=$($("a",evt.currentTarget).attr("rel"))
+			$(ventanaCierra).animate({
+				opacity: 0.25,
+				left: "+=50",
+				height: "toggle"
+				}, 550, function() {
+					$(ventanaAbre).animate({
+					opacity: 1,
+					left: "+=50",
+					height: "toggle"
+					}, 550, function() {
+					// Animation complete.
+					});
+				});
+			
+			solapaActiva=evt.currentTarget
+		}
+		return false
+	})
+}
+
 
 function comodaGaleria(){
     var lW=350;
     var suma=0;
     var buffer=new Array();
     var flag=0;
-    var listAr=$(".marcoImgs img")
+    var listAr=$(".photoAlbumRow .photoAlbumEntry")
     var valorLinea=0
     var margin=1
     var promedio=0
+
     for (var elem=0;elem<listAr.length-1;elem++)
     {
         var next=elem+1
+		
         if(elem==0){
             suma=$(listAr[elem]).width()
+			console.log(suma)
             valorLinea=suma
             buffer[flag]=listAr[elem]
             flag++
@@ -62,19 +100,25 @@ function comodaGaleria(){
         }
 
         if(suma<lW){
+		
             buffer[flag]=listAr[next]
             valorLinea+=$(listAr[next]).width()
             flag++
+			
         }else{
+		
             var gap=(Math.floor((lW-valorLinea)/(buffer.length-1)))-margin
             promedio=gap
+			
             for(var ppa=1;ppa<buffer.length;ppa++){
                 $(buffer[ppa]).attr("style","margin-left:"+gap+"px");
             }
+			
             buffer=new Array()
             buffer[0]=$(listAr[next])
             valorLinea=suma=$(listAr[next]).width()
             flag=1
+			
         }
     }
 

@@ -18,22 +18,24 @@
             <div class="boxHeader" tal:define="ruta string:${context/absolute_url}/@@images/bgCabezalVista"
                  tal:attributes="style string:background-image:url(${ruta})">
                 <div class="boxTitulo" >
-
-
                     <h2 tal:content="view/dameNombreColeccion">Manuel PUIG</h2>
-                    <h3 class="tituloE" tal:content="context/title"> y las cartas desde nueva york</h3>
+                    <h3 class="tituloE" tal:content="context/title">
+						y las cartas desde nueva york
+					</h3>
                 </div>
                 <div class="boxResponsables">
-                       <h4>Curador</h4>
-                       <h3 class="special" tal:content="python:curadorObj['nombre']">Ernesto Trambonati</h3>
-                    <tal:coor tal:condition="coors">
-                        <h4 class="label" tal:condition="python:len(coors)>1">Coordinadores</h4>
-                        <h4 class="label" tal:condition="python:len(coors)<2">Coordinador</h4>
-                        <tal:rr tal:repeat="coordina coors">
-                            <h3  tal:content="coordina">Ernesto Trambonati</h3>
-                        </tal:rr>
-                    </tal:coor>
-                </div>
+						<h4>Curador</h4>
+						<h3 class="special" tal:content="python:curadorObj['nombre']">
+							Ernesto Trambonati
+						</h3>
+						<tal:coor tal:condition="coors">
+							<h4 class="label" tal:condition="python:len(coors)>1">Coordinadores</h4>
+							<h4 class="label" tal:condition="python:len(coors)<2">Coordinador</h4>
+							<tal:rr tal:repeat="coordina coors">
+								<h3  tal:content="coordina">Ernesto Trambonati</h3>
+							</tal:rr>
+						</tal:coor>
+				</div>
                 <div class="clr"></div>
             </div>
 
@@ -45,26 +47,36 @@
             <div class="boxSlide" >
                 <div class="documentos" tal:condition="listaFotos">
                     <div class="thumbnails">
-                        <a href="#" class="flechaNavegacion anterior"><img src="images/anteriorThumbnails.gif"></a>
-                        <ul >
-                        <tal:rep tal:repeat="link listaFotos">
-                            <li tal:define="numVuelta repeat/link/index;
-                                            esPrimera repeat/link/start;
-                                            textCuerpo python:link.getObject().cuerpo"
-                                    tal:attributes="class string:slide_${numVuelta}">
-                                <a href="#" tal:attributes="href link/getURL;
-                                                            class python:esPrimera and 'activo' or ''">
-                                <img src="#" width="52"
-                                     tal:attributes="src link/urlRemoto;
-                                                     title link/Description" />
-                                </a>
-                                <span class="titulo oculto" tal:content="link/Title" ></span>
-                                <span class="cuerpo oculto" tal:content="structure textCuerpo/output">
-                                </span>
-                            </li>
-                        </tal:rep>
+                        <a  href="#" 
+							class="flechaNavegacion anterior"
+							tal:condition="python:len(listaFotos)>5">
+							<img src="++theme++arcas.theme/images/anteriorThumbnails.gif">
+						</a>
+                        <ul>
+							<tal:rep tal:repeat="link listaFotos">
+								<li tal:define="numVuelta repeat/link/index;
+												esPrimera repeat/link/start;
+												textCuerpo python:link.getObject().cuerpo"
+										tal:attributes="class string:slide_${numVuelta}">
+										<div class="marcoBorde">
+									<a href="#" tal:attributes="href link/getURL;
+																class python:esPrimera and 'activo' or ''">
+									<img src="#" width="52"
+										 tal:attributes="src link/urlRemoto;
+														 title link/Description" />
+									</a>
+									</div>
+									<span class="titulo oculto" tal:content="link/Title" ></span>
+									<span class="cuerpo oculto" tal:content="structure textCuerpo/output">
+									</span>
+							   </li>
+							</tal:rep>
                         </ul>
-                        <a href="#" class="flechaNavegacion siguiente"><img src="images/suguienteThumbnails.gif"></a>
+                        <a href="#" 
+						class="flechaNavegacion siguiente"
+						tal:condition="python:len(listaFotos)>5">
+							<img src="++theme++arcas.theme/images/suguienteThumbnails.gif">
+						</a>
                     </div>
 
 

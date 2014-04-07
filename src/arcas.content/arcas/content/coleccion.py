@@ -108,7 +108,7 @@ class View(DisplayForm):
             objRaiz={}
             objRaiz["titulo"]="Recomendaciones"
             objRaiz["content"]=self.dameContenido(recomFolder)
-
+            objRaiz["url"]=self.context.absolute_url
             listFold.append(objRaiz)
             for elem in recomFolder.getFolderContents():
                 elemObj=self.context.unrestrictedTraverse(elem.getPath())
@@ -117,7 +117,7 @@ class View(DisplayForm):
                     obj={}
                     obj["titulo"]   =elem.Title
                     obj["content"]  =self.dameContenido(elemObj)
-
+                    obj["url"]  =elem.getURL()
                     listFold.append(obj)
             return listFold
         else:
@@ -167,13 +167,25 @@ class View(DisplayForm):
         """Devuelve todas las img de la galeria"""
         context = aq_inner(self.context)
         catalogo=getToolByName(context,"portal_catalog")
+        tmpX=[]
         if hasattr(context,context.id+"_gale"):
             galeFold=context[context.id+"_gale"]
             galePath="/".join(galeFold.getPhysicalPath())
             result=catalogo(path=galePath,portal_type="Image")
+            
+            for re in result:
+                foto=context.unrestrictedTraverse(re.getPath())
+                iniH=foto.height
+                altoSugerido=80
+                relH=((altoSugerido*100)/iniH)
+                widthH=(foto.width*relH)/100
+                tmpX.append({"width":widthH,"brain":re})
+
         else:
             return None
-        return  result
+
+        return tmpX
+        
 
     def getBioList(self):
         """Devuelve un listado de biografías que ese encuentra dentro de de la colección"""

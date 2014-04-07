@@ -55,12 +55,8 @@
                 <div class="boxCoord">
                     <tal:coordinadores tal:define="coors view/getCoordinadores | nothing"
                                        tal:condition="coors">
-
-
-
                         <div class="coordinador"
                                 tal:repeat="coor coors">
-
                             <img src="" tal:replace="structure coor/img" />
                             <div class="datos">
                                 <div class="contacto">
@@ -79,12 +75,14 @@
                 <div class="boxRecomienda">
                     <span class="label">Lecturas que profundizan en este tema</span>
                     <div id="tabs"
-                            tal:define="listadoReco view/dameDicRecomendados">
+                            tal:define="listadoReco view/dameDicRecomendados"
+							tal:condition="python:len(listadoReco)>0">
                         <div class="top">
                             <tal:rra tal:repeat="item listadoReco" >
-                                <div tal:define="activola repeat/item/start"
+                                <div tal:define="activola repeat/item/start"									
                                      tal:attributes="class python:activola and 'solapa activa' or 'solapa'">
-                                    <a href="" tal:attributes="href string:#enlace${repeat/item/index}"
+                                    <a href="" tal:attributes="href item/url;
+									rel string:#enlace${repeat/item/index}"									
                                    tal:content="item/titulo"></a>
                                 </div>
                             </tal:rra>
@@ -131,23 +129,39 @@
                      tal:condition="imags">
                     <div class="botonera">
                         <a href="#" id="moveLeft"> <img src="++theme++arcas.theme/img/flechaL.gif" class="oculto" title="Mostrar más" /> </a>
-                        <span>GALERIA DE IMAGENES</span>	&nbsp;
-                        <a href="#" id="moveRight"> <img src="++theme++arcas.theme/img/flechaR.gif" class="oculto"  title="Mostrar más" /> </a>
+                        <span>GALERIA DE IMAGENES</span>&nbsp;
+                        <a href="#" id="moveRight"> 
+							<img src="++theme++arcas.theme/img/flechaR.gif" class="oculto"  title="Mostrar más" /> 
+						</a>
                         <div class="clr"></div>
                     </div>
-                    <div class="marcoImgs">
+                    <div class="photoAlbumRow">
                         <tal:repite tal:repeat="img imags">
-
-                            <img src="" alt="" tal:attributes="src string:${img/getURL}/image_thumb;
-                                                                alt img/Title" />
-
-                            <script language="javascript" tal:condition="repeat/img/end">
-                                comodaGaleria()
-                            </script>
-
+							<div class="photoAlbumEntry">
+								<a href="#" class="colorboxLink cboxElement"
+								rel="colorbox"
+								tal:attributes="href  string:${img/brain/getURL};
+								title img/brain/Title;">
+								<img src="" alt="" tal:attributes="
+								src string:${img/brain/getURL}/image_thumb;
+								alt img/brain/Title;
+								width img/width;
+								" />
+								</a>
+							 
+							</div>   
+							<script language="javascript" tal:condition="repeat/img/end">
+									comodaGaleria()
+							 </script>
                         </tal:repite>
                     </div>
+					<div class="clr"></div>
                 </div>
+				
+			
+				
+				
+				
                 <div class="boxBio" tal:define="listBios view/getBioList|nothing"
                        tal:condition="listBios">
                     <tal:unBio tal:condition="python:len(listBios)<2"

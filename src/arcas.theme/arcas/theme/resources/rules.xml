@@ -33,6 +33,7 @@
 			<rules css:if-content=".portaltype-arcas-coleccion">		
 				<xi:include href="arcas_coleccion.xml" />
 			</rules>
+			
 			<rules css:if-content=".portaltype-arcas-exhibicion">			
 				<xi:include href="arcas_exhibicion.xml" />
 			</rules>
@@ -51,9 +52,11 @@
 					
 			<rules if-not-path="@@overview-controlpanel">
 				<rules if-not-path="edit">	
-					<rules if-content="not(//*[@class='portaltype-arcas-exhibicionesfolder']) and  not(//*[@class='portaltype-arcas-coleccionesfolder']) and 
-					not(//*[@class='portaltype-arcas-exhibicion']) and	 
-					not(//*[@class='portaltype-arcas-coleccion'])">
+					<rules if-not-content="
+					not(//body[@class='portaltype-arcas-exhibicionesfolder']) and  
+					not(//body[@class='portaltype-arcas-coleccionesfolder']) and 
+					not(//body[@class='portaltype-arcas-exhibicion']) and	 
+					not(//body[@class='portaltype-arcas-coleccion'])">
 					
 						<theme href="estandar.html" />
 						

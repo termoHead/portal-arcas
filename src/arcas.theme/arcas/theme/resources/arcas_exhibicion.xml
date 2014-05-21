@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules
+        xmlns="http://namespaces.plone.org/diazo"
+        xmlns:css="http://namespaces.plone.org/diazo/css"
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+		
+		
+		
+		<theme href="internaExhibicion.html" />
+        <xi:include href="arcas-header.xml" />
+        <merge attributes="style" css:theme="#presentacionExhibicion" css:content=".boxHeader" />
+
+        <replace css:content-children=".boxTitulo" css:theme-children=".tituloExhibicion"/>
+        <replace css:theme-children=".datosExtra" css:content-children=".boxResponsables"/>
+        <replace css:theme-children=".introExhibicion" css:content-children=".boxDescri"/>
+
+        <replace css:content-children=".boxSlide" css:theme-children=".obra"/>
+        <replace css:content-children=".columnaIzquierda .indice" css:theme-children=".columnaIzquierda .indice"/>
+        <replace css:content-children=".listadoEnlaces" css:theme-children=".listadoEnlaces"/>
+
+</rules>

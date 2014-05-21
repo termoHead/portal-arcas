@@ -4,16 +4,18 @@
         xmlns:css="http://namespaces.plone.org/diazo/css"
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         xmlns:xi="http://www.w3.org/2001/XInclude">
+		
     <!-- Rules applying to standard Plone pages  -->
-    <rules css:if-content=".portaltype-arcas-rootfolder">
-        <notheme if-path="/inicio/@@manage-portlets" />
+	
+	
+	
+    <rules if-path="/arca/home/">
+        <notheme if-path="/home/@@manage-portlets" />
         <notheme if-path="folder_contents" />
         <xi:include href="arcas-header.xml" />
         <theme href="index.html" />
-
         <replace css:theme-children="#exhibicionHome" css:content-children="div.exhiV"></replace>
         <drop css:content-children=".buscadorColecciones"></drop>
-
         <replace
                 css:theme-children="div#vi"
                 css:content-children="div#boxColecciones"
@@ -21,14 +23,79 @@
         <replace css:theme-children="#contenido .novedades" css:content-children="#contenido .novedades"/>
         <replace css:theme-children="#contenido .presentacion .centro" css:content-children="div#contenido div.presentacion .centro  " />
         <replace css:theme-children="#contenido .presentacion .pie" css:content-children="div#contenido div.presentacion .pie" />
-
+		
     </rules>
+	
+	<rules if-not-path="/arca/home/">
+		<xi:include href="arcas-header.xml" />
+		
+		<rules if-not-path="@@gsSearch">			
+			<rules css:if-content=".portaltype-arcas-coleccion">		
+				<xi:include href="arcas_coleccion.xml" />
+			</rules>
+			<rules css:if-content=".portaltype-arcas-exhibicion">			
+				<xi:include href="arcas_exhibicion.xml" />
+			</rules>
+			<rules css:if-content=".portaltype-arcas-coleccionesfolder">
+				<theme href="listadoColecciones.html" />			
+				<replace css:content-children=".texto" css:theme-children=".texto"/>
+				<replace css:content-children=".lista" css:theme-children=".lista"/>
+			</rules>
+			<rules css:if-content=".portaltype-arcas-exhibicionesfolder">
+				<theme href="listadoExhibiciones.html" />
+				<replace css:content-children=".texto" css:theme-children=".texto"/>
+				<replace css:content-children=".lista" css:theme-children=".lista"/>
+			</rules>
+				
+			
+					
+			<rules if-not-path="@@overview-controlpanel">
+				<rules if-not-path="edit">	
+					<rules if-content="not(//*[@class='portaltype-arcas-exhibicionesfolder']) and  not(//*[@class='portaltype-arcas-coleccionesfolder']) and 
+					not(//*[@class='portaltype-arcas-exhibicion']) and	 
+					not(//*[@class='portaltype-arcas-coleccion'])">
+					
+						<theme href="estandar.html" />
+						
+						<merge attributes="class" css:theme="body" css:content="body" />
+			 
+						
+						<replace css:theme=".cabezalInterno h2">				
+							<xsl:copy-of select="//*[@id='parent-fieldname-title']" />
+						</replace>
+						
+						<replace css:theme=".texto">
+							<div class="texto">
+							   <xsl:for-each css:select="#content">
+									<xsl:copy-of select="div[@id!='viewlet-below-content-title']"/>
+								</xsl:for-each>
+							</div>
+						</replace>
+						
+					</rules>
+				</rules>
+			</rules>
+		</rules>
+		<rules if-path="@@gsSearch">			
+			<theme href="estandar.html" />
+			<replace css:content="#portal-column-content" css:theme-children=".texto"/>
+			<merge attributes="class" css:theme="body" css:content="body" />
+		</rules>
+	</rules>
+
+
+	<!--
+	<rules if-not-path="/arca/home/">
+		<xi:include href="arcas_interna_head.xml" />
+	</rules>
+	
+	<rules css:if-content=".template-gssearch">			
+			<replace css:theme="#contenedorColumnas" css:content="#viewlet-above-content"/>
+	</rules>
+	
 
     <rules css:if-content=".portaltype-arcas-coleccion">
-        <theme href="internaColeccion.html" />
 
-
-        <xi:include href="arcas-header.xml" />
         <replace css:theme-children="#exhibicionHome" css:content-children="div.exhiV"></replace>
         <replace css:theme-children=".tituloColeccion" css:content-children=".tituloColeccion"></replace>
         <replace css:theme-children=".busquedaColeccion" css:content-children=".colecBox"/>
@@ -84,10 +151,6 @@
         <replace css:content-children=".lista" css:theme-children=".lista"/>
     </rules>
 
-
-
-
-
     <rules if-path="folder_contents" >
         <theme href="internaExhibicion.html"  />
         <replace
@@ -113,7 +176,6 @@
         <strip css:theme="#presentacionExhibicion" />
         <replace css:theme-children="#contenido" css:content-children="#portal-column-content"/>
     </rules>
-
-
+-->
 
 </rules>

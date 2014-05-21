@@ -3,14 +3,14 @@
         xmlns="http://namespaces.plone.org/diazo"
         xmlns:css="http://namespaces.plone.org/diazo/css"
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-    <!-- Rules applying to standard Plone pages -->
+    <!-- Rules applying to standard Plone pages-->
     <notheme if-path="/inicio/@@manage-portlets" />
     <notheme if-path="folder_contents" />
     <notheme if-path="@@gsSearch?" />
     <notheme if-path="edit" />
     <notheme if-path="@@images" />
     <notheme if-path="images" />
-
+ 
     <replace
             theme-children="//div[@id='header']/ul"
             css:content-children="ul#portal-globalnav"
@@ -32,16 +32,13 @@
     </replace>
     <replace css:theme-children="title" css:content-children="title"></replace>
 
+	
     <before css:theme="#presentacionColeccion" css:content="#edit-bar"></before>
     <before css:theme="#presentacionExhibicion" css:content="#edit-bar"></before>
     <before css:theme=".cabezalInterno" css:content="#edit-bar"></before>
     <before css:theme="#exhibicionHome" css:content="#edit-bar"></before>
-
-    <xsl:template match="input[name='buscar']">
-        <xsl:attribute name="value">Epa</xsl:attribute>
-    </xsl:template>
-
-    <!--replace css:theme-children=".buscador" css:content-children="#portal-searchbox" /-->
+	
+    <replace css:theme-children=".buscador" css:content-children="#portal-searchbox" />
 
 
 

@@ -1131,13 +1131,14 @@ height:79px;
 background:left top #99928b no-repeat;
 border-bottom:1px solid #ffffff;
 }
-.cabezalInterno h2{
+.cabezalInterno h2,.cabezalInterno h1{
     color: #403A31;
     float: left;
     font-family: "Florencesans",sans-serif;
     font-size: 25px;
     font-weight: normal;
     margin: 24px 0 0 70px;
+	line-height:25px
 }
 body.listadoColecciones .cabezalInterno h2{
     color: #ffffff;
@@ -1441,3 +1442,13 @@ input.searchButton{width: 25px;
     background: url("images/buscar.gif") no-repeat scroll 1px 4px #1C160D;
     height:28px;   display: inline-block;}
 .searchGadget{margin-top: -1px;   display: inline-block;}
+.texto .resultBox{color:white; }
+#contenido .texto a:link,.texto .state-published{color:#ffcc33 !important}
+#contenido.texto a:visited{color:#333333 !important}
+#contenido.texto a:over{color:#ff9900 !important}
+.estandar .texto {padding-bottom:20px; color:white;}
+.texto .conColumnas {-webkit-column-count:2; /* Chrome, Safari, Opera */
+-moz-column-count:2; /* Firefox */
+column-count:2;}
+.cabezalInterno  #viewlet-below-content-title{clear:both;  margin: 6px 0 0 70px;}
+.buscador{font-size:11px}

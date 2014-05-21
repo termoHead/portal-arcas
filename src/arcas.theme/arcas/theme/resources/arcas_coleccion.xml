@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules
+        xmlns="http://namespaces.plone.org/diazo"
+        xmlns:css="http://namespaces.plone.org/diazo/css"
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+		
+		<theme href="internaColeccion.html" />
+		
+		<replace css:theme-children="#exhibicionHome" css:content-children="div.exhiV"></replace>
+        <replace css:theme-children=".tituloColeccion" css:content-children=".tituloColeccion"></replace>
+        <replace css:theme-children=".busquedaColeccion" css:content-children=".colecBox"/>
+        <replace css:theme-children=".columnaIzquierda .acerca" css:content-children=".descriColect"/>
+        <replace css:content-children=".boxCoord" css:theme-children=".coordinador"></replace>
+        <drop css:content-children=".buscadorColecciones"></drop>
+        <drop css:theme-children=".produccion"></drop>
+        <replace css:theme-children=".centro" css:content-children=".centro"/>
+        <replace css:theme-children=".top" css:content-children=".top"/>
+        <replace css:theme-children=".galeriaImagenes" css:content-children=".galeriaBox"/>
+        <replace css:theme-children=".biografia" css:content-children=".boxBio"/>
+
+        <merge attributes="style" css:theme="#presentacionColeccion" css:content=".boxHeader" />
+        <replace css:theme-children=".bannerExhibicion" css:content-children=".bannerExhibicion"/>
+        <replace
+                css:theme-children="div#vi"
+                css:content-children="div#boxColecciones"
+                />
+        <replace css:theme-children="#contenido .novedades" css:content-children="#contenido .novedades"/>
+        <replace css:theme-children="#contenido .presentacion .centro" css:content-children="div#contenido div.presentacion .centro  " />
+        <replace css:theme-children="#contenido .presentacion .pie" css:content-children="div#contenido div.presentacion .pie" />
+</rules>

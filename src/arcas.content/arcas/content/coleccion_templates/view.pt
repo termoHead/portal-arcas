@@ -11,7 +11,7 @@
 
 <metal:content-core fill-slot="main">
     <metal:content-core define-macro="main">
-
+	<div class="markColeccion">
         <div class="boxHeader"
                 tal:attributes="style string:background:url(${context/absolute_url}/images/imagenCabecera) no-repeat">
             <div class="bloqH">
@@ -208,7 +208,7 @@
                     <!--fin col2-->
             </div>
         </div>
-
+	</div>
     </metal:content-core>
 </metal:content-core>
 

@@ -15,7 +15,8 @@
                                 coors view/dameCoords|nothing;
                                 listaFotos  view/listadoDeImagenesGS3|nothing;
 								datosFull view/dameDatosImgFull | nothing ">
-
+			<div class="markListExhibicion">
+			
             <div class="boxHeader" tal:define="ruta string:${context/absolute_url}/@@images/bgCabezalVista"
                  tal:attributes="style string:background-image:url(${ruta})">
                 <div class="boxTitulo" >
@@ -185,7 +186,9 @@
 
 
             </tal:def>
-        </metal:content-core>
+			
+			</div>
+		</metal:content-core>
     </metal:content-core>
 
     </body>

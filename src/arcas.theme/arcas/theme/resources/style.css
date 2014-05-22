@@ -1447,8 +1447,11 @@ input.searchButton{width: 25px;
 #contenido.texto a:visited{color:#333333 !important}
 #contenido.texto a:over{color:#ff9900 !important}
 .estandar .texto {padding-bottom:20px; color:white;}
-.texto .conColumnas {-webkit-column-count:2; /* Chrome, Safari, Opera */
+.conColumnas #content-core div,
+.template-document_view #content-core div,
+.template-newsitem_view  #content-core div{-webkit-column-count:2; /* Chrome, Safari, Opera */
 -moz-column-count:2; /* Firefox */
 column-count:2;}
+.documentDescription{margin-bottom:12px; font-style: italic}
 .cabezalInterno  #viewlet-below-content-title{clear:both;  margin: 6px 0 0 70px;}
 .buscador{font-size:11px}

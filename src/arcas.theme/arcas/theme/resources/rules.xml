@@ -30,53 +30,41 @@
 		<xi:include href="arcas-header.xml" />
 		
 		<rules if-not-path="@@gsSearch">			
-			<rules css:if-content=".portaltype-arcas-coleccion">		
+			<rules css:if-content=".markColeccion">		
 				<xi:include href="arcas_coleccion.xml" />
-			</rules>
-			
-			<rules css:if-content=".portaltype-arcas-exhibicion">			
+			</rules>			
+			<rules css:if-content=".markExhibicion">			
 				<xi:include href="arcas_exhibicion.xml" />
 			</rules>
-			<rules css:if-content=".portaltype-arcas-coleccionesfolder">
+			<rules if-content="//div[@class='markListColeccion'] or //div[@class='markListExhibicion']">
 				<theme href="listadoColecciones.html" />			
 				<replace css:content-children=".texto" css:theme-children=".texto"/>
 				<replace css:content-children=".lista" css:theme-children=".lista"/>
 			</rules>
-			<rules css:if-content=".portaltype-arcas-exhibicionesfolder">
-				<theme href="listadoExhibiciones.html" />
-				<replace css:content-children=".texto" css:theme-children=".texto"/>
-				<replace css:content-children=".lista" css:theme-children=".lista"/>
-			</rules>
+			<rules if-not-path="@@overview-controlpanel and edit">				
+				<rules if-content="not(//div[@class='markColeccion']) and  					
+				not(//div[@class='markExhibicion']) and
+				not(//div[@class='markListColeccion']) and
+				not(//div[@class='markListExhibicion'])">
 				
-			
+					<theme href="estandar.html" />
 					
-			<rules if-not-path="@@overview-controlpanel">
-				<rules if-not-path="edit">	
-					<rules if-not-content="
-					not(//body[@class='portaltype-arcas-exhibicionesfolder']) and  
-					not(//body[@class='portaltype-arcas-coleccionesfolder']) and 
-					not(//body[@class='portaltype-arcas-exhibicion']) and	 
-					not(//body[@class='portaltype-arcas-coleccion'])">
+					<merge attributes="class" css:theme="body" css:content="body" />
 					
-						<theme href="estandar.html" />
-						
-						<merge attributes="class" css:theme="body" css:content="body" />
-			 
-						
-						<replace css:theme=".cabezalInterno h2">				
-							<xsl:copy-of select="//*[@id='parent-fieldname-title']" />
-						</replace>
-						
-						<replace css:theme=".texto">
-							<div class="texto">
-							   <xsl:for-each css:select="#content">
-									<xsl:copy-of select="div[@id!='viewlet-below-content-title']"/>
-								</xsl:for-each>
-							</div>
-						</replace>
-						
-					</rules>
+					<replace css:theme=".cabezalInterno h2">				
+						<xsl:copy-of select="//*[@id='parent-fieldname-title']" />
+					</replace>
+					
+					<replace css:theme=".texto">
+						<div class="texto">
+						   <xsl:for-each css:select="#content">
+								<xsl:copy-of select="div[@id!='viewlet-below-content-title']"/>
+							</xsl:for-each>
+						</div>
+					</replace>
+					
 				</rules>
+				
 			</rules>
 		</rules>
 		<rules if-path="@@gsSearch">			

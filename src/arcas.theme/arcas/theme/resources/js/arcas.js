@@ -22,6 +22,19 @@ $(document).ready(function() {
 	if ($(".listadoRecomendacion")[0]){
 		activaSolapas();		
 	}
+	//if($("#carrusel")){ carruselHome()}
+	if($("#buscaTexto")){
+		$( ".buscaTexto" ).focus(function() {
+			if($(this).val()=='Buscar en la colección'){
+				$(this).val("")
+			}
+		});
+		$( ".buscaTexto" ).blur(function() {
+			if($(this).val()=='' || $(this).val()==' ' ){
+				$(this).val("Buscar en la colección")
+			}
+		});
+	}
 });
 
 function cambiaSlide(ev){
@@ -132,3 +145,4 @@ function comodaGaleria(){
     }
 
 }
+

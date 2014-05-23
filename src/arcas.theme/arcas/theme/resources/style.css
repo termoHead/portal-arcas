@@ -138,14 +138,14 @@ margin: 22px 60px 0 0;
 	border-bottom:1px solid #ffffff;
 }
 .volanta{
-width: 676px;
+width: 671px;
 font-family:"Calibri","Arial",sans-serif;
     background: url("images/solapaHomeTop.png") no-repeat;
 font-size:12px;
 color:#ffffff;
 float:left;
 clear:both;
-margin: 2px 0 0 348px;
+margin: 2px 0 0 345px;
 padding-left: 8px;
 }
 .tituloExhibicion{
@@ -155,28 +155,29 @@ font-family:"Attic",serif;
 text-align:left;
 }
 body.home .tituloExhibicion{
-margin: 20px 50px 0 345px;
+margin: 20px 0 0 345px;
 }
 .tituloExhibicion h2{
 font-family:"Attic",serif !important;
-font-size:48px;
+font-size:41px;
 color:#ffffff;
 font-weight:normal;
 line-height: 41px;
-    width: 350px;
+    width: 270px;
     display: block;
 }
+.tituloExhibicion h2 a{color:#ffffff;}
 .tituloExhibicion h2 span.size1{
 font-size:40px;
 }
 .tituloExhibicion h3{
     font-family:"Attic",serif !important;
-    font-size:26px;
+    font-size:22px;
     color:#ffffff;
     font-weight:normal;
     line-height: 25px;
         color:#f4eba6;
-        width: 350px;
+        width: 270px;
     display: block;
 }
 .tituloExhibicion h3 .size2{
@@ -195,9 +196,10 @@ font-size:23px;
     color: #FFFFFF;
     float: right;
     font-family: "Calibri",sans-serif;
-    margin-right: 25px;
+    
     margin-top: 34px;
     text-align: left;
+	padding-left:10px;
     width: 357px;
 }
 .datosExcibicion p{
@@ -211,15 +213,19 @@ font-style:normal;
 font-style:normal;
 font-size:12px;
 }
-a.masExhibiciones{
+.masExhibiciones{
+	width:100%;
+	
+	background:url(/++theme++arcas.theme/img/pie_exhi_home.gif) left top no-repeat;
     color: #FFFFFF;
     font-family: "Arial",sans-serif;
     font-size: 11px;
-    position: relative;
-    right: -200px;
+    position: absolute;
+    right: 643;
     text-decoration: none;
-    top: 255px;
+    top: 396px;
 }
+.masExhibiciones a{position:relative; top :0; left:880px}
 #coleccionesHome{
 background:url(images/bgColeccionesHomeTop.png) left top repeat-x #23231f;
 text-align:center;
@@ -240,26 +246,33 @@ margin-top:24px;
 padding-top:7px;
 margin-bottom: 7px;
 }
+#vi{position:relative;clear:both;}
+.controlC{clear:both;}
+.imgDummy{border:0; width:180px;height:263px; }
+.mascaraImg{display:block; width:120px; height:263px; float:left;}
+#carrusel{
+width:899px;
+ margin-left: 62px;
+overflow:hidden;
+}
+
 #coleccionesHome .separador{
 float:left;
 width:2px;
-height:265px;
+
 background-color:#da7d2b;
 margin:0 19px;
-}
-.bloqueColeccion{
-float:left;
-width:424px;
 height:263px;
-border:1px solid #999999;
 }
-#coleccionesHome .manuelPuig{
-background:url(images/coleccionPuigHome.jpg) left top no-repeat transparent;
-margin-left:67px;
+
+#coleccionesHome .bloqueColeccion{
+	background: left top no-repeat transparent;	
+	float:left;
+	width:424px;
+	height:263px;
+	border:1px solid #999999;
 }
-#coleccionesHome .edgardoVigo{
-background:url(images/coleccionVigo.jpg) left top no-repeat transparent;
-}
+
 .bloqueColeccion .textoInterno{
 float:right;
 width:259px;
@@ -1372,7 +1385,10 @@ background:url("images/bloqueColeccionPerezReverte.jpg") left top transparent no
 }
 body.listadoColecciones .lista .bloque .tituloColeccion a {
     display: block;
-    margin: 105px 0 0 10px;
+	width:205pxpx;
+	height:105;
+	padding-top:105px;
+    margin: 0 0 0 10px;
     color: #fff;
 }
 body.listadoColecciones .lista .bloque .tituloColeccion h2{
@@ -1427,11 +1443,11 @@ clear:none;
 }
 body.listadoColecciones .lista .bloque .busquedaColeccion input{
 margin:5px 0 0 0;
-color:#ffffff;
+color:#fff;
 border-color:#595646;
 background-image: url("images/buscar.gif");
 }
-
+body.listadoColecciones .lista .bloque .busquedaColeccion .buscaTexto:focus{color:#333;}
 #searchSection,.LSBox{ text-align: right;
     position: relative;}
 #LSResult{z-index: 10; background-color: #999999; text-align: left; font-size: 12px}
@@ -1455,3 +1471,6 @@ column-count:2;}
 .documentDescription{margin-bottom:12px; font-style: italic}
 .cabezalInterno  #viewlet-below-content-title{clear:both;  margin: 6px 0 0 70px;}
 .buscador{font-size:11px}
+.linkFuentes{display:block; background-color:#403a31; width:218px; height:23px;}
+a.linkFuentes{color:white; font-size:12px; line-height:23px}
+a.linkFuentes img{ margin:0 8px 0 8px; float:left;padding-top:5px}

@@ -10,7 +10,8 @@
     <notheme if-path="edit" />
     <notheme if-path="@@images" />
     <notheme if-path="images" />
- 
+	<notheme if-path="select_default_page" />
+	
     <replace
             theme-children="//div[@id='header']/ul"
             css:content-children="ul#portal-globalnav"

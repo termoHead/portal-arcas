@@ -51,11 +51,16 @@
                             <div class="clr"></div>
                         </div>
                         <div class="busquedaColeccion ">
-                            <a href="#" target="_blank"  class="linkFuentes" tal:attributes="href colec/urlFuente">Navegar Fuentes</a>
-                            <form  method="get" tal:attributes="action string:${context/absolute_url}/@@gsSearch">
+						<a href="navFuentes.php"  class="linkFuentes" tal:attributes="href colec/urlFuente">
+						<img src="/++theme++arcas.theme/images/irA.gif" alt=""/>Navegar Fuentes</a>
+                            
+                            <form  method="get" 
+							tal:define="ids repeat/colec/index"
+							tal:attributes="action string:${context/absolute_url}/@@gsSearch">
 
                                 <span tal:replace="structure context/@@authenticator/authenticator" />
-                                <input name="buscaTexto" id="buscaTexto" type="text"/>
+                                <input name="buscaTexto" class="buscaTexto" id="buscaTexto"  value="Buscar en la colección" type="text"
+								tal:attributes="name ids;id ids"/>
                                 <input name="idColec" id="idColec"  type="hidden" tal:attributes="value colec/idColec" />
 
                             </form>

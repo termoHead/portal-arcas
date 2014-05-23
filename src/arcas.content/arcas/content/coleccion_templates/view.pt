@@ -20,11 +20,13 @@
                     <h2  tal:content="context/title">Manuel<br>Puig</h2>
                     <div class="clr"></div>
                 </div>
-                <a href="navFuentes.php"  class="linkFuentes" tal:attributes="href view/getUrlAFuente">Navegar Fuentes</a>
+                
                 <div class="colecBox">
+				<a href="navFuentes.php"  class="linkFuentes" tal:attributes="href view/getUrlAFuente">
+				<img src="/++theme++arcas.theme/images/irA.gif" alt=""/>Navegar Fuentes</a>
                     <form method="get" tal:attributes="action string:${context/absolute_url}/@@gsSearch">
                        <span tal:replace="structure context/@@authenticator/authenticator" />
-                       <input name="buscaTexto" id="buscaTexto"  value="Buscar en la coleccion" type="text"/>
+                       <input name="buscaTexto" class="buscaTexto" id="buscaTexto"  value="Buscar en la colección" type="text"/>
                        <input name="idColec" id="idColec"  type="hidden" tal:attributes="value context/GS_ID" />
                        <input type="hidden" class="context"
                                name="form.button.Search"

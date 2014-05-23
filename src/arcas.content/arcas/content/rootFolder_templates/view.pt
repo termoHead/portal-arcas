@@ -8,6 +8,7 @@
 <body>
 <metal:content-core fill-slot="main">
     <metal:content-core define-macro="main">
+	 <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
         <div class="boxTop">
 
             <div class="exhiV"  tal:define="artDestacado view/getExhiDestacado | nothing" tal:condition="artDestacado">
@@ -19,7 +20,9 @@
                     </div>
                     <div class="bloqueExhi">
                         <div class="tituloExhibicion">
-                            <h2 tal:content="artDestacado/tituloColec">Jumbol</h2>
+                            <h2>
+							<a href="#" tal:attributes="href artDestacado/exhiurl;"
+							tal:content="artDestacado/tituloColec">Jumbol</a></h2>
                             <h3 tal:content="artDestacado/titulo">Apoyo a la Educación</h3>
                         </div>
                         <div class="datosExcibicion">
@@ -43,7 +46,9 @@
                             </div>
                         </div>
                     </div>
-                    <a class="masExhibiciones" href="#" tal:attributes="href view/listExhiUrl;title string:exhibiciones virtuales">exhibiciones virtuales</a>
+					<div class="masExhibiciones">
+                    <a  href="#" tal:attributes="href view/listExhiUrl;title string:exhibiciones virtuales">(+) exhibiciones virtuales</a>
+					</div>
                     <div class="clr>"></div>
                 </div>
 
@@ -59,13 +64,18 @@
                        title="Listado completo de colecciones">COLECCIONES EN ARCAS</a>
                 </h3>
                 <div id="boxColecciones">
+					<div id="carrusel">
                     <tal:rte tal:condition="colecciones"
                              tal:repeat="artDestacado colecciones">
-                        <tal:odd tal:define="oddrow repeat/artDestacado/odd">
-                        <div class="bloqueColeccion manuelPuig"
+                        <tal:odd tal:define="oddrow repeat/artDestacado/start">
+                        <div class="bloqueColeccion"
 
                              tal:attributes="style string:background:url('${artDestacado/url}/@@images/imagenHome') no-repeat;
-                             class python:oddrow and 'bloqueColeccion edgardoVigo' or 'bloqueColeccion manuelPuig'">
+                             class python:oddrow and 'bloqueColeccion primero' or 'bloqueColeccion'">
+							 <a href="#" class="mascaraImg"
+							  tal:attributes="href artDestacado/url">
+								<img src="/++theme++arcas.theme/img/empty.gif" alt="" class="imgDummy"/>
+							 </a>
                             <div class="textoInterno">
                                 <h4>
                                     <a href="#" title="Titulo de la colección"
@@ -78,7 +88,7 @@
                                 <div class="links">
                                     <a href="#" class="izq" title="Enlace a la colección" tal:attributes="href artDestacado/url">Ver COLECCION</a>
                                     <a href="#" class="der" tal:attributes="href string:${artDestacado/extraFolderUrl}/exhibiciones/exhibPorColeccion?idCol=${artDestacado/id}"
-                                       tal:content="string:Ver ${artDestacado/extraFolderTitulo}">Ver COLECCION</a>
+                                      >Ver Estudios</a>
                                 </div>
                                 <div class="clr"></div>
                             </div>
@@ -91,13 +101,20 @@
                     <tal:rte tal:condition="not:colecciones">
                         <div class="colecc_componente">No se encontraron colecciones</div>
                     </tal:rte>
+					<!--div class="controlC">
+					<a href="#" class="Xmas">mas</a> | <a href="#" class="Xmenos">menos</a>
+					</div -->
+					</div>
                     <div class="buscadorColecciones">
+					
                         <form>
                             <input type="text" value="Buscar en las colecciones"/><img class="lupa" src="++theme++arcas.theme/img/lupa-negra.jpg"/>
                         </form>
                     </div>
                 </div>
-            </div>
+            
+			
+			</div>
         </div>
 
         <div id="contenido">

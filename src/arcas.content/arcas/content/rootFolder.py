@@ -74,7 +74,6 @@ class View(DisplayForm):
 
         return []
 
-
     def listExhiUrl(self):
         """Devuelve la url al listado de exhibiciones"""
         from arcas.content.exhibicionesFolder import IExhibicionesFolder
@@ -84,7 +83,6 @@ class View(DisplayForm):
             return exlis[0].getURL()
         else:
             return False
-
 
     def getColecciones(self):
         ##recreaFolder= self.getContainer(folder.encode('utf8'))

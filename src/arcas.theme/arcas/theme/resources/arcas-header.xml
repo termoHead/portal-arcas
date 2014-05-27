@@ -11,6 +11,10 @@
     <notheme if-path="@@images" />
     <notheme if-path="images" />
 	<notheme if-path="select_default_page" />
+	<notheme if-path="login" />
+	<notheme if-path="@@personal-information" />
+	
+	
 	
     <replace
             theme-children="//div[@id='header']/ul"

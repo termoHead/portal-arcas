@@ -8,7 +8,7 @@
     <!-- Rules applying to standard Plone pages  -->
 	
 	<drop css:content="#portaltab-index_html"/>
-	
+	 
     <rules if-path="/arca/home/">
         <notheme if-path="/home/@@manage-portlets" />
         <notheme if-path="folder_contents" />
@@ -27,56 +27,59 @@
     </rules>
 	
 	<rules if-not-path="/arca/home/">
-		<xi:include href="arcas-header.xml" />
 		
-		<rules if-not-path="@@gsSearch">			
-			<rules css:if-content=".markColeccion">		
-				<xi:include href="arcas_coleccion.xml" />
-			</rules>			
-			<rules css:if-content=".markExhibicion">			
-				<xi:include href="arcas_exhibicion.xml" />
-			</rules>
-			<rules if-content="//div[@class='markListColeccion'] or //div[@class='markListExhibicion']">
-				<theme href="listadoColecciones.html" />			
-				<replace css:content-children=".texto" css:theme-children=".texto"/>
-				<replace css:content-children=".lista" css:theme-children=".lista"/>
-			</rules>
-			<rules if-not-path="@@overview-controlpanel and edit
-			and @@syndication-settings and plone_control_panel and
-			@@navigation-controlpanel and contact-info and
-			@@site-controlpanel">				
-				<rules if-content="not(//div[@class='markColeccion']) and  					
-				not(//div[@class='markExhibicion']) and
-				not(//div[@class='markListColeccion']) and
-				not(//div[@class='markListExhibicion'])">
-				
-					<theme href="estandar.html" />
+			<xi:include href="arcas-header.xml" />
+			
+			<rules if-not-path="@@gsSearch">			
+				<rules css:if-content=".markColeccion">		
+					<xi:include href="arcas_coleccion.xml" />
+				</rules>			
+				<rules css:if-content=".markExhibicion">			
+					<xi:include href="arcas_exhibicion.xml" />
+				</rules>
+				<rules if-content="//div[@class='markListColeccion'] or //div[@class='markListExhibicion']">
+					<theme href="listadoColecciones.html" />			
+					<replace css:content-children=".texto" css:theme-children=".texto"/>
+					<replace css:content-children=".lista" css:theme-children=".lista"/>
+				</rules>
+				<rules if-not-path="@@overview-controlpanel and edit
+				and @@syndication-settings and plone_control_panel and
+				@@navigation-controlpanel and contact-info and
+				@@site-controlpanel">				
+					<rules if-content="not(//div[@class='markColeccion']) and  					
+					not(//div[@class='markExhibicion']) and
+					not(//div[@class='markListColeccion']) and
+					not(//div[@class='markListExhibicion'])">
 					
-					<merge attributes="class" css:theme="body" css:content="body" />
-					
-					<replace css:theme=".cabezalInterno h2">				
-						<xsl:copy-of select="//*[@id='parent-fieldname-title']" />
-					</replace>
-					
-					<replace css:theme=".texto">
-						<div class="texto">
-						   <xsl:for-each css:select="#content">
-								<xsl:copy-of select="div[@id!='viewlet-below-content-title']"/>
-							</xsl:for-each>
-						</div>
-					</replace>
+						<theme href="estandar.html" />
+						
+						<merge attributes="class" css:theme="body" css:content="body" />
+						
+						<replace css:theme=".cabezalInterno h2">				
+							<xsl:copy-of select="//*[@id='parent-fieldname-title']" />
+						</replace>
+						
+						<replace css:theme=".texto">
+							<div class="texto">
+							   <xsl:for-each css:select="#content">
+									<xsl:copy-of select="div[@id!='viewlet-below-content-title']"/>
+								</xsl:for-each>
+							</div>
+						</replace>
+						
+					</rules>
 					
 				</rules>
-				
 			</rules>
-		</rules>
-		<rules if-path="@@gsSearch">			
+			<rules if-path="@@gsSearch">			
 			
 				<theme href="estandar.html" />
 				<replace css:content="#portal-column-content" css:theme-children=".texto"/>
 				<merge attributes="class" css:theme="body" css:content="body" />
 			
 		</rules>
+	
+		
 	</rules>
 
 

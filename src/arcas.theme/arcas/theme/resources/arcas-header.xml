@@ -44,8 +44,8 @@
     <before css:theme="#exhibicionHome" css:content="#edit-bar"></before>
 	
     <replace css:theme-children=".buscador" css:content-children="#portal-searchbox" />
-
-
+	<replace css:theme-children=".links ul" css:content-children="ul#portal-globalnav"/>
+	
 
 
 </rules>

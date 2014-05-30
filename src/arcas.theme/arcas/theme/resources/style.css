@@ -154,6 +154,10 @@ clear:left;
 font-family:"Attic",serif;
 text-align:left;
 }
+.tituloExhibicion a img{
+width:180px;
+height:129px
+}
 body.home .tituloExhibicion{
 margin: 20px 0 0 345px;
 }
@@ -434,7 +438,8 @@ height:306px;
 }
 #pie{
 background:url(images/bgTopPie.png) right top repeat-x #99928b;
-height:188px;
+height:auto;
+padding-bottom:15px;
 }
 #final{
 background-color:#8a837c;
@@ -466,9 +471,15 @@ margin:25px 65px 0 0;
 #pie .logos a{
 display:block;
 float:left;
+clear:both;
 }
-#pie .logos a:first-child{
-margin-right:30px;
+#pie .logos .itemLink{
+margin-left:102px;
+padding-top:10px;
+color:#151211;
+font-size:11px;
+font-weight:bold;
+ -webkit-font-smoothing: antialiased;
 }
 #pie .institucional{
     clear: right;
@@ -477,7 +488,8 @@ margin-right:30px;
     font-family: "Calibri",sans-serif;
     font-size: 11px;
     line-height: 15px;
-    margin: 10px 74px 0 0;
+    margin: 10px 85px 0 0;
+	-webkit-font-smoothing: antialiased;
 }
 #pie .institucional a{
 color:#ffffff;
@@ -499,12 +511,14 @@ display: block;
 #pie .links li a{
 color:#ffffff;
 text-decoration:none;
+text-transform: uppercase; 
 }
 a.plone{
 margin:5px 0 0 10px;
 display:block;
 float:left;
 }
+#pie .links  img{margin-top:7px;}
 .breadcrumb{
 float:left;
 clear:left;
@@ -740,6 +754,10 @@ margin-top:32px;
 }
 .licencia img{
 float:left;
+clear:both;
+margin-left:17px;
+margin-top: 17px;
+}
 }
 .licencia p{
 font-size:10px;
@@ -783,7 +801,7 @@ margin-bottom:7px;
 }
 .biografia p{
 font-size:12px;
-color:#ffffff;
+color:#ff9933;
 margin-bottom:15px;
 line-height:15px;
 
@@ -1185,18 +1203,32 @@ width:892px;
 height:129px;
 margin-bottom:23px;
 }
-body.listadoExhibiciones .lista .bloquePuig{
-    background: url("images/bloqueExhibicionPuig.jpg") no-repeat scroll left top rgba(0, 0, 0, 0);
+.containerRight  .descri{
+	float:left;
+	width:304px;
+	margin-right:110px;
+	padding-top:22px;
+	color:white;
+	font-size:11px;
 }
-body.listadoExhibiciones .lista .bloqueSaer{
-    background: url("images/bloqueExhibicionSaer.jpg") no-repeat scroll left top rgba(0, 0, 0, 0);
+.containerRight div.datosExtra  img{border:3px solid #cfc5ba; margin-top:8px;}
+body.listadoExhibiciones .containerRight .datosExtra{ 
+    font-family:"Florencesans","Arial",sans-serif;
+	float:left;
+	width:256px;
+	margin-left:100px
 }
-body.listadoExhibiciones .lista .bloqueVigo{
-    background: url("images/bloqueExhibicionVigo.jpg") no-repeat scroll left top rgba(0, 0, 0, 0);
+.containerRight div.datosExtra  .special,
+.containerRight div.datosExtra  li a{font-family:"Florencesans","Arial",sans-serif;color:white}
+.containerRight div.datosExtra div{
+	width:180px;
+	float:right;
+	padding-top:22px;	
+	color:white;	
+	font-size:16px;
 }
-body.listadoExhibiciones .lista .bloquePerezReverte{
-    background: url("images/bloqueExhibicionPerezReverte.jpg") no-repeat scroll left top rgba(0, 0, 0, 0);
-}
+.containerRight div.datosExtra div .label{color:#4a423b; display:block; font-size:11px;padding-top:5px}
+.containerRight div.datosExtra div .label:nth-child(1){padding-top:12px}
 body.listadoExhibiciones .tituloExhibicion{
 padding: 12px 0 0 22px;
 }
@@ -1470,6 +1502,7 @@ input.searchButton{width: 25px;
 column-count:2;}
 .documentDescription{margin-bottom:12px; font-style: italic}
 .cabezalInterno  #viewlet-below-content-title{clear:both;  margin: 6px 0 0 70px;}
+#final{padding;10px}
 .buscador{font-size:11px}
 .linkFuentes{display:block; background-color:#403a31; width:218px; height:23px;}
 a.linkFuentes{color:white; font-size:12px; line-height:23px}

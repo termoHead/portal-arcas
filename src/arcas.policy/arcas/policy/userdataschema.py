@@ -5,6 +5,7 @@ from plone.directives import form
 from arcas.policy import _
 from plone.app.users.userdataschema import IUserDataSchemaProvider
 from plone.app.users.userdataschema import IUserDataSchema
+from plone.namedfile.field import NamedBlobFile
 
 def validateAccept(value):
     if not value == True:
@@ -24,12 +25,6 @@ class IEnhancedUserDataSchema(IUserDataSchema):
     extra fields.
     """
 
-    esUNLP= schema.Bool(
-        title=u'¿Pertenece a la UNLP?',
-        description=u"Marque la opcion correspondiente",
-        required=True
-        )
-
     tipoUsuario = schema.Set(
         title=u'Tipo de usuario',
         description=u'Si desea marcar más de una opcion, oprima CTRL+Click',
@@ -43,7 +38,16 @@ class IEnhancedUserDataSchema(IUserDataSchema):
 
         required=True,
         )
-
+        
+    """
+    full_cv = schema.Bytes(
+        title=u"Full CV",   
+        description=u"Suba un archivo con su curriculum para descargar",        
+        required=False
+    )
+    """
+    
+    
     form.write_permission(participaEn='cmf.ManagePortal')
     participaEn =schema.Set(
         title=u'Colecciones de su interés',
@@ -54,7 +58,7 @@ class IEnhancedUserDataSchema(IUserDataSchema):
 
     form.mode(colecCoordina='display')
     colecAsignadas=schema.Set(
-            title=u'Participa como integrante',
+            title=u'Ya participa en:',
             description=u"La lista muestra las colecciones en las que participa actualmente.",
             value_type=schema.Choice(source="arcas.policy.ColeccionesVocab"),
             required=False,
@@ -63,9 +67,10 @@ class IEnhancedUserDataSchema(IUserDataSchema):
 
     form.mode(colecCoordina='display')
     colecCoordina=schema.Set(
-        title=u'Participa como coordinador',
+        title=u'Es coordinador de:',
         description=u"La lista muestra las colecciones que administra.",
         value_type=schema.Choice(source="arcas.policy.ColeccionesVocab"),
         required=False,
         readonly=True
     )
+    

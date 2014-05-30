@@ -7,7 +7,7 @@
     i18n_domain="arcas.policy">
 
   <five:registerPackage package="." initialize=".initialize" />
-
+  <include file="permissions.zcml" />
   <genericsetup:registerProfile
       name="default"
       title="arcas.policy"

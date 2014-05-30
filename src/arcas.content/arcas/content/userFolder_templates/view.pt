@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="example.conference">
+<body>
+
+
+
+<metal:content-core fill-slot="main">
+    <metal:content-core define-macro="main">
+	<div class="texto">
+
+		Carpeta del usuario <span tal:content="context/id"/>
+		<div class="markEstandar" tal:define="archivo context/full_cv | nothing">
+		   <div  tal:condition="archivo">
+			<a tal:attributes="href string:${context/absolute_url}/@@download/full_cv/${archivo/filename}"
+				>descargar cv</a>
+		   </div>
+			<div tal:condition="not: archivo">
+				Le sugerimos que agregue un CV para que el usuario interesado pueda descargarlo. Si Ud es Curador de una Exhibición o un Coordinador de alguna Colección, es obligatorio. <a tal:attributes="href string:${context/absolute_url}/edit"
+				>Haga click, y buscque el campo CV, para subir un archivo</a>
+			</div>
+		</div>
+	
+	</div>
+
+    </metal:content-core>
+</metal:content-core>
+
+</body>
+</html>

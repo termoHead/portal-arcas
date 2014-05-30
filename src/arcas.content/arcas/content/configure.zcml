@@ -28,7 +28,8 @@
       description="Installs the arcas.content package"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
-
+  <include package="plone.directives.form" file="meta.zcml" />
+  <include package="plone.directives.form" />
   <!-- -*- extra stuff goes here <plone:behavior
             title="GroupColeccion"
             description="Agrega un campo nombre de grupo."
@@ -65,6 +66,10 @@
     <utility
             component=".vocabularios.InvestigadoresVocabFactory"
             name="arcas.InvestMembersVocab"
+            />
+    <utility
+            component=".vocabularios.CuradoresVocabFactory"
+            name="arcas.ExhibicionMembersVocab"
             />
     <utility
             component=".utils.ExhibicionesVocabFactory"

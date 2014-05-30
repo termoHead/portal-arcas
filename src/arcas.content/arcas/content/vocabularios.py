@@ -74,10 +74,43 @@ class GroupPotenciales(object):
                         terms.append(SimpleVocabulary.createTerm(member_id, str(member_id), member_name))
 
             return SimpleVocabulary(terms)
+            
+        #devulve un registro vacio
+        return SimpleVocabulary([SimpleVocabulary.createTerm("", str(""), "")])
+class GroupPotencialesExhi(object):
+    """Genera un vocabulario con los potenciales investigadores para esa carpeta"""
+    implements(IVocabularyFactory)
+
+    def __call__(self, context):
+        acl_users = getToolByName(context, 'acl_users')
+        miColeccion=context.coleccionR.to_object        
+        try:
+            idGAsign=IColecGroupName(miColeccion).groupName
+        except:
+            print "No se puedo asignar IColectGroupName"
+            return SimpleVocabulary([SimpleVocabulary.createTerm("", str(""), "")])
+        idGPot=idGAsign.replace("_g",PREFIJO_COOR_POTENCIAL)
+
+        grupoPot= acl_users.getGroupById(idGPot)
+        grupoAsignado=acl_users.getGroupById(idGAsign)
+
+        terms = []
+        listIds=[]
+        if grupoPot is not None:
+            for member_id in grupoPot.getMemberIds()+grupoAsignado.getMemberIds():
+                if member_id not in listIds:
+                    user = acl_users.getUserById(member_id)
+                    if user is not None:
+                        member_name = user.getProperty('fullname') or member_id
+                        listIds.append(member_id)
+                        terms.append(SimpleVocabulary.createTerm(member_id, str(member_id), member_name))
+
+            return SimpleVocabulary(terms)
+            
         #devulve un registro vacio
         return SimpleVocabulary([SimpleVocabulary.createTerm("", str(""), "")])
 
 
-
 GroupMembersVocabFactory = GroupMembers("Coordinadores")
 InvestigadoresVocabFactory = GroupPotenciales()
+CuradoresVocabFactory = GroupPotencialesExhi()

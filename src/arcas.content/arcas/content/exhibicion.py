@@ -23,6 +23,11 @@ from plone.formwidget.contenttree import ContentTreeFieldWidget
 class IExhibicion(form.Schema):
     """A conference program. Programs can contain Sessions.
     """
+    form.fieldset(
+        'responsables',
+        u"Responsables",
+        fields=['curador','integrantes'],
+    )
     cuerpo = RichText(
         title=_(u"Texto principal"),
         required=False,
@@ -54,7 +59,16 @@ class IExhibicion(form.Schema):
         source=ObjPathSourceBinder(object_provides=IColeccion.__identifier__),
         required=False,
     )
-
+    curador=schema.List(
+        title=_("Curadores"),
+        value_type=schema.Choice(source="arcas.ExhibicionMembersVocab",),
+        required=False,
+    )
+    integrantes=schema.List(
+        title=_("Integrantes"),
+        value_type=schema.Choice(source="arcas.ExhibicionMembersVocab",),
+        required=False,
+    )
 from Acquisition import aq_inner
 from plone.directives.dexterity import DisplayForm
 

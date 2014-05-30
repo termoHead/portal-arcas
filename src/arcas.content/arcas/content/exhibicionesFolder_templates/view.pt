@@ -16,7 +16,7 @@
     
 		<div class="conColumnas">
 			<div class="texto">
-				<p  tal:content="structure context/cuerpo/output">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </p>
+				<p  tal:content="structure context/cuerpo/output">texto</p>
 			</div>
 		</div>
         <div class="lista"  tal:define="listado view/dameListaExhi|nothing">
@@ -27,23 +27,25 @@
                 <div class="tituloExhibicion">
                         <a class="size1" href="#" tal:attributes="href colec/url;
                                                 title colec/titulo"
-                                 ><img src="++theme++arcas.theme/images/emptyList.gif" alt=""/></a>
+                                 ><img src="++theme++arcas.theme/img/empty.gif" alt=""/></a>
 
                 </div>
                 <div class="containerRight">
-                    <p tal:content="colec/descri">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                    <p class="descri" tal:content="colec/descri">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
                     <tal:cu tal:repeat="curador colec/curador">
                         <div class="datosExtra">
                             <img src=""  tal:replace="structure curador/@@images/retrato/thumb"/>
                             <div>
-                                <h4>Curador</h4>
-                                <h3 class="special" tal:content="curador/title">Camilo Peretti</h3>
+                                <span class="label">Curador</span>
+                                <span class="special" tal:content="curador/title">Camilo Peretti</span>
 
-                                <h4>Colaboradores</h4>
+                                <span class="label">Colaboradores</span>
+								<ul>
                                 <tal:rC tal:repeat="coor colec/coors">
-                                    <h3> <a href="#" tal:attributes="href string:mailto:${coor/email}; title coor/title"
-                                       tal:content="coor/title">Nombre coordinador</a></h3>
+                                    <li> <a href="#" tal:attributes="href string:mailto:${coor/email}; title coor/title"
+                                       tal:content="coor/title">Nombre coordinador</a></li>
                                 </tal:rC>
+								</ul>
                             </div>
                             <div class="clr"></div>
                         </div>

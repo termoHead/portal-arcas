@@ -11,7 +11,7 @@
     <permission>View</permission>
     <permission>Access contents information</permission>
     <permission>Modify portal content</permission>
-
+	<permission>Modify portal content</permission>
 
     <state state_id="Borrador"
            title="Borrador"

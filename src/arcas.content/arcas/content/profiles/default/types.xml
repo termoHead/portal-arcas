@@ -9,4 +9,5 @@
     <object name="arcas.rootFolder"         meta_type="Dexterity FTI" />
     <object name="arcas.exhibicionesFolder" meta_type="Dexterity FTI" />
     <object name="arcas.curador"            meta_type="Dexterity FTI" />
+	<object name="arcas.userFolder"            meta_type="Dexterity FTI" />
 </object>

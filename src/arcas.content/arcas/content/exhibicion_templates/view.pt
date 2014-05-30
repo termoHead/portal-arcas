@@ -15,7 +15,7 @@
                                 coors view/dameCoords|nothing;
                                 listaFotos  view/listadoDeImagenesGS3|nothing;
 								datosFull view/dameDatosImgFull | nothing ">
-			<div class="markListExhibicion">
+			<div class="markExhibicion">
 			
             <div class="boxHeader" tal:define="ruta string:${context/absolute_url}/@@images/bgCabezalVista"
                  tal:attributes="style string:background-image:url(${ruta})">
@@ -121,73 +121,72 @@
                                                         tal:content="li/Title">Boquitas pintadas</a></li>
                             </tal:rr>
                         </ul>
-                </div>
-                <div class="boxOtrosDatos">
-                    <div class="boxCuradorCV">
-                        <div class="curadorIMG">
-                            <img src="#" tal:attributes="src python:curadorObj['img'];
-                                                        title python:curadorObj['nombre'];" alt="">
-                        </div>
-                        <div class="datosCurador">
-                            <div>
-                                <img src="++resources++arcas.content/sobre.gif" alt=""/>
-                                <a href="#" title="">cv</a></div>
-                                <h4 class="label">Curador</h4>
-                                <h3 class="special" tal:content="python:curadorObj['nombre']">Ernesto Trambonati</h3>
-                                <tal:coor tal:condition="coors">
-                                <h4 class="label" tal:condition="python:len(coors)>1">Coordinadores</h4>
-                                <h4 class="label" tal:condition="python:len(coors)<2">Coordinador</h4>
-                                <tal:rr tal:repeat="coordina coors">
-                                    <h3 class="special" tal:content="coordina">Ernesto Trambonati</h3>
-                                </tal:rr>
-                            </tal:coor>
-                        </div>
-                        <div class="listadoEnlaces">
-                            <div class="top">
-                                <div class="solapa activa">Estudios</div>
-                            <div class="clr"></div>
-                            </div>
-                            <div class="centro">
-                                <tal:r tal:repeat="enla view/dameEnlaces|nothing">
-                                    <div class="bloque">
-                                        <tal:link tal:condition="python:enla.portal_type=='Link' ">
-                                                <a tal:attributes="href enla/getRemoteUrl;
-                                                                    title enla/Title"
-                                                    tal:content="enla/Title"></a> <span tal:content="enla/Description"></span>
-                                        </tal:link>
-                                        <tal:pagina tal:condition="python: not enla.portal_type=='Link' ">
+					</div>
+					<div class="boxOtrosDatos">
+						<div class="boxCuradorCV">
+							<div class="curadorIMG">
+								<img src="#" tal:attributes="src python:curadorObj['img'];
+															title python:curadorObj['nombre'];" alt="">
+							</div>
+							<div class="datosCurador">
+								<div>
+									<img src="++resources++arcas.content/sobre.gif" alt=""/>
+									<a href="#" title="">cv</a>
+								</div>
+								<h4 class="label">Curador</h4>
+								<h3 class="special" tal:content="python:curadorObj['nombre']">Ernesto Trambonati</h3>
+								<tal:coor tal:condition="coors">
+									<h4 class="label" tal:condition="python:len(coors)>1">Coordinadores</h4>
+									<h4 class="label" tal:condition="python:len(coors)<2">Coordinador</h4>
+									<tal:rr tal:repeat="coordina coors">
+										<h3 class="special" tal:content="coordina">Ernesto Trambonati</h3>
+									</tal:rr>
+								</tal:coor>
+							</div>
+							<div class="listadoEnlaces">
+								<div class="top">
+									<div class="solapa activa">Estudios</div>
+									<div class="clr"></div>
+								</div>
+								<div class="centro">
+									<tal:r tal:repeat="enla view/dameEnlaces|nothing">
+										<div class="bloque">
+											<tal:link tal:condition="python:enla.portal_type=='Link' ">
+													<a tal:attributes="href enla/getRemoteUrl;
+																		title enla/Title"
+														tal:content="enla/Title"></a> <span tal:content="enla/Description"></span>
+											</tal:link>
+											<tal:pagina tal:condition="python: not enla.portal_type=='Link' ">
 
-                                                <a href="" tal:attributes="href enla/getURL;
-                                                    title enla/Description"
-                                                   tal:content="enla/Title"></a>
+													<a href="" tal:attributes="href enla/getURL;
+														title enla/Description"
+													   tal:content="enla/Title"></a>
 
-                                            <span class="descri" tal:content="enla/Description"></span>
-                                        </tal:pagina>
-                                    </div>
-                                </tal:r>
-                            </div>
-                            <div class="pie">
+												<span class="descri" tal:content="enla/Description"></span>
+											</tal:pagina>
+										</div>
+									</tal:r>
+								</div>
+								<div class="pie">
+								   <a href="#" tal:attributes="href view/dameUriColeccion;title 	view/dameNombreColeccion">
+									   Ir a la colección:  
+									   <div tal:replace="view/dameNombreColeccion"> asd </div>
+								   </a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
-                                   <a href="#" tal:attributes="href view/dameUriColeccion;title view/dameNombreColeccion">
-                                       Ir a la colección:  <div tal:replace="view/dameNombreColeccion">  </div>
-                                   </a>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="boxCreativeCommons">
-                CC licencia
-            </div>
-
+				<div class="boxCreativeCommons">
+					CC licencia
+				</div>
 
 
+			</div>
             </tal:def>
 			
-			</div>
+			
 		</metal:content-core>
     </metal:content-core>
 

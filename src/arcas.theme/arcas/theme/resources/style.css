@@ -1032,6 +1032,7 @@ float:left;
 border:4px solid #d2cac2;
 margin:15px 0 0 10px;
 float:left;
+width:67px
 }
 .columnaDerecha .curador .datosExtra {
     float: left;
@@ -1507,3 +1508,12 @@ column-count:2;}
 .linkFuentes{display:block; background-color:#403a31; width:218px; height:23px;}
 a.linkFuentes{color:white; font-size:12px; line-height:23px}
 a.linkFuentes img{ margin:0 8px 0 8px; float:left;padding-top:5px}
+#content-core{background-color:#C0C0C0;}
+.columnaDerecha .labelM{color:#cec4ba; display:block; font-size:11px; font-weight:bold; padding-top:15px; padding-left:19px;}
+.columnaDerecha .labelM
+.columnaDerecha .specialDestacado{color:#fffefb; font-size:18px;font-family: "Calibri",sans-serif;}
+.columnaDerecha .special{color:#fffefb; font-size:16px;font-family: "Calibri",sans-serif;}
+.curadorIMG{width:100px; height:150px; float: left;}
+.labelTitulo{color:#573e39; font-size:13px}
+.datosExtra ul{padding-bottom:14px}
+.datosExtra ul li{color:#f7feff}

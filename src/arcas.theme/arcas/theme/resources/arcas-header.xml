@@ -7,13 +7,15 @@
     <notheme if-path="/inicio/@@manage-portlets" />
     <notheme if-path="folder_contents" />
     <notheme if-path="@@gsSearch?" />
-    <notheme if-path="edit" />
+	<notheme if-path="@@sharing" />	
+    <notheme if-path="@@edit" />
     <notheme if-path="@@images" />
     <notheme if-path="images" />
 	<notheme if-path="select_default_page" />
 	<notheme if-path="login" />
 	<notheme if-path="@@personal-information" />
-	
+	<notheme if-path="++add++arcas.exhibicion" />
+	<notheme if-path="++add++arcas.coleccion" />
 	
 	
     <replace

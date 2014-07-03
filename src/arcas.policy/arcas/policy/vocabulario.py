@@ -21,8 +21,9 @@ class ListaColecciones(object):
     def __call__(self, context):
         contexto=getSite()
         catalogo= getToolByName(contexto, 'portal_catalog')
-        results=catalogo({'object_provides': IColeccion.__identifier__,'review_state': 'Publicado'})
+        results=catalogo.unrestrictedSearchResults({'object_provides': IColeccion.__identifier__,'review_state':('SetUp','Publicado')})
         terms = []
+    
         if len(results)>0:
             for colec in results:
 

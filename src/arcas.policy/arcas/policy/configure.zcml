@@ -6,6 +6,13 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="arcas.policy">
 
+
+
+  <utility
+            provides="zope.schema.interfaces.IVocabularyFactory"
+            component=".vocabulario.ColeccionesVocabFactory"
+            name="ColeccionesVocab"
+            />
   <five:registerPackage package="." initialize=".initialize" />
   <include file="permissions.zcml" />
   <genericsetup:registerProfile
@@ -25,11 +32,6 @@
         <depends name="rolemap"/>
     </genericsetup:importStep>
 
-    <utility
-            component=".vocabulario.ColeccionesVocabFactory"
-            name="arcas.policy.ColeccionesVocab"
-            />
-
 
     <subscriber
             for="plone.app.controlpanel.interfaces.IConfigurationChangedEvent"
@@ -46,7 +48,8 @@
             description="Arcas site policy configuration"
             handler="arcas.policy.setuphandlers.importVarious">
         <depends name="rolemap"/>
-    </genericsetup:importStep>    <browser:page
+    </genericsetup:importStep>
+      <browser:page
             for="*"
             class=".browser.kss_roles.KSSRolesView"
             name="updateRolesInfo"

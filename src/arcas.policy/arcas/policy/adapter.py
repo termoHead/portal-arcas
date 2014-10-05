@@ -11,7 +11,7 @@ from zope.component import getMultiAdapter
 class EnhancedUserDataPanelAdapter(UserDataPanelAdapter):
     """
     """
- 
+
 
     def get_tipoUsuario(self):
         valorL=self.context.getProperty('tipoUsuario', '')
@@ -73,17 +73,17 @@ class EnhancedUserDataPanelAdapter(UserDataPanelAdapter):
         valueX=','.join(value)
         return self.context.setMemberProperties({'participaEn': valueX})
     colecAsignadas = property(get_colecAsignadas, set_colecAsignadas)
-    
-    def get_full_cv(self):        
+
+    def get_full_cv(self,context):
         return self.context.getProperty('full_cv')
-        
+
     def set_full_cv(self, value):
-    
+
         roota=self.context.portal_url.getPortalObject()
         rootPath=roota.getPhysicalPath()[1]
         idUser=self.context.id
         carpetaUser=self.context.unrestrictedTraverse("/"+rootPath+"/Members/"+idUser)
-    
+
         return self.context.setMemberProperties({'full_cv': value})
-        
+
     full_cv= property(get_full_cv, set_full_cv)

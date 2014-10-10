@@ -6,4 +6,5 @@
             for="Products.CMFCore.interfaces.ISiteRoot"
             factory=".adapter.EnhancedUserDataPanelAdapter"
             />
+
 </configure>

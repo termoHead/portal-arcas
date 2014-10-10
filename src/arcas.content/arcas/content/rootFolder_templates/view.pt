@@ -4,12 +4,12 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       lang="en"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="example.conference">
+      i18n:domain="arcas.content">
 <body>
 <metal:content-core fill-slot="main">
     <metal:content-core define-macro="main">
 	 <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-        <div class="boxTop">
+        <div class="boxTop rootFolder">
 
             <div class="exhiV"  tal:define="artDestacado view/getExhiDestacado | nothing" tal:condition="artDestacado">
                 <div  id="exhibicionHome" class="exhibicio_componenet"

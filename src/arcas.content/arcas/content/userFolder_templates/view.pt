@@ -11,6 +11,7 @@
 
 <metal:content-core fill-slot="main">
     <metal:content-core define-macro="main">
+    <div class="userFolder">
 	<div class="texto">
 		Carpeta del usuario <span tal:content="context/id"/>
 		<div class="markEstandar" tal:define="archivo context/full_cv | nothing">
@@ -24,7 +25,7 @@
 			</div>
 		</div>	
 	</div>
-
+</div>
     </metal:content-core>
 </metal:content-core>
 

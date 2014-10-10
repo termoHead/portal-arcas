@@ -38,5 +38,3 @@ class View(DisplayForm):
     grok.context(IUserFolder)
     grok.require('zope2.View')
 
-    def dameCv(sefl):
-        """devuelve un archivo para descargar"""

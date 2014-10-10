@@ -74,6 +74,7 @@ class EnhancedUserDataPanelAdapter(UserDataPanelAdapter):
         return self.context.setMemberProperties({'participaEn': valueX})
     colecAsignadas = property(get_colecAsignadas, set_colecAsignadas)
 
+
     def get_full_cv(self,context):
         return self.context.getProperty('full_cv')
 

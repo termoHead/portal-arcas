@@ -5,7 +5,6 @@
         <property name="user_registration_fields" type="lines">
             <element value="tipoUsuario" />           
             <element value="participaEn" />
-			<element value="full_cv" />            
         </property>
     </object>
 </object>

@@ -16,8 +16,14 @@
 	<notheme if-path="@@personal-information" />
 	<notheme if-path="++add++arcas.exhibicion" />
 	<notheme if-path="++add++arcas.coleccion" />
-	
-	
+	<notheme if-path="@@manage-aliases" />
+	<notheme if-path="++add++arcas.coleccionesFolder" />
+    <notheme if-path="++add++arcas.exhibicionesFolder" />
+    <notheme if-path="@@fix-persistent-utilities" />
+    <notheme if-path="@@delete-persistent-utility-reg" />
+    <notheme if-path="require_login" />
+    <notheme if-path="@@new-user" />
+
     <replace
             theme-children="//div[@id='header']/ul"
             css:content-children="ul#portal-globalnav"

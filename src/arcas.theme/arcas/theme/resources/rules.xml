@@ -12,6 +12,8 @@
     <rules if-path="/arca/home/">
         <notheme if-path="/home/@@manage-portlets" />
         <notheme if-path="folder_contents" />
+        <notheme if-path="require_login" />
+
         <xi:include href="arcas-header.xml" />
         <theme href="index.html" />
         <replace css:theme-children="#exhibicionHome" css:content-children="div.exhiV"></replace>

@@ -584,7 +584,7 @@ float:left;
 clear:left;
 line-height: 57px;
 margin-bottom: 5px;
-width: 420px;
+width: 520px;
 }
 #presentacionColeccion .busqueda{
 float:left;
@@ -1508,7 +1508,7 @@ column-count:2;}
 .linkFuentes{display:block; background-color:#403a31; width:218px; height:23px;}
 a.linkFuentes{color:white; font-size:12px; line-height:23px}
 a.linkFuentes img{ margin:0 8px 0 8px; float:left;padding-top:5px}
-#content-core{background-color:#C0C0C0;}
+#content-core{background-color: #555;padding: 8px;}
 .columnaDerecha .labelM{color:#cec4ba; display:block; font-size:11px; font-weight:bold; padding-top:15px; padding-left:19px;}
 .columnaDerecha .labelM
 .columnaDerecha .specialDestacado{color:#fffefb; font-size:18px;font-family: "Calibri",sans-serif;}

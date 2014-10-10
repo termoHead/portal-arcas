@@ -43,6 +43,15 @@
           class=".testWs.TestWs"
           permission="zope2.View"
           template="templates/gsSearch.pt"
+		  layer="arcas.theme.interfaces.IArcasTheme"
+          />
+	<browser:page
+          name="gsDatos"
+          for="*"
+          class=".testWs.TestWs"
+          permission="zope2.View"
+          template="templates/gsSearch.pt"
+		  layer="arcas.theme.interfaces.IArcasTheme"
           />
     <browser:page
             name="coleccionesView"
@@ -50,6 +59,7 @@
             class=".browser.ListadoColeccion"
             permission="zope2.View"
             template="templates/listaC.pt"
+			layer="arcas.theme.interfaces.IArcasTheme"
             />
     <browser:page
             name="exhibPorColeccion"
@@ -57,6 +67,14 @@
             class=".browser.BuscarExhibiciones"
             permission="zope2.View"
             template="templates/exhibPorColeccion.pt"
+			layer="arcas.theme.interfaces.IArcasTheme"
+            />
+    <browser:page
+            name="redirect_view"
+            for="Products.CMFPlone.interfaces.siteroot.IPloneSiteRoot"
+            class=".browser.RedidectionView"
+            permission="zope2.View"
+            layer="arcas.theme.interfaces.IArcasTheme"
             />
 
     <utility
@@ -113,13 +131,17 @@
                  Products.CMFCore.interfaces.IActionSucceededEvent"
             handler=".eventos.onSetupExhibicion"
             />
+    <subscriber
+            for="arcas.content.exhibicion.IExhibicion
+                   zope.lifecycleevent.IObjectModifiedEvent"
+            handler=".eventos.onModificaExhibicion"
+            />			
     <plone:behavior
             title="GroupColeccion"
             description="Agrega un campo nombre de grupo."
             provides=".behaviors.IColecGroupName"
             factory =".behaviors.ColecGroupName"
             />
-
     <plone:portlet
             name        ="exhibicion_portlet"
             interface   ="arcas.content.portlets.exhibiciones_portlet.IExhibPortlet"

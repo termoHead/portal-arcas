@@ -12,7 +12,6 @@ from zope.interface import implements, alsoProvides
 from zope.component import adapts
 from zope import schema
 from plone.directives import form
-from Products.CMFCore.interfaces import IDublinCore
 from arcas.content import ArcasMessageFactory as _
 from arcas.content.coleccion import IColeccion
 from Acquisition import aq_inner, aq_base

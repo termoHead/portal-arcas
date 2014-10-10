@@ -18,7 +18,7 @@ from Acquisition import aq_get
 import unicodedata
 from Products.CMFCore.utils import getToolByName
 from arcas.content.exhibicion import IExhibicion
-from  arcas.content.curador import ICurador
+#from  arcas.content.curador import ICurador
 _ = MessageFactory('plone')
 from Acquisition import aq_inner
 from zope.component import getUtility
@@ -142,12 +142,16 @@ class ColeccionUtils(object):
 
     def dameCurador(self):
         """devuelve el curador de una coleccion en lista"""
-        coleccion=self.coleccion
-        ls=[]
-        catalogo=getToolByName(coleccion,"portal_catalog")
-        query={"path":"/".join(coleccion.getPhysicalPath()),'object_provides':ICurador.__identifier__}
-        result  =catalogo(query)
 
+
+        return ["No hay curador de una coleccion"]
+
+        #coleccion=self.coleccion
+        #ls=[]
+        #catalogo=getToolByName(coleccion,"portal_catalog")
+        #query={"path":"/".join(coleccion.getPhysicalPath()),'object_provides':ICurador.__identifier__}
+        #result  =catalogo(query)
+        """
         for elem in result:
             try:
                 miOb=coleccion.unrestrictedTraverse(elem.getPath())
@@ -156,6 +160,7 @@ class ColeccionUtils(object):
                 print "error al buscar el curador"
 
         return ls
+        """
 
     def dameIntegrantes(self):
         coleccion=self.coleccion
@@ -183,19 +188,26 @@ class ColeccionUtils(object):
         return infoCoor
 
     def dameExhibicionesR(self):
-        return self.back_references(self.coleccion,"coleccionR")
+        try:
+            ljo=self.back_references(self.coleccion,"coleccionR")
+        except:
+            return None
+        return ljo
 
     def back_references(self,source_object, attribute_name):
         """ Return back references from source object on specified attribute_name """
         catalog = getUtility(ICatalog)
         intids = getUtility(IIntIds)
         result = []
+        try:
+            for rel in catalog.findRelations(
+                dict(to_id=intids.getId(aq_inner(source_object)),
+                    from_attribute=attribute_name)  ):
 
-        for rel in catalog.findRelations(
-            dict(to_id=intids.getId(aq_inner(source_object)),
-                from_attribute=attribute_name)  ):
+                obj = intids.queryObject(rel.from_id)
+                if obj is not None and checkPermission('zope2.View', obj):
+                    result.append(obj)
+        except:
+            print "no hay referencias cargadas"
 
-            obj = intids.queryObject(rel.from_id)
-            if obj is not None and checkPermission('zope2.View', obj):
-                result.append(obj)
         return result

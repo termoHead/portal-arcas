@@ -19,7 +19,6 @@ from zope.interface import Invalid
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from plone.indexer import indexer
 
-
 class IBiografia(form.Schema):
     """Biografía de un personaje
     """

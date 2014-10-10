@@ -12,7 +12,6 @@
 <metal:content-core fill-slot="main">
     <metal:content-core define-macro="main">
 	<div class="texto">
-
 		Carpeta del usuario <span tal:content="context/id"/>
 		<div class="markEstandar" tal:define="archivo context/full_cv | nothing">
 		   <div  tal:condition="archivo">
@@ -23,8 +22,7 @@
 				Le sugerimos que agregue un CV para que el usuario interesado pueda descargarlo. Si Ud es Curador de una Exhibición o un Coordinador de alguna Colección, es obligatorio. <a tal:attributes="href string:${context/absolute_url}/edit"
 				>Haga click, y buscque el campo CV, para subir un archivo</a>
 			</div>
-		</div>
-	
+		</div>	
 	</div>
 
     </metal:content-core>

@@ -18,7 +18,7 @@
                 <div class="tituloColeccion">
                     <span class="subtituloColeccion">COLECCION</span>
                     <h2  tal:content="context/title">Manuel<br>Puig</h2>
-                    <div class="clr"></div>
+                    <div class="clr">&nbsp; </div>
                 </div>
                 
                 <div class="colecBox">
@@ -32,10 +32,11 @@
                                name="form.button.Search"
                                value="Search"/>
                     </form>
+                    <div class="clr">&nbsp; </div>
                 </div>
+                <div class="clr">&nbsp; </div>
             </div>
-
-            <div class="clr"></div>
+            <div class="clr">&nbsp; </div>
         </div>
         <div class="busquedaColeccion ">
             <form>
@@ -74,10 +75,10 @@
                         </div>
                     </tal:coordinadores>
                 </div>
-                <div class="boxRecomienda">
+                <div class="boxRecomienda" tal:define="listadoReco view/dameDicRecomendados | nothing"
+				tal:condition="listadoReco">
                     <span class="label">Lecturas que profundizan en este tema</span>
-                    <div id="tabs"
-                            tal:define="listadoReco view/dameDicRecomendados"
+                    <div id="tabs"                            
 							tal:condition="python:len(listadoReco)>0">
                         <div class="top">
                             <tal:rra tal:repeat="item listadoReco" >

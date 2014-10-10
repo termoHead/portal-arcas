@@ -81,13 +81,14 @@ class View(DisplayForm):
         catalog=getToolByName(self.context,"portal_catalog")
         ruta='/'.join(self.context.getPhysicalPath())
         result=catalog(portal_type='arcas.enlacegs', review_state='published',path={'query': ruta, 'depth': 1})
-
+        
         return result
 
     def muestraImagenGS(self):
         """Tra una imagen de GS3"""
         pass
-
+        
+    
     def dameObjectoColeccion(self):
         from arcas.content.coleccion import IColeccion
         try:
@@ -102,23 +103,27 @@ class View(DisplayForm):
         return None
 
 
-    def dameCoords(self):
+    def dameCoordinador(self):
         """Devuelve los usuarios del grupo coor"""
         groups_tool = getToolByName(self.context, 'portal_groups')
         fUser=[]
-
+        
         colecR=self.dameObjectoColeccion()
 
+        
+        
         if colecR:
             ppa=IColecGroupName(colecR)
             group_id = ppa.groupName.replace("_g",PREFIJO_COOR_GROUP)
             grupo=groups_tool.getGroupById(group_id)
 
             for usuario in grupo.getGroupMembers():
+            
                 if usuario.getProperty('fullname')!="":
                     fUser.append(usuario.getProperty('fullname'))
                 else:
                     fUser.append(usuario.getProperty('id'))
+                    
             return fUser
         else:
             return None
@@ -126,14 +131,38 @@ class View(DisplayForm):
 
     def dameCurador(self):
         """devuelve el curador de la coleccion"""
-        miColec=self.dameObjectoColeccion()
-        users={'nombre':'Pato',
-               'email':'eam@ad.com',
-               'img':'profile.png',
-               'bio':'richtext',
+        usrTool = getToolByName(self.context, 'portal_membership')
+        
+        curadores=[]
+        for userR in self.context.curador:
+            userO=usrTool.getMemberById(userR)
+            users={'nombre':userO.getProperty("fullname"),
+               'email':userO.getProperty("email"),
+               'img':usrTool.getPersonalPortrait(userO.id),
+               'bio':userO.getProperty("bio"),
+               'id':userO.id,
                'cv':'pdf profile'}
-        return users
-
+            curadores.append(users)
+            
+        return curadores
+        
+    def dameColaboradores(self):
+        """Devulevle una lista de colaboradores de la exhibicion"""
+        usrTool = getToolByName(self.context, 'portal_membership')
+        colabs = self.context.integrantes
+        result=[]
+        for userO in colabs:
+            userO=usrTool.getMemberById(userO)
+            users={'nombre':userO.getProperty("fullname"),
+               'email':userO.getProperty("email"),
+               'img':usrTool.getPersonalPortrait(userO.id),
+               'id':userO.id,
+               'bio':userO.getProperty("bio"),
+               'cv':'pdf profile'}
+            result.append(users)
+        return result
+        
+        
     def dameNombreColeccion(self):
         """devuelve el nombre del parent de esta coleccion"""
         result=""
@@ -181,7 +210,10 @@ class View(DisplayForm):
         urlImg: full imagen
         ficha: url a la ficha en GS3
         """
-        recu=self.listadoDeImagenesGS3()[0]
+        listImages=self.listadoDeImagenesGS3()
+        if len(listImages)<1:
+            return None
+        recu=listImages[0]
         obj=self.context.unrestrictedTraverse(recu.getPath())
         if obj.tipoMedio=="imagen":
             urlT=obj.urlRemoto
@@ -195,6 +227,6 @@ class View(DisplayForm):
             
             return {"urlImg":urlN,"ficha":ficha}
 
-        return []
+        return None
         
 

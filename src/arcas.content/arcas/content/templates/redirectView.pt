@@ -1,0 +1,1 @@
+<tal:re tal:content="view/redirect" />

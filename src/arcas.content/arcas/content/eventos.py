@@ -33,12 +33,10 @@ def onSetupColeccion(colectObj, event):
     flag=0
     if event.action == 'setUp':
         #event.object.setLayout('publish_view')
-
         for carpeta in carpetasDict:
             newId="%s_%s" %(colectObj.id,carpeta["id"])
 
             if not hasattr(colectObj,newId):
-
                 oid=colectObj.invokeFactory(carpeta["tipo"], id=newId)
                 transaction.savepoint(optimistic=True)
                 new_obj = colectObj[oid]
@@ -107,7 +105,7 @@ def onModificaColeccion(colectObj,event):
     grupIdCooR=dameGroupNameFrom(colectObj).replace("_g",PREFIJO_COOR_GROUP)
     grupIdPot =dameGroupNameFrom(colectObj).replace("_g",PREFIJO_COOR_POTENCIAL)
     groupIdInves=dameGroupNameFrom(colectObj)
-
+    
     try:
         grupoObj=groups_tool.getGroupById(grupIdCooR)
     except :
@@ -123,7 +121,7 @@ def onModificaColeccion(colectObj,event):
 
     #todos los usuarios asignados al grupo de coordinacion
     listUsers=grupoObj.getGroupMembers()
-    listInvest=grupoObj.getGroupMembers()
+    listInvest=grupoObjInvest.getGroupMembers()
 
     #elimino todos de los grupos grupo
     for userO in listUsers:
@@ -134,9 +132,34 @@ def onModificaColeccion(colectObj,event):
     #Regenero los grupos con los usuarios actuales
     for userObj in infoCoor:
         groups_tool.addPrincipalToGroup(userObj["id"], grupIdCooR)
+        
     for investObj in infoInvest:
         groups_tool.addPrincipalToGroup(investObj["id"], groupIdInves)
+        
 
+def onModificaExhibicion(exhiObj,event):
+    """ajusta los roles de la carpeta a los usuarios determinados en Responsables"""
+    
+    yaSeteados=exhiObj.get_local_roles()
+    
+    """borro todos los roles menos el del OWNER"""
+    for usO in yaSeteados:        
+        if "Owner" not in usO[1]:
+            exhiObj.manage_delLocalRoles([usO[0]])
+        
+    """seteo los curadores"""    
+    for userid in exhiObj.curador:
+        exhiObj.manage_setLocalRoles(userid, ["Manager","Curador"])
+    
+    """seteo los integrantes"""    
+    for userid in exhiObj.integrantes:
+        exhiObj.manage_setLocalRoles(userid, ["Contributor",])
+
+    
+    
+    
+    
+    
 def agregaRolesAGrupo(contexto,groupid,listRoles):
     """Agrega un grupoid con los roles en listRoles a una carpeta"""
     for gs in contexto.aq_base.get_local_roles():
@@ -152,7 +175,6 @@ def onSaveColeccion(colecObj, event):
     groups_tool =getToolByName(colecObj,"portal_groups")
     nomGrupo=dameGroupNameFrom(colecObj)
     creaGrupos((nomGrupo,nomGrupo.replace("_g",PREFIJO_COOR_GROUP),nomGrupo.replace("_g",PREFIJO_COOR_POTENCIAL)),groups_tool,colecObj)
-
 
 def onDelColeccion(obj,evento):
     """Cuando se borra una coleccion"""
@@ -237,11 +259,10 @@ def creaGrupos(groupNames,groups_tool,colectObj):
         group_id = groupName
         if groupName=="sinNombre":
             return
+
         if not group_id in groups_tool.getGroupIds():
             groups_tool.addGroup(group_id)
             miGrupo=groups_tool.getGroupById(group_id)
-
-
             #asigna roles al grupo
             if group_id.find(PREFIJO_COOR_GROUP)!=-1:
                 agregaRolesAGrupo(colectObj,group_id,['Owner',])
@@ -252,19 +273,12 @@ def creaGrupos(groupNames,groups_tool,colectObj):
             print "el grupo %s ya existia" %groupName
             #agrego el rol de owner a los coordinadores
 
-
-
-
 def actualizaGrupos(obj):
     """Actualiza usuarios del grupo local"""
-
-
-
 
 def borraGrupos(groupName):
     """Elinima un grupo luego que se borra la carpeta"""
     pass
-
 def dameGroupNameFrom(colecObj):
     """devuleve el campo groupName que esta en un behavior"""
     ppa=IColecGroupName(colecObj)

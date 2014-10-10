@@ -76,6 +76,7 @@ from plone.app.vocabularies.users import UsersSource
 from Products.CMFCore.utils import getToolByName
 from arcas.content.config import URL_GREENSTON_DOC
 from arcas.content.utils import ColeccionUtils
+from five import grok
 
 class View(DisplayForm):
     grok.context(IColeccion)
@@ -91,6 +92,7 @@ class View(DisplayForm):
         """devuelv la dirección a la fuente primaria"""
         baseURL=URL_GREENSTON_DOC+self.context.GS_ID+"/browse/CL1"
         return baseURL
+
     def dameCurador(self):
         """devuelve un listado con los curadores de la coleccion"""
         rs=ColeccionUtils(self.context)
@@ -101,16 +103,23 @@ class View(DisplayForm):
         """
             devuelve un listado de las carpetas y sus contenidos como recomendados
         """
-        idRec=self.context.id+"_recom"
+        idRec=self.context.id+"_estudios"
         listFold=[]
+        catalog=getToolByName(self.context,"portal_catalog")
         if hasattr(self.context,idRec):
             recomFolder=aq_inner(self.context[idRec])
+
+            desta_path = '/'.join(recomFolder.getPhysicalPath())
+            recomContent=catalog.searchResults(path={'query':desta_path , 'depth': 1})
+
+
             objRaiz={}
-            objRaiz["titulo"]="Recomendaciones"
+            objRaiz["titulo"]="Estudios"
             objRaiz["content"]=self.dameContenido(recomFolder)
             objRaiz["url"]=self.context.absolute_url
             listFold.append(objRaiz)
-            for elem in recomFolder.getFolderContents():
+
+            for elem in recomContent:
                 elemObj=self.context.unrestrictedTraverse(elem.getPath())
 
                 if elem.portal_type=="Folder":
@@ -129,16 +138,20 @@ class View(DisplayForm):
     def dameContenido(self,folder):
         """Devuelve una lista con los objetos del contenedor"""
         resultado=[]
+        catalog=getToolByName(folder,"portal_catalog")
+        desta_path = '/'.join(folder.getPhysicalPath())
+        cataloDest=catalog.searchResults(path={'query':desta_path , 'depth': 1})
 
-        for elem in folder.getFolderContents():
+
+        for elem in cataloDest:
             if elem.portal_type!="Folder":
                 elemObj = folder.unrestrictedTraverse(elem.getPath())
 
                 urlE    = elem.getURL()
 
                 if elem.portal_type=="Link" or elem.portal_type=="arcas.sugerencia":
-                    if hasattr(elemObj,"getRemoteUrl") and elemObj.getRemoteUrl!='':
-                        urlE=getRemoteUrl.getRemoteUrl
+                    if elemObj.getRemoteUrl()!='':
+                        urlE=elemObj.getRemoteUrl()
 
 
                 tipoMedio=False
@@ -190,8 +203,12 @@ class View(DisplayForm):
     def getBioList(self):
         """Devuelve un listado de biografías que ese encuentra dentro de de la colección"""
         listBio=[]
-        contexto=self.context.aq_inner
-        for bio in contexto.getFolderContents():
+        contexto=aq_inner(self.context)
+        catalog=getToolByName(contexto,"portal_catalog")
+        desta_path = '/'.join(contexto.getPhysicalPath())
+        cataloDest=catalog.searchResults(path={'query':desta_path , 'depth': 1})
+
+        for bio in cataloDest:
             if bio.portal_type=="arcas.biografia":
                 listObj=contexto.unrestrictedTraverse(bio.getPath())
                 listBio.append({
@@ -200,14 +217,23 @@ class View(DisplayForm):
                     "url":bio.getURL(),
                     "listado":listObj.produccion.output,
                 })
-
         return  listBio
 
     def dameBanners(self):
         """Devuleve los banners a las exhibiciones relacionadas a la coleccion"""
         utilidad= ColeccionUtils(self.context)
         result=[]
-        for exhi in utilidad.dameExhibicionesR():
-            obj={'url':exhi.absolute_url(),'titulo':exhi.title}
-            result.append(obj)
+        dameE=utilidad.dameExhibicionesR()
+        if dameE:
+            for exhi in dameE:
+                obj={'url':exhi.absolute_url(),'titulo':exhi.title}
+                result.append(obj)
         return  result
+
+from arcas.theme.interfaces import IArcasTheme
+class ColeccionDataView(grok.View):
+    grok.context(IColeccion)
+    grok.require('zope2.View')
+    grok.name('colecciondataview')
+    grok.layer(IArcasTheme)
+

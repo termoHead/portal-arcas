@@ -78,7 +78,8 @@ class Renderer(base.Renderer):
 
             for elem in colList:
                 destacado=self.context.unrestrictedTraverse(elem.getPath())
-
+                desta_path = '/'.join(destacado.getPhysicalPath())
+                cataloDest=catalog.searchResults(path={'query':desta_path , 'depth': 1})
 
                 for carpeta in destacado.getFolderContents():
                     if carpeta.portal_type=="Folder" and carpeta.Title!="Galería":

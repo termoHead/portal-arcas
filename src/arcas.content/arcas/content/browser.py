@@ -12,20 +12,17 @@ from zope.component import getMultiAdapter
 from zExceptions import Forbidden
 from suds.client import Client
 from Products.Five.browser import BrowserView
-
 from suds.xsd.doctor import ImportDoctor, Import
 from suds.plugin import MessagePlugin
 from Products.CMFPlone.utils import safe_unicode
 from Products.CMFCore.utils import getToolByName
 from arcas.content.coleccion import IColeccion
-
 from Acquisition import aq_inner
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 from zope.security import checkPermission
 from zc.relation.interfaces import ICatalog
 from arcas.content.utils import ColeccionUtils
-
 import json
 
 
@@ -44,12 +41,9 @@ class ListadoColeccion(BrowserView):
         context = self.context.aq_inner
         catalogo=getToolByName(self.context,"portal_catalog")
         portal_state = getMultiAdapter((context, self.request), name=u'plone_portal_state')
-
         portal=portal_state.portal()
         result=catalogo(object_provides=IColeccion.__identifier__)
-
         listados=[]
-
         for colec in result:
             miOb=context.unrestrictedTraverse(colec.getPath())
             listados.append({
@@ -58,7 +52,6 @@ class ListadoColeccion(BrowserView):
                 "url":colec.getURL(),
                 "img":miOb.imagenLista
             })
-
         return listados
 
 
@@ -77,9 +70,6 @@ class BuscarExhibiciones(BrowserView):
             miColeBrain=miColeBrain[0]
         else:
             return []
-
-
-
         if miColeBrain:
             listados=[]
             miColObj=self.context.unrestrictedTraverse(miColeBrain.getPath())
@@ -97,7 +87,6 @@ class BuscarExhibiciones(BrowserView):
                     "urlFuente" :ppa.getUrlAFuente(),
                     "curador":  ppa.dameCurador()
                 })
-
             return listados
         else:
             return result
@@ -114,5 +103,20 @@ class BuscarExhibiciones(BrowserView):
         query={'getId':idCol,'portal_type':'arcas.coleccion'}
         result=catalogo(query)
         return result
-
-
+        
+class RedidectionView(BrowserView):
+    """Una vista para saltear el root folder"""
+    
+    
+    def __call__(self):        
+        contextURL = self.context.absolute_url()                
+        self.request.response.setHeader("Content-Type", "text/html")
+        self.request.response.redirect(contextURL+"/home")
+        return ""
+    
+    def redirect(self):
+        contextURL = self.context.absolute_url()                
+        self.request.response.setHeader("Content-Type", "text/html")        
+        return self.request.response.redirect(contextURL+"/home")
+        
+        

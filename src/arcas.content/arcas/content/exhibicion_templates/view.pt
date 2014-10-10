@@ -11,31 +11,45 @@
 
     <metal:content-core fill-slot="main">
         <metal:content-core define-macro="main">
-            <tal:def tal:define="curadorObj view/dameCurador|nothing;
-                                coors view/dameCoords|nothing;
+            
+			<div class="markExhibicion" tal:define="curadorObj view/dameCurador|nothing;
+                                colabs view/dameColaboradores|nothing;								
+								coord view/dameCoordinador|nothing;
                                 listaFotos  view/listadoDeImagenesGS3|nothing;
 								datosFull view/dameDatosImgFull | nothing ">
-			<div class="markExhibicion">
 			
             <div class="boxHeader" tal:define="ruta string:${context/absolute_url}/@@images/bgCabezalVista"
                  tal:attributes="style string:background-image:url(${ruta})">
-                <div class="boxTitulo" >
+                <div class="boxTitulo"  >
                     <h2 tal:content="view/dameNombreColeccion">Manuel PUIG</h2>
-                    <h3 class="tituloE" tal:content="context/title">
-						y las cartas desde nueva york
-					</h3>
+                    <h3 class="tituloE" tal:content="context/title">y las cartas desde nueva york</h3>
                 </div>
                 <div class="boxResponsables">
-						<h4>Curador</h4>
-						<h3 class="special" tal:content="python:curadorObj['nombre']">
-							Ernesto Trambonati
-						</h3>
-						<tal:coor tal:condition="coors">
-							<h4 class="label" tal:condition="python:len(coors)>1">Coordinadores</h4>
-							<h4 class="label" tal:condition="python:len(coors)<2">Coordinador</h4>
-							<tal:rr tal:repeat="coordina coors">
-								<h3  tal:content="coordina">Ernesto Trambonati</h3>
-							</tal:rr>
+						<div tal:condition="curadorObj">
+								<span class="labelTitulo">Curador</span>
+								<ul>						
+								<li tal:repeat="cura curadorObj">
+									<span class="special" tal:content="python:cura['nombre']">
+										Ernesto Trambonati
+									</span>
+									<span tal:condition="not:repeat/cura/end">,</span>
+								</li>
+								</ul>
+								
+						</div>
+						<tal:coor tal:condition="colabs">
+							<div>
+							<span  class="labelTitulo">
+							<tal:span tal:condition="python:len(colabs)>1">Colaboradores en</tal:span>
+							<tal:span tal:condition="python:len(colabs)<2">Colaborador de</tal:span>
+							 ésta exhibición
+							 </span></div>
+							<ul>
+							<li tal:repeat="coordina colabs">
+								<span  tal:content="coordina/nombre">Ernesto Trambonati</span>
+								<span tal:condition="not: repeat/coordina/end">,</span>
+							</li>
+							</ul>
 						</tal:coor>
 				</div>
                 <div class="clr"></div>
@@ -100,8 +114,10 @@
                 </div>
 
                 <div class="texto">
-                    <h3 class="tituloSlide" tal:content="python:listaFotos[0].Title" >El Beso de la Mujer Ara&ntilde;a</h3>
-                    <p  class="textoSlide" tal:content="structure python:listaFotos[0].cuerpo.output">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sed vulputate dolor, et ornare mauris. Donec tincidunt magna eget mauris volutpat bibendum. Maecenas ac est vel eros dapibus pulvinar. Fusce nec tristique elit. Morbi ornare scelerisque interdum. Sed tempor tellus ornare tincidunt luctus. Sed at volutpat orci, ac cursus velit. Integer blandit tincidunt sodales. Nunc augue nisl, volutpat eu erat tempus, ullamcorper ultrices neque. Vestibulum tempor justo sit amet dolor pretium mollis. Cras dignissim eleifend erat quis aliquet. Ut velit nisl, blandit id ullamcorper eget, sodales a ipsum. Nam dignissim nisl eget enim laoreet, at volutpat nibh aliquet. Pellentesque pellentesque ornare lacus, congue pellentesque nisi porta pharetra. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sed vulputate dolor, et ornare mauris. Donec tincidunt magna eget mauris volutpat bibendum. Maecenas ac est vel eros dapibus pulvinar. Fusce nec tristique elit. Morbi ornare scelerisque interdum. Sed tempor tellus ornare tincidunt luctus. Sed at volutpat orci, ac cursus velit. Integer blandit tincidunt sodales. Nunc augue nisl, volutpat eu erat tempus, ullamcorper ultrices neque. Vestibulum tempor justo sit amet dolor pretium mollis. Cras dignissim eleifend erat quis aliquet. Ut velit nisl, blandit id ullamcorper eget, sodales a ipsum. Nam dignissim nisl eget enim laoreet, at volutpat nibh aliquet. Pellentesque pellentesque ornare lacus, congue pellentesque nisi porta pharetra. </p>
+					<tal:block tal:condition="datosFull">
+						<h3 class="tituloSlide" tal:content="python:listaFotos[0].Title" >El Beso de la Mujer Ara&ntilde;a</h3>
+						<p  class="textoSlide" tal:content="structure python:listaFotos[0].cuerpo.output">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sed vulputate dolor, et ornare mauris. Donec tincidunt magna eget mauris volutpat bibendum. Maecenas ac est vel eros dapibus pulvinar. Fusce nec tristique elit. Morbi ornare scelerisque interdum. Sed tempor tellus ornare tincidunt luctus. Sed at volutpat orci, ac cursus velit. Integer blandit tincidunt sodales. Nunc augue nisl, volutpat eu erat tempus, ullamcorper ultrices neque. Vestibulum tempor justo sit amet dolor pretium mollis. Cras dignissim eleifend erat quis aliquet. Ut velit nisl, blandit id ullamcorper eget, sodales a ipsum. Nam dignissim nisl eget enim laoreet, at volutpat nibh aliquet. Pellentesque pellentesque ornare lacus, congue pellentesque nisi porta pharetra. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sed vulputate dolor, et ornare mauris. Donec tincidunt magna eget mauris volutpat bibendum. Maecenas ac est vel eros dapibus pulvinar. Fusce nec tristique elit. Morbi ornare scelerisque interdum. Sed tempor tellus ornare tincidunt luctus. Sed at volutpat orci, ac cursus velit. Integer blandit tincidunt sodales. Nunc augue nisl, volutpat eu erat tempus, ullamcorper ultrices neque. Vestibulum tempor justo sit amet dolor pretium mollis. Cras dignissim eleifend erat quis aliquet. Ut velit nisl, blandit id ullamcorper eget, sodales a ipsum. Nam dignissim nisl eget enim laoreet, at volutpat nibh aliquet. Pellentesque pellentesque ornare lacus, congue pellentesque nisi porta pharetra. </p>
+					</tal:block>
                 </div>
                 <div class="clr"></div>
             </div>
@@ -123,25 +139,39 @@
                         </ul>
 					</div>
 					<div class="boxOtrosDatos">
-						<div class="boxCuradorCV">
-							<div class="curadorIMG">
-								<img src="#" tal:attributes="src python:curadorObj['img'];
-															title python:curadorObj['nombre'];" alt="">
-							</div>
-							<div class="datosCurador">
-								<div>
-									<img src="++resources++arcas.content/sobre.gif" alt=""/>
-									<a href="#" title="">cv</a>
+						<div class="boxCuradorCV" tal:condition="curadorObj">						
+							<div class="responsables" tal:define="cureta python:curadorObj[0]">
+								<div class="top">
+									<div class="contacto">
+										<a href="mailto:mail@mail.com"
+										tal:attributes="href string:mailto:${cureta/email}"><img src="++theme++arcas.theme/img/mailCurador.gif"></a><a class="cv" 
+											href="#">cv</a>
+									</div>
 								</div>
-								<h4 class="label">Curador</h4>
-								<h3 class="special" tal:content="python:curadorObj['nombre']">Ernesto Trambonati</h3>
-								<tal:coor tal:condition="coors">
-									<h4 class="label" tal:condition="python:len(coors)>1">Coordinadores</h4>
-									<h4 class="label" tal:condition="python:len(coors)<2">Coordinador</h4>
-									<tal:rr tal:repeat="coordina coors">
-										<h3 class="special" tal:content="coordina">Ernesto Trambonati</h3>
+								<div class="curadorIMG">
+									<img class="fotoCurador" src="#"
+									tal:attributes="src string:http://g3:8080/arca/portal_memberdata/portraits/${cureta/id};
+													title python:cureta['nombre']"/>
+								</div>
+								<tal:cur tal:repeat="cura curadorObj">
+								<div class="datosCurador">		
+									<span class="labelM">Curador</span>
+									<span class="special" tal:content="python:cura['nombre']">Ernesto Trambonati</span>
+								</div>
+								</tal:cur>								
+								<tal:coor tal:condition="coord">
+								<div>									
+									<span class="labelM">
+										<tal:span  tal:condition="python:len(coord)>1">Coordinadores</tal:span>
+										<tal:span  tal:condition="python:len(coord)<2">Coordinador</tal:span>
+										de la Colección
+									</span>
+									<tal:rr tal:repeat="coordina coord">
+										<span class="special" tal:content="coordina">Ernesto Trambonati</span>
 									</tal:rr>
+								</div>
 								</tal:coor>
+								<div class="clr"></div>
 							</div>
 							<div class="listadoEnlaces">
 								<div class="top">
@@ -184,7 +214,9 @@
 
 
 			</div>
-            </tal:def>
+			
+			</div>
+			
 			
 			
 		</metal:content-core>

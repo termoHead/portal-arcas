@@ -2,10 +2,7 @@
 <body>
 <div metal:fill-slot="body">
 
-    <div class="row">
-        <div class="label">Book Marks: <span tal:replace="view/getPalBuscadas" /></div>
-        <div class="label"><span tal:replace="structure view/consulta" /></div>
-    </div>
+    
     <form method="get" tal:attributes="action string:${context/absolute_url}/${view/__name__}">
         <span tal:replace="structure context/@@authenticator/authenticator" />
 
@@ -22,7 +19,7 @@
 
                 <input type="submit" class="context"
                        name="form.button.Search"
-                       value="Search"
+                       value="Search1"
                        i18n:name="submit_button"
                        i18n:attributes="value" />
             </div>

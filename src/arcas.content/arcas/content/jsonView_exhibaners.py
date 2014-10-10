@@ -44,15 +44,21 @@ class JSONExhibicionesList(View):
 
     def datos_contexto(self):
         catalogo=getToolByName(self.contexto,"portal_catalog")
-        colecFolder=catalogo(portal_type="arcas.coleccionesFolder")
+        colecFolder=catalogo.searchResults(portal_type="arcas.coleccionesFolder")
 
         if len(colecFolder)<1:
             return self.emptyData()
 
         miColeccion=""
 
+
+
+
+
         colectFolder=self.context.unrestrictedTraverse(colecFolder[0].getPath())
-        for coleccion in colectFolder.getFolderContents():
+        desta_path = '/'.join(colectFolder.getPhysicalPath())
+        cataloDest=catalog.searchResults(path={'query':desta_path , 'depth': 1})
+        for coleccion in cataloDest:
             colecObj=self.context.unrestrictedTraverse(coleccion.getPath())
             if colecObj.GS_ID==self.idColeccion:
                 miColeccion=colecObj

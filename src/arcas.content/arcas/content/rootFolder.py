@@ -88,14 +88,17 @@ class View(DisplayForm):
         ##recreaFolder= self.getContainer(folder.encode('utf8'))
         ##cuando busca documento hace referencia al campo "documento" que es el destacado del directorio
         catalog=getToolByName(self.context,"portal_catalog")
-        colList=catalog(portal_type='arcas.coleccion',review_state='Publicado')
+        colList=catalog.searchResults(portal_type='arcas.coleccion',review_state='Publicado')
         resuList=[]
         extraFUrl=""
         extraFT=""
         try:
             for elem in colList:
                 destacado=self.context.unrestrictedTraverse(elem.getPath())
-                for carpeta in destacado.getFolderContents():
+                desta_path = '/'.join(destacado.getPhysicalPath())
+                cataloDest=catalog.searchResults(path={'query':desta_path , 'depth': 1})
+
+                for carpeta in cataloDest:
                     if carpeta.portal_type=="Folder" and carpeta.Title!="Galería":
                         extraFUrl=carpeta.getURL()
                         extraFT=carpeta.Title
@@ -128,10 +131,16 @@ class View(DisplayForm):
 
     def dameNoticias(self):
         """devuelve las noticias"""
+
+
+        catalog= getToolByName(self.context,"portal_catalog")
+
         cexto=aq_inner(self.context)
 
         if hasattr(cexto,"novedades"):
-            return cexto.novedades.getFolderContents()
+            folder_path = '/'.join(cexto.novedades.getPhysicalPath())
+            results = catalog(path={'query': folder_path, 'depth': 1})
+            return results
         else:
             return []
 

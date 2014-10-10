@@ -21,6 +21,7 @@
 
 
     </form>
+	
     <div class="resultBox" tal:define="listResult view/buscaTexto|nothing">
         <div tal:repeat="dato listResult"
              tal:condition="listResult">

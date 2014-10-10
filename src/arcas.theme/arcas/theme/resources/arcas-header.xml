@@ -22,11 +22,13 @@
 	<notheme if-path="@@manage-aliases" />
 	<notheme if-path="++add++arcas.coleccionesFolder" />
     <notheme if-path="++add++arcas.exhibicionesFolder" />
+    <notheme if-path="++add++arcas.biografia" />
     <notheme if-path="@@fix-persistent-utilities" />
     <notheme if-path="@@delete-persistent-utility-reg" />
     <notheme if-path="require_login" />
     <notheme if-path="@@new-user" />
     <notheme if-path="++add++arcas.rootFolder" />
+
 
     <replace
             theme-children="//div[@id='header']/ul"

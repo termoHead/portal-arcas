@@ -311,10 +311,9 @@ class UserDataPanel(AccountPanelForm):
                      default='Change your personal information')
 
     def __init__(self, context, request):
-        """ Load the UserDataSchema at view time.
-
-        (Because doing getUtility for IUserDataSchemaProvider fails at startup
-        time.)
+        """
+            Load the UserDataSchema at view time.
+            (Because doing getUtility for IUserDataSchemaProvider fails at startup time.)
         """
         contenedor=context
         if IRootFolder.providedBy(contenedor):

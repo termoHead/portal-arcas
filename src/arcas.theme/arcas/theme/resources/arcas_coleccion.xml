@@ -5,7 +5,6 @@
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 		
 		<theme href="internaColeccion.html" />
-		
 		<replace css:theme-children="#exhibicionHome" css:content-children="div.exhiV"></replace>
         <replace css:theme-children=".tituloColeccion" css:content-children=".tituloColeccion"></replace>
         <replace css:theme-children=".busquedaColeccion" css:content-children=".colecBox"/>
@@ -17,7 +16,6 @@
         <replace css:theme-children=".top" css:content-children=".top"/>
         <replace css:theme-children=".galeriaImagenes" css:content-children=".galeriaBox"/>
         <replace css:theme-children=".biografia" css:content-children=".boxBio"/>
-
         <merge attributes="style" css:theme="#presentacionColeccion" css:content=".boxHeader" />
         <replace css:theme-children=".bannerExhibicion" css:content-children=".bannerExhibicion"/>
         <replace

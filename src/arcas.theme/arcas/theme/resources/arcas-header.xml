@@ -4,7 +4,10 @@
         xmlns:css="http://namespaces.plone.org/diazo/css"
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <!-- Rules applying to standard Plone pages-->
-    <notheme if-path="/inicio/@@manage-portlets" />
+            <notheme if-path="/home/@@manage-portlets" />
+        <notheme if-path="folder_contents" />
+        <notheme if-path="require_login" />
+    <notheme if-path="@@manage-portlets" />
     <notheme if-path="folder_contents" />
     <notheme if-path="@@gsSearch?" />
 	<notheme if-path="@@sharing" />	
@@ -23,6 +26,7 @@
     <notheme if-path="@@delete-persistent-utility-reg" />
     <notheme if-path="require_login" />
     <notheme if-path="@@new-user" />
+    <notheme if-path="++add++arcas.rootFolder" />
 
     <replace
             theme-children="//div[@id='header']/ul"

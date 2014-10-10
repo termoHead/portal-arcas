@@ -9,10 +9,8 @@
 	
 	<drop css:content="#portaltab-index_html"/>
 	 
-    <rules if-path="/arca/home/">
-        <notheme if-path="/home/@@manage-portlets" />
-        <notheme if-path="folder_contents" />
-        <notheme if-path="require_login" />
+    <rules if-path="/arcas/portada/">
+
 
         <xi:include href="arcas-header.xml" />
         <theme href="index.html" />
@@ -29,19 +27,17 @@
     </rules>
 	
 	
-	<rules if-not-path="/arca/home/">
+	<rules if-not-path="/arcas/portada/">
 		
 			<xi:include href="arcas-header.xml" />
-			
-						
 			
 			<rules if-not-path="@@gsSearch">
 			
 				<rules css:if-content=".markColeccion">		
 					<xi:include href="arcas_coleccion.xml" />
 				</rules>
-				<rules if-content="//div[@class='markExhibicion']">			
-					<xi:include href="arcas_exhibicion.xml" />
+				<rules if-content="//div[@class='markExhibicion']">
+                    <xi:include href="arcas_exhibicion.xml" />
 				</rules>
 				
 				

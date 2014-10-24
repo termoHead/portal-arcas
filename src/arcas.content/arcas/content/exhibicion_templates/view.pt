@@ -150,7 +150,7 @@
 								</div>
 								<div class="curadorIMG">
 									<img class="fotoCurador" src="#"
-									tal:attributes="src string:http://g3:8080/arca/portal_memberdata/portraits/${cureta/id};
+									tal:attributes="src string:${context.portal_url}/portal_memberdata/portraits/${cureta/id};
 													title python:cureta['nombre']"/>
 								</div>
 								<tal:cur tal:repeat="cura curadorObj">

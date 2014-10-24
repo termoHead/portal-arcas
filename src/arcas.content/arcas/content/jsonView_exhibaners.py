@@ -51,13 +51,10 @@ class JSONExhibicionesList(View):
 
         miColeccion=""
 
-
-
-
-
         colectFolder=self.context.unrestrictedTraverse(colecFolder[0].getPath())
         desta_path = '/'.join(colectFolder.getPhysicalPath())
         cataloDest=catalog.searchResults(path={'query':desta_path , 'depth': 1})
+
         for coleccion in cataloDest:
             colecObj=self.context.unrestrictedTraverse(coleccion.getPath())
             if colecObj.GS_ID==self.idColeccion:
@@ -69,6 +66,7 @@ class JSONExhibicionesList(View):
 
         utilidad= ColeccionUtils(miColeccion)
         result=[]
+
         for exhi in utilidad.dameExhibicionesR():
             data={'url':exhi.absolute_url()+'/images/baner','titulo':exhi.title,'remoteURL':exhi.absolute_url()}
             result.append(data)

@@ -168,3 +168,20 @@ class View(DisplayForm):
 
 
         return cexto.acerca_de_arcas.el_proyecto_arcas.absolute_url()
+
+    def dameTextoDescri(self):
+        """Texto de destacado"""
+        caracteresCorte=600
+        idObject="el_proyecto_arcas"
+        catalog=getToolByName(self.context,"portal_catalog")
+        brain=catalog(id=idObject)[0]
+
+        texto=brain.getObject().getText()
+        if texto>caracteresCorte:
+            corteTexto=texto[:caracteresCorte]
+            apertura= corteTexto.rfind("<p>")
+            cierre  = corteTexto.rfind("</p>")
+            if cierre<apertura:
+                corteTexto=corteTexto+"</p>"
+
+        return "<p>%s</p>%s" %(brain.Description,corteTexto)

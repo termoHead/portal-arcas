@@ -144,7 +144,8 @@
             <div class="presentacion">
                 <h3>PRESENTACION de ARCAS</h3>
                 <div class="centro">
-                    <p tal:replace="structure context/cuerpo/output"></p>
+                    <div tal:content="structure view/dameTextoDescri">jjj</div>
+                    <!--p tal:replace="structure context/cuerpo/output"></p-->
                 </div>
                 <div class="pie">
                     <a href="#" tal:attributes="href view/dameProyectoUrl"

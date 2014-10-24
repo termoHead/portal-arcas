@@ -23,7 +23,7 @@
     </form>
 	
     <div class="resultBox" tal:define="listResult view/buscaTexto|nothing">
-        <div tal:repeat="dato listResult"
+        <div class="itemResult" tal:repeat="dato listResult"
              tal:condition="listResult">
             <tal:def tal:define="titulo  python:dato['titulo'].encode('utf-8') or None;
                                  filTitulo python:dato['preserva'];
@@ -36,14 +36,16 @@
                 <div tal:content="filTitulo">Full text</div>
                 <div tal:content="fullText">Full text</div>
             </tal:def>
-
+<div class="clr"></div>
         </div>
         <div tal:condition="python: not listResult and view.error!=''">
             <div class="msj" tal:condition="python:view.error=='urlError'">No se pudo acceder al servicio de Greenstone. Inténtelo más tarde</div>
             <div class="msj" tal:condition="python:view.error!='urlError'"
                     tal:content="view/error"></div>
         </div>
+
     </div>
+     <div class="clr"></div>
 </div>
 </body>
 </html>

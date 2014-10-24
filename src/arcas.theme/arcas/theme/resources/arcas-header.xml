@@ -28,6 +28,7 @@
     <notheme if-path="require_login" />
     <notheme if-path="@@new-user" />
     <notheme if-path="++add++arcas.rootFolder" />
+       <notheme if-path="++add++arcas.enlacegs" />
 
 
     <replace

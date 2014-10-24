@@ -75,8 +75,9 @@
                         </div>
                     </tal:coordinadores>
                 </div>
-                <div class="boxRecomienda" tal:define="listadoReco view/dameDicRecomendados | nothing"
-				tal:condition="listadoReco">
+                <div class="boxRecomienda"
+                        tal:define="listadoReco view/dameDicRecomendados | nothing"
+				        tal:condition="listadoReco">
                     <span class="label">Lecturas que profundizan en este tema</span>
                     <div id="tabs"                            
 							tal:condition="python:len(listadoReco)>0">

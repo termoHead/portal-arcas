@@ -103,23 +103,28 @@ class View(DisplayForm):
         """
             devuelve un listado de las carpetas y sus contenidos como recomendados
         """
-        idRec=self.context.id+"_estudios"
         listFold=[]
+        excludList=(self.context.id+"_estudios",self.context.id+"_gale")
         catalog=getToolByName(self.context,"portal_catalog")
+        colection_path = '/'.join(aq_inner(self.context).getPhysicalPath())
+        idRec=excludList[0]
         if hasattr(self.context,idRec):
-            recomFolder=aq_inner(self.context[idRec])
 
+            recomFolder=aq_inner(self.context[idRec])
             desta_path = '/'.join(recomFolder.getPhysicalPath())
             recomContent=catalog.searchResults(path={'query':desta_path , 'depth': 1})
-
-
             objRaiz={}
             objRaiz["titulo"]="Estudios"
             objRaiz["content"]=self.dameContenido(recomFolder)
             objRaiz["url"]=self.context.absolute_url
             listFold.append(objRaiz)
+        else:
+            print "la coleccion no tiene carpeta Recomendados"
+            return None
 
-            for elem in recomContent:
+        otrosF=catalog.searchResults(path={'query':colection_path , 'depth': 1})
+        for elem in otrosF:
+            if elem.id not in excludList:
                 elemObj=self.context.unrestrictedTraverse(elem.getPath())
 
                 if elem.portal_type=="Folder":
@@ -128,10 +133,10 @@ class View(DisplayForm):
                     obj["content"]  =self.dameContenido(elemObj)
                     obj["url"]  =elem.getURL()
                     listFold.append(obj)
-            return listFold
-        else:
-            print "la coleccion no tiene carpeta Recomendados"
-            return None
+
+
+        return listFold
+
 
 
 

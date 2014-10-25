@@ -38,7 +38,13 @@ from Acquisition import aq_inner
 from plone.directives.dexterity import DisplayForm
 from arcas.content.behaviors import IColecGroupName
 
+from Acquisition import aq_parent
 
 class View(DisplayForm):
     grok.context(IBiografia)
     grok.require('zope2.View')
+
+    def dameColeccionNombre(self):
+        padre=aq_parent(self.context)
+
+        return padre.Title()

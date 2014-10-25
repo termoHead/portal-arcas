@@ -11,7 +11,11 @@
 
 <metal:content-core fill-slot="main">
     <metal:content-core define-macro="main">
-    <div class="contenido">
+    <div class="contenido" id="bioTemplate">
+    <div id="seccion">
+    <span class="bioText">colección</span>
+    <h4 tal:content="view/dameColeccionNombre"></h4>
+    </div>
     <span class="bioText">Biografía</span>
     <div id="contenedoText">
         <h2 tal:content="context/title">Nombre</h2>
@@ -19,11 +23,14 @@
              tal:define="descri context/descri|nothing;
                         cv      context/cuerpo|nothing;
                         obras   context/produccion|nothing">
-
+        <div class="columnas" >
             <div class="descri" tal:content="descri" tal:condition="descri"></div>
             <div class="cv" tal:content="structure cv/output" tal:condition="cv"></div>
             <span class="label">Obras</span>
             <div class="bras" tal:content="structure obras/output" tal:condition="obras"></div>
+            <div class="clr"> </div>
+        </div>
+            <div class="clr"> </div>
         </div>
     </div>
     </div>

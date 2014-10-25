@@ -16,6 +16,8 @@
         <theme href="index.html" />
         <replace css:theme-children="#exhibicionHome" css:content-children="div.exhiV"></replace>
         <drop css:content-children=".buscadorColecciones"></drop>
+        <before css:theme=".cabezalInterno .clr" css:content-children="#seccion"></before>
+
         <replace
                 css:theme-children="div#vi"
                 css:content-children="div#boxColecciones"
@@ -30,10 +32,9 @@
 	<rules if-not-path="/arcas/portada/">
 		
         <xi:include href="arcas-header.xml" />
-        <rules css:if-content=".portaltype-arcas-biografia">
-            <replace css:content=".bioText" css:theme-children=".cabezalInterno" />
-            <replace css:content="#contenedoText" css:theme=".texto p" />
-        </rules>
+
+
+
         <rules if-not-path="@@gsSearch">
 
             <rules css:if-content=".markColeccion">

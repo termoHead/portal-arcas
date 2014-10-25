@@ -65,7 +65,7 @@ text-align:left;
 }
 body.home #header{
 height:107px;
-background:url("images/bgHeaderHome.jpg") no-repeat left top #403a31;
+background:url("/++theme++arcas.theme/images/bgHeaderHome.jpg") no-repeat left top #403a31;
 border-bottom:1px solid #ffffff;
 }
 #header{
@@ -84,7 +84,7 @@ float:left;
 font-family:"Florencesans","Arial",sans-serif;
 font-size:12px;
 height:20px;
-background:url("images/separadorMenu.gif") no-repeat left top transparent;
+background:url("/++theme++arcas.theme/images/separadorMenu.gif") no-repeat left top transparent;
 padding:0 9px;
 }
 ul.menu li a{
@@ -140,7 +140,7 @@ margin: 22px 60px 0 0;
 .volanta{
 width: 671px;
 font-family:"Calibri","Arial",sans-serif;
-    background: url("images/solapaHomeTop.png") no-repeat;
+    background: url("/++theme++arcas.theme/images/solapaHomeTop.png") no-repeat;
 font-size:12px;
 color:#ffffff;
 float:left;
@@ -416,7 +416,7 @@ color:#ffcc66;
 margin-bottom:10px;
 float:left;
 }
-#contenido .presentacion .centro div{
+#contenido .presentacion .centro div,.columnas{
 float:left;
 font-size:12px;
 color:#ffffff;
@@ -527,7 +527,7 @@ clear:left;
 font-size:13px;
 color:#FFCC66;
 padding-left:27px;
-background:url("images/homeBreadcrumb.gif") left center transparent no-repeat;
+background:url("/++theme++arcas.theme/images/homeBreadcrumb.gif") left center transparent no-repeat;
 margin: 10px 0 5px 44px;
 }
 .breadcrumb a{
@@ -1179,13 +1179,16 @@ body.listadoColecciones .cabezalInterno h2{
     color: #ffffff;
 }
 body.faq .cabezalInterno{
-background-image:url("images/bgCabezalEstandar.jpg");
+background-image:url("/++theme++arcas.theme/images/bgH1Standars.gif");
 }
 body.listadoExhibiciones .cabezalInterno{
-background-image:url("images/bgCabezalListadoExhibiciones.jpg");
+background-image:url("/++theme++arcas.theme/images/bgCabezalListadoExhibiciones.jpg");
 }
 body.listadoColecciones .cabezalInterno{
-background-image:url("images/bgCabezalListadoColecciones.jpg");
+background-image:url("/++theme++arcas.theme/images/bgCabezalListadoColecciones.jpg");
+}
+body.listadoExhibiciones .cabezalInterno{
+background-image:url("/++theme++arcas.theme/images/tituloTrama.png");
 }
 body.estandar .texto{
     margin:38px 60px 40px 69px;

@@ -35,6 +35,18 @@ $(document).ready(function() {
 			}
 		});
 	}
+
+    $("#masColecBoton").click(function(e){
+        e.preventDefault()
+
+        if($( e.currentTarget).html().indexOf("(+)")>=0){
+           $( e.currentTarget).html("(-) colapsar texto")
+        }else{
+           $( e.currentTarget).html("(+) expandir texto")
+        }
+        $("#extraColeccion").toggle("slow");
+
+    })
 });
 
 function cambiaSlide(ev){
@@ -57,6 +69,7 @@ function cambiaSlide(ev){
 		hojaActiva=ev.currentTarget
 	}
 }
+
 function activaSolapas(){
 	solapaActiva=$(".listadoRecomendacion .solapa")[0]
     $(".listadoRecomendacion .solapa").click(function(evt){		

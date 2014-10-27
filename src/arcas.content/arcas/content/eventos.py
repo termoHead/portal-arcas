@@ -21,7 +21,7 @@ PREFIJO_COOR_POTENCIAL="_pot"
 import transaction
 carpetasDict=[
     {"id":"gale","titulo":"Galería","tipo":"Folder","constraint":["Image"],"descri":"Imágenes que se muestran como galeria de la colección"},
-    {"id":"estudios","titulo":"Estudios","tipo":"Folder","constraint":["Link"],"descri":"Toda la información complementaria a la colección"},
+    {"id":"estudios","titulo":"Estudios","tipo":"Folder","constraint":["arcas.sugerencia"],"descri":"Toda la información complementaria a la colección"},
 ]
 exhibiDict=[
     {"id":"enlace","titulo":"Enlaces","tipo":"Folder","constraint":["arcas.exhibicion","Document"],"descri":"Información complementaria"},

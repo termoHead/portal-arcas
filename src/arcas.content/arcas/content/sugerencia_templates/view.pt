@@ -11,19 +11,32 @@
 
 <metal:content-core fill-slot="main">
     <metal:content-core define-macro="main">
+        <div id="seccion">
+            <span tal:content="view/colecNmbre">Manuel Puig</span>
+            <h4>Estudios</h4>
+        </div>
+        <div id="cuerpo">
         <span tal:content="context/tipoMedio"></span>
             <h1 tal:content="context/title">Sugerencia</h1>
-        <div class="descri" tal:content="context/description"></div>
+
         <tal:def tal:define="autores context/autores | nothing;
+
                             remote context/urlRemoto | nothing">
-            <span tal:repeat="autor autores"
-               tal:content="autor"
-                    tal:condition="autores"></span>
-            <a href="" title="Enlace"
+            <div class="autores">
+            <tal:r tal:repeat="autor autores"
+                    tal:condition="autores">
+                <span tal:content="autor" />
+                <span tal:condition="not: repeat/autor/end"
+                                tal:replace="string:; "/>
+            </tal:r>
+
+            </div>
+            <div class="descri" tal:content="context/description"></div>
+            <a href="" title="Enlace" target="_blank"
                tal:attributes="href remote"
                     tal:condition="remote">Ir al sitio relacionado</a>
         </tal:def>
-
+        </div>
     </metal:content-core>
 </metal:content-core>
 

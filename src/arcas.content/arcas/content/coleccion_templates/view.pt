@@ -49,9 +49,9 @@
                 <div class="descriColect">
                     <h4>Acerca de esta Coleccion</h4>
                     <p tal:content="context/description">Descripción de la colección</p>
+                    <div id="extraColeccion" style="display:none" tal:content="structure  context/cuerpo/output">Descripción de la colección</div>
                     <div class="pie">
-                        <a href="#" tal:attributes="href string: ${context/absolute_url}/@@coleccionDataView;
-                    title context/title">(+) sobre esta colecci&oacute;n</a>
+                        <a href="#" id="masColecBoton" tal:attributes="title context/title">(+) expandir texto</a>
                     </div>
 
                 </div>
@@ -101,10 +101,16 @@
                                         <tal:define tal:define="tipo subI/tipo|nothing;
                                                                 lautores subI/autores | nothing">
                                             <span class="tipo" tal:condition="tipo" >(<tal:tip tal:replace="python:subI['tipo'].upper()" />)</span>
-                                            <span class="autores" tal:repeat="autorA lautores"
-                                                    tal:content="autorA" tal:condition="lautores">Forasteli, Fabrici
-                                            </span>
-                                            <a href="#" tal:attributes="href subI/url" tal:content="subI/titulo"></a>
+                                            <div class="autores">
+                                                <tal:r tal:repeat="autorA lautores">
+                                                    <span class="autores"
+                                                            tal:content="autorA" tal:condition="lautores">Forasteli, Fabrici
+                                                    </span>
+                                                    <span tal:condition="not: repeat/autorA/end"
+                                                            tal:content="string:; ">; </span>
+                                                  </tal:r>
+                                            </div>
+                                            <a href="#" tal:attributes="href subI/url" tal:content="subI/descri"></a>
                                         </tal:define>
                                     </div>
                                 </div>
@@ -195,7 +201,7 @@
                                 <p tal:content="autor/descri"></p>
                                 <div class="pie">
                                     <a href="#" tal:attributes="href autor/url;alt string:ver más sobre ${autro/nombre}"
-                                       alt="más sobre su vida">(+) sobre su vida</a>
+                                       alt="más sobre su vida">biografía completa</a>
                                 </div>
                             </div>
                             <div class="produccion">

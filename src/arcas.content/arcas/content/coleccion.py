@@ -14,7 +14,7 @@ from plone.namedfile.field import NamedBlobImage
 from plone.directives import form
 
 from z3c.relationfield.schema import RelationList, RelationChoice
-
+import unicodedata
 class IColeccion(form.Schema):
     """A conference program. Programs can contain Sessions."""
     form.fieldset(
@@ -44,29 +44,30 @@ class IColeccion(form.Schema):
         required=False,
     )
     imagenCabecera=NamedBlobImage(
-        title=_(u"Imagen de la cabecera de la coleccion"),
-        description=_("Esta imagen se usa como cabezal en la visualizacion de la coleccion"),
+        title=_(u"Imagen cabezal"),
+        description=_(u"Esta imagen se usa como cabezal en la visualización de la coleccion"),
         required=False,
     )
     imagenHome=NamedBlobImage(
-        title=_(u"Imagen para mostrar en la pagina principal"),
-        description=_("Esta imagen se usa en la home"),
+        title=_(u"Imagen para la Portada"),
+        description=_(u"Esta imagen se usa en la página principal"),
         required=False,
     )
 
     imagenLista=NamedBlobImage(
-        title=_(u"Imagen para listado"),
+        title=_(u"Imagen listado"),
         description=_("Esta imagen se usa en el listado de colecciones"),
         required=False,
     )
 
     GS_ID= schema.TextLine(
-        title=u"ID de la coleccion",
-        description=u"Nombre de la coleccion en GS3. Se requiere para hacer las busquedas",
+        title=u"ID de la colección",
+        description=_(u"Nombre de la colección en GS3. Se requiere para hacer las busquedas"),
         required=True,
     )
     creativeURL=schema.TextLine(
         title=_(u"URL al Creative Commons"),
+        description=_(u"url a la Licencia CC"),
         required=False,
     )
 
@@ -154,9 +155,15 @@ class View(DisplayForm):
 
                 urlE    = elem.getURL()
 
-                if elem.portal_type=="Link" or elem.portal_type=="arcas.sugerencia":
-                    if elemObj.getRemoteUrl()!='':
-                        urlE=elemObj.getRemoteUrl()
+                if elem.portal_type=="Link":
+                    urlE=elemObj.getRemoteUrl()
+
+                if elem.portal_type=="arcas.sugerencia":
+                    urlE=elemObj.urlRemoto
+
+
+
+
 
 
                 tipoMedio=False

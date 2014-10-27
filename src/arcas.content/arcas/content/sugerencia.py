@@ -77,7 +77,7 @@ def remoteURLIndexer(context):
 from Acquisition import aq_inner
 from plone.directives.dexterity import DisplayForm
 from arcas.content.behaviors import IColecGroupName
-
+from Acquisition import aq_parent, aq_inner
 
 class View(DisplayForm):
     grok.context(ISugerencia)
@@ -99,3 +99,12 @@ class View(DisplayForm):
             return "resena_icon.gif"
         elif self.context.tipoMedio==u"articulo":
             return "articulo_icon.gif"
+
+
+    def colecNmbre(self):
+        """Nombre de la coleccion"""
+        parentO=aq_parent(aq_inner(self.context))
+        if parentO.title=="Estudios":
+            return aq_parent(parentO).title
+        else:
+            return parentO.title

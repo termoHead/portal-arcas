@@ -19,7 +19,7 @@
                 <div class="clr"></div>
             </div>
             <div tal:content="context/description">Descripcion de la colección</div>
-            <div tal:content="context/row/body">Descripcion de la colección</div>
+            <div tal:content="context/cuerpo">Descripcion de la colección</div>
 
         </div>
     </div>

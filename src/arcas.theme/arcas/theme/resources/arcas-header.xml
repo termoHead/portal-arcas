@@ -23,12 +23,14 @@
 	<notheme if-path="++add++arcas.coleccionesFolder" />
     <notheme if-path="++add++arcas.exhibicionesFolder" />
     <notheme if-path="++add++arcas.biografia" />
+    <notheme if-path="++add++arcas.sugerencia" />
     <notheme if-path="@@fix-persistent-utilities" />
     <notheme if-path="@@delete-persistent-utility-reg" />
     <notheme if-path="require_login" />
     <notheme if-path="@@new-user" />
     <notheme if-path="++add++arcas.rootFolder" />
        <notheme if-path="++add++arcas.enlacegs" />
+    <notheme if-path="folder_constraintypes_form" />
 
 
     <replace
@@ -52,6 +54,32 @@
     </replace>
     <replace css:theme-children="title" css:content-children="title"></replace>
 
+    <rules css:if-content=".portaltype-arcas-biografia">
+
+
+        <replace css:theme=".cabezalInterno div" >
+            <div class="titulo">
+                <xsl:copy-of select="//div[@id='seccion']/*" />
+            </div>
+        </replace>
+        <drop css:content-children=".bioTemplate #seccion"></drop>
+
+
+    </rules>
+
+    <rules css:if-content=".portaltype-arcas-sugerencia">
+        <replace css:theme=".cabezalInterno div" >
+            <div class="titulo">
+                <xsl:copy-of select="//div[@id='seccion']/*" />
+            </div>
+        </replace>
+        <drop css:content-children=".bioTemplate #seccion"></drop>
+        <replace css:theme="#contenido .texto">
+            <div class="texto">
+                 <xsl:copy-of select="//div[@id='cuerpo']/*" />
+            </div>
+        </replace>
+    </rules>
 	
     <before css:theme="#presentacionColeccion" css:content="#edit-bar"></before>
     <before css:theme="#presentacionExhibicion" css:content="#edit-bar"></before>

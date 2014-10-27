@@ -729,10 +729,18 @@ padding:15px 7px;
 display:block;
 }
 .listadoRecomendacion .centro span.tipo{
-font-size:10px;
-color:#ffffff;
+    font-size:10px;
+    color:#ffffff;
+    padding: 0;
+    margin: 0;
+    line-height: 10px;
 }
-.listadoRecomendacion .centro span.autores{
+
+.listadoRecomendacion .centro .item{margin-bottom: 12px;}
+
+
+.listadoRecomendacion .centro .autores span{
+    display:inline;
 font-size:10px;
 color:#000000;
 }
@@ -1524,3 +1532,11 @@ a.linkFuentes img{ margin:0 8px 0 8px; float:left;padding-top:5px}
 .datosExtra ul{padding-bottom:14px}
 .datosExtra ul li{color:#f7feff}
 .itemResult{margin-bottom: 25px}
+.portaltype-arcas-biografia #seccion{
+    display:none ;}
+.cabezalInterno .titulo{color:#403a31; margin: 0px 0 0 68px; padding-top: 10px;}
+.cabezalInterno .titulo span{font-size: 10px}
+.cabezalInterno .titulo h4{color:#403a31;font-size:25px}
+.portaltype-arcas-biografia  h2{color:#ffcc66; margin: 0 0 25px 0;}
+.portaltype-arcas-biografia  .textoBox{margin-top: 25px;}
+.descri

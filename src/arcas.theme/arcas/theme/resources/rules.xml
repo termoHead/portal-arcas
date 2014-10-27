@@ -6,7 +6,7 @@
         xmlns:xi="http://www.w3.org/2001/XInclude">
 		
     <!-- Rules applying to standard Plone pages  -->
-	
+
 	<drop css:content="#portaltab-index_html"/>
 	 
     <rules if-path="/arcas/portada/">
@@ -56,9 +56,9 @@
                     @@navigation-controlpanel and contact-info and
                     @@site-controlpanel">
                 <rules if-content="not(//div[@class='markColeccion']) and
-                not(//div[@class='markExhibicion']) and
-                not(//div[@class='markListColeccion']) and
-                not(//div[@class='markListExhibicion'])">
+                                   not(//div[@class='markExhibicion']) and
+                                   not(//div[@class='markListColeccion']) and
+                                   not(//div[@class='markListExhibicion'])">
 
                     <theme href="estandar.html" />
 
@@ -79,6 +79,7 @@
                 </rules>
 
             </rules>
+
 
         </rules>
 

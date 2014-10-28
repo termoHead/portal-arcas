@@ -133,23 +133,43 @@ class ColeccionUtils(object):
         return infoCoor
 
     def dameGrupo(self,colec):
-
         colec=self.coleccion
         ppa=IColecGroupName(colec)
         return ppa.groupName
 
 
 
-    def dameCurador(self):
+    def dameCurador(self,idExhi):
         """devuelve el curador de una coleccion en lista"""
 
+        coleccion=self.coleccion
+        ls=[]
+        catalogo=getToolByName(coleccion,"portal_catalog")
+        membert=getToolByName(coleccion,"portal_membership")
+        memberdat=getToolByName(coleccion,"portal_memberdata")
 
-        return ["No hay curador de una coleccion"]
+        try:
+            brain=catalogo.searchResults({"id":idExhi})[0]
+        except:
+            return None
 
-        #coleccion=self.coleccion
-        #ls=[]
-        #catalogo=getToolByName(coleccion,"portal_catalog")
-        #query={"path":"/".join(coleccion.getPhysicalPath()),'object_provides':ICurador.__identifier__}
+        miExhiOb=coleccion.unrestrictedTraverse(brain.getPath())
+        curadores=miExhiOb.curador
+
+        for curador in curadores:
+            if curador:
+                persona =membert.getMemberById(curador)
+                portrait=memberdat._getPortrait(curador)
+            else:
+                return None
+
+            dC={"nombre":persona.getProperty('fullname'),
+                "mail":persona.getProperty('email'),
+                "portrait":portrait}
+            ls.append(dC)
+
+        return ls
+
         #result  =catalogo(query)
         """
         for elem in result:

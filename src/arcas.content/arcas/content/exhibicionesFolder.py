@@ -49,12 +49,14 @@ class View(DisplayForm):
         listados=[]
 
         for exhi in result:
+
             miOb = contexto.unrestrictedTraverse(exhi.getPath())
             if miOb.coleccionR!=None:
                 miCol= miOb.coleccionR.to_object
                 ppa=ColeccionUtils(miCol)
 
                 listados.append({
+                    "id":exhi.id,
                     "titulo"    :exhi.Title,
                     "subTitulo" :miCol.Title(),
                     "descri"    :exhi.Description,
@@ -63,7 +65,7 @@ class View(DisplayForm):
                     "coors"     :ppa.getCoordinadores(),
                     "idColec"   :miCol.id,
                     "urlFuente" :ppa.getUrlAFuente(),
-                    "curador":  ppa.dameCurador()
+                    "curador":  ppa.dameCurador(exhi.id)
                 })
 
         return listados

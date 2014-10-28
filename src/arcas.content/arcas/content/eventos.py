@@ -205,6 +205,9 @@ def onCreaPerfil(evento,obj):
 
 def onModificaPerfil(evento,obj):
     """se paso a un evento en arcas.policy.adapter.on_save"""
+    import pdb
+    pdb.set_trace()
+
     pass
 
 

@@ -26,19 +26,27 @@
                  tal:define="listado view/dameListaExhi|nothing" tal:condition="listado">
                 <div class="tituloExhibicion">
                         <a class="size1" href="#" tal:attributes="href colec/url;
-                                                title colec/titulo"
-                                 ><img src="++theme++arcas.theme/img/empty.gif" alt=""/></a>
+                                                title colec/titulo">
+                            <span class="subtitulo" tal:content="colec/subTitulo"></span>
+                            <span class="titulo" tal:content="colec/titulo"></span>
+                        </a>
 
                 </div>
-                <div class="containerRight">
-                    <p class="descri" tal:content="colec/descri">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-                    <tal:cu tal:repeat="curador colec/curador">
+                <div class="containerRight"
+                        tal:define="curadores colec/curador | nothing">
+                    <p class="descri" tal:content="colec/descri">
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                    <tal:cu tal:repeat="curador curadores"
+                            tal:condition="curadores">
                         <div class="datosExtra">
-                            <img src=""  tal:replace="structure curador/@@images/retrato/thumb"/>
+                            <span class="portrait"><img src=""  tal:replace="structure curador/portrait"/></span>
                             <div>
                                 <span class="label">Curador</span>
-                                <span class="special" tal:content="curador/title">Camilo Peretti</span>
-
+                                <span class="special">
+                                <a href="#" tal:attributes="href string:mailto:${curador/mail};
+                                                            title curador/nombre"
+                                       tal:content="curador/nombre">Nombre coordinador</a>
+                                </span>
                                 <span class="label">Colaboradores</span>
 								<ul>
                                 <tal:rC tal:repeat="coor colec/coors">

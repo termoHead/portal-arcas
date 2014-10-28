@@ -54,6 +54,7 @@ class EnhancedUserDataPanelAdapter(UserDataPanelAdapter):
         else:
             return ""
         return value
+
     def set_colecCoordina(self, value):
         valueX=','.join(value)
         return self.context.setMemberProperties({'colecAsignadas': valueX})

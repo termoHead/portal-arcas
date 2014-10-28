@@ -154,12 +154,21 @@ clear:left;
 font-family:"Attic",serif;
 text-align:left;
 }
-.tituloExhibicion a img{
+.tituloExhibicion a {
 width:180px;
-height:129px
+height:129px;
+   display:block;
+    padding: 30px 0 0 10px ;
 }
 body.home .tituloExhibicion{
 margin: 20px 0 0 345px;
+}
+
+.tituloExhibicion .titulo{font-family:"Attic",serif !important;
+font-size:20px;
+color:#ffffff;
+font-weight:normal;
+    display:block;
 }
 .tituloExhibicion h2{
 font-family:"Attic",serif !important;
@@ -167,7 +176,7 @@ font-size:41px;
 color:#ffffff;
 font-weight:normal;
 line-height: 41px;
-    width: 270px;
+    width: 170px;
     display: block;
 }
 .tituloExhibicion h2 a{color:#ffffff;}
@@ -1539,4 +1548,4 @@ a.linkFuentes img{ margin:0 8px 0 8px; float:left;padding-top:5px}
 .cabezalInterno .titulo h4{color:#403a31;font-size:25px}
 .portaltype-arcas-biografia  h2{color:#ffcc66; margin: 0 0 25px 0;}
 .portaltype-arcas-biografia  .textoBox{margin-top: 25px;}
-.descri
+.portrait img{width: 55px; height: 55px}

@@ -110,7 +110,7 @@
                                                             tal:content="string:; ">; </span>
                                                   </tal:r>
                                             </div>
-                                            <a href="#" tal:attributes="href subI/url" tal:content="subI/descri"></a>
+                                            <a href="#" tal:attributes="href subI/url" tal:content="subI/titulo"></a>
                                         </tal:define>
                                     </div>
                                 </div>

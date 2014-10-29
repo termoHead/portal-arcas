@@ -13,7 +13,6 @@
             <h2>EXHIBICIONES VIRTUALES</h2>
             <div class="clr"></div>
         </div>
-    
 		<div class="conColumnas">
 			<div class="texto">
 				<p  tal:content="structure context/cuerpo/output">texto</p>
@@ -38,7 +37,8 @@
                         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
                     <tal:cu tal:repeat="curador curadores"
                             tal:condition="curadores">
-                        <div class="datosExtra">
+                        <div class="datosExtra"
+                                tal:define="coordinadores colec/coors|nothing">
                             <span class="portrait"><img src=""  tal:replace="structure curador/portrait"/></span>
                             <div>
                                 <span class="label">Curador</span>
@@ -47,13 +47,16 @@
                                                             title curador/nombre"
                                        tal:content="curador/nombre">Nombre coordinador</a>
                                 </span>
-                                <span class="label">Colaboradores</span>
-								<ul>
-                                <tal:rC tal:repeat="coor colec/coors">
-                                    <li> <a href="#" tal:attributes="href string:mailto:${coor/email}; title coor/title"
-                                       tal:content="coor/title">Nombre coordinador</a></li>
-                                </tal:rC>
-								</ul>
+                                <div class="seccionCoor" tal:condition="coordinadores">
+                                    <span>Coordinador<tal:o tal:condition="python:len(coordinadores)>1">es</tal:o></span>
+
+                                    <ul>
+                                    <tal:rC tal:repeat="coor coordinadores">
+                                        <li > <a href="#" tal:attributes="href string:mailto:${coor/email}; title coor/title"
+                                           tal:content="coor/title">Nombre coordinador</a></li>
+                                    </tal:rC>
+                                    </ul>
+                                </div>
                             </div>
                             <div class="clr"></div>
                         </div>
@@ -64,7 +67,6 @@
             </div>
             </tal:r>
         </div>
-    
 	</div>
 	</metal:content-core>
 </metal:content-core>

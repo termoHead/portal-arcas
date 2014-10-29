@@ -87,7 +87,7 @@
                                 </div>
                                 <div class="links">
                                     <a href="#" class="izq" title="Enlace a la colección" tal:attributes="href artDestacado/url">Ver COLECCION</a>
-                                    <a href="#" class="der" tal:attributes="href string:${artDestacado/extraFolderUrl}/exhibiciones/exhibPorColeccion?idCol=${artDestacado/id}"
+                                    <a href="#" class="der" tal:attributes="href string:${artDestacado/extraFolderUrl}"
                                       >Ver Estudios</a>
                                 </div>
                                 <div class="clr"></div>

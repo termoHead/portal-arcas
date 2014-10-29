@@ -196,10 +196,12 @@ class View(DisplayForm):
         if hasattr(context,context.id+"_gale"):
             galeFold=context[context.id+"_gale"]
             galePath="/".join(galeFold.getPhysicalPath())
-            result=catalogo(path=galePath,portal_type="Image")
+            result=catalogo(path=galePath,portal_type="Image",sort_on='getObjPositionInParent')
             
             for re in result:
+                
                 foto=context.unrestrictedTraverse(re.getPath())
+
                 iniH=foto.height
                 altoSugerido=80
                 relH=((altoSugerido*100)/iniH)

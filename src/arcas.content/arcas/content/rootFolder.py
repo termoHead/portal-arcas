@@ -98,14 +98,20 @@ class View(DisplayForm):
                 desta_path = '/'.join(destacado.getPhysicalPath())
                 cataloDest=catalog.searchResults(path={'query':desta_path , 'depth': 1})
 
+                """
                 for carpeta in cataloDest:
                     if carpeta.portal_type=="Folder" and carpeta.Title!="Galería":
                         extraFUrl=carpeta.getURL()
                         extraFT=carpeta.Title
                         break
+                """
+                extraFUrl="%s/%s_estudios" %(elem.getURL(),elem.id)
+                extraFT="Estudios"
                 descrD=elem.Description
                 if len(descrD)>350:
                     descrD=descrD[0:descrD[:350].rfind(" ")]+" ..."
+
+
 
                 resuList.append({
                     "titulo":elem.Title,

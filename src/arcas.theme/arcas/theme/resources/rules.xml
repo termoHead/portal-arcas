@@ -40,8 +40,10 @@
             <rules css:if-content=".markColeccion">
                 <xi:include href="arcas_coleccion.xml" />
             </rules>
-            <rules if-content="//div[@class='markExhibicion']">
-                <xi:include href="arcas_exhibicion.xml" />
+            <rules if-content="//div[@class='markListExhibicion']">
+                
+                <theme href="listadoExhibiciones.html" />
+
             </rules>
 
             <rules if-content="//div[@class='markListColeccion'] or //div[@class='markListExhibicion']">
@@ -97,7 +99,7 @@
 			
 	</rules>
 
-	
+
 	<!--
 	<rules if-not-path="/arca/home/">
 		<xi:include href="arcas_interna_head.xml" />

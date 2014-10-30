@@ -181,7 +181,7 @@
                             <h4>BREVE BIOGRAFIA</h4>
                             <p tal:content="unAutor/descri"></p>
                             <div class="pie">
-                                <a href="#" tal:attributes="href unAutor/url;alt string:ver más sobre ${unAutor/nombre}"
+                                <a href="#" target="_blank" tal:attributes="href unAutor/url;alt string:ver más sobre ${unAutor/nombre}"
                                    alt="más sobre su vida">(+) sobre su vida</a>
                             </div>
                         </div>

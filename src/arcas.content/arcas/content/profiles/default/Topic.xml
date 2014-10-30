@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<object name="Topic"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    i18n:domain="plone"
+    meta_type="Factory-based Type Information with dynamic views" >
+    <property name="view_methods">
+        <element value="folder_listing"/>
+        <element value="folder_summary_view"/>
+        <element value="folder_tabular_view"/>
+        <element value="atct_album_view"/>
+        <element value="atct_topic_view"/>
+
+        <!-- We retrofit these new views for Folders in portal_types info -->
+        <element value="redirect_view"/>
+
+    </property>
+</object>

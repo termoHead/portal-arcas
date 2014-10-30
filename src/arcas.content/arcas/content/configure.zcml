@@ -156,4 +156,13 @@
             addview     ="arcas.content.portlets.colecciones_portlet.AddForm"
             editview    ="arcas.content.portlets.colecciones_portlet.EditForm"
             />
+    <include package="plone.app.contentmenu" />
+    <browser:menuItem
+        for="Products.CMFPlone.interfaces.siteroot.IPloneSiteRoot"
+        menu="plone_displayviews"
+        title="Redirigir a Portada"
+        action="@@redirect_view"
+        description="Dirigir a porta"
+        layer="arcas.theme.interfaces.IArcasTheme"
+        />
 </configure>

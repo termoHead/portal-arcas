@@ -111,12 +111,12 @@ class RedidectionView(BrowserView):
     def __call__(self):        
         contextURL = self.context.absolute_url()                
         self.request.response.setHeader("Content-Type", "text/html")
-        self.request.response.redirect(contextURL+"/home")
+        self.request.response.redirect(contextURL+"/portada")
         return ""
     
     def redirect(self):
         contextURL = self.context.absolute_url()                
         self.request.response.setHeader("Content-Type", "text/html")        
-        return self.request.response.redirect(contextURL+"/home")
+        return self.request.response.redirect(contextURL+"/portada")
         
         

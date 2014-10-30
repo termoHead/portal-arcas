@@ -146,45 +146,32 @@ class View(DisplayForm):
         resultado=[]
         catalog=getToolByName(folder,"portal_catalog")
         desta_path = '/'.join(folder.getPhysicalPath())
-        cataloDest=catalog.searchResults(path={'query':desta_path , 'depth': 1})
-
+        cataloDest=catalog.searchResults(path={'query':desta_path , 'depth': 1},sort_on='getObjPositionInParent')
 
         for elem in cataloDest:
             if elem.portal_type!="Folder":
                 elemObj = folder.unrestrictedTraverse(elem.getPath())
-
                 urlE    = elem.getURL()
-
                 if elem.portal_type=="Link":
                     urlE=elemObj.getRemoteUrl()
 
                 if elem.portal_type=="arcas.sugerencia":
                     urlE=elemObj.urlRemoto
-
-
-
-
-
-
                 tipoMedio=False
                 listAutores=[]
                 if hasattr(elemObj,"tipoMedio"):
                     tipoMedio=getattr(elemObj,"tipoMedio")
                     if tipoMedio=='resena':
                         tipoMedio='reseña'
-
                 if hasattr(elemObj,"autores"):
                     listAutores=getattr(elemObj,"autores")
-
                 objRaiz={'titulo':elem.Title,
                          'url':urlE,
                          'descri':elem.Description,
                          'tipo':tipoMedio,
                          'autores':listAutores,
                          }
-
                 resultado.append(objRaiz)
-
         return resultado
 
 
@@ -199,7 +186,7 @@ class View(DisplayForm):
             result=catalogo(path=galePath,portal_type="Image",sort_on='getObjPositionInParent')
             
             for re in result:
-                
+
                 foto=context.unrestrictedTraverse(re.getPath())
 
                 iniH=foto.height

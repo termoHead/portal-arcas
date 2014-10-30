@@ -166,12 +166,10 @@ class View(DisplayForm):
     def dameNombreColeccion(self):
         """devuelve el nombre del parent de esta coleccion"""
         result=""
-
         miColec=self.dameObjectoColeccion()
         if miColec:
             result=miColec.title
             return result
-
         return None
 
     def dameUriColeccion(self):
@@ -184,19 +182,17 @@ class View(DisplayForm):
     def dameEnlaces(self):
         """devuelve el contenidos de los objetos que se encuentran dentro de la carpeta
         enlaces"""
-
         try:
             catalog=getToolByName(self.context,"portal_catalog")
             idF=self.context.id+'_enlace'
             ruta='/'.join(self.context[idF].getPhysicalPath())
-            result=catalog(review_state='published',path={'query': ruta, 'depth': 1})
+            result=catalog(review_state='published',path={'query': ruta, 'depth': 1},sort_on='getObjPositionInParent')
             return result
         except:
             return None
 
     def dameSaftyDescri(self):
         """devuelve la descripcion de la exhibicion recortada"""
-
         str=self.context.cuerpo.output[:900]
         cierre=str.rfind("</p>")
         apertura=str.rfind("<p>")
@@ -205,15 +201,18 @@ class View(DisplayForm):
         return str
         
     def dameDatosImgFull(self):
-        """devuelve un diccionario con los datos de la primera hoja
+        """
+        devuelve un diccionario con los datos de la primera hoja
         de la exhibiciòn:
         urlImg: full imagen
         ficha: url a la ficha en GS3
         """
+
         listImages=self.listadoDeImagenesGS3()
         if len(listImages)<1:
             return None
         recu=listImages[0]
+
         obj=self.context.unrestrictedTraverse(recu.getPath())
         if obj.tipoMedio=="imagen":
             urlT=obj.urlRemoto

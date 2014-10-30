@@ -74,3 +74,19 @@ class LogoViewlet(ViewletBase):
         self.navigation_root_title = self.portal_state.navigation_root_title()
 
 
+class SearchBoxViewlet(ViewletBase):
+    index = ViewPageTemplateFile('browser/searchbox.pt')
+    def update(self):
+        super(SearchBoxViewlet, self).update()
+        context_state = getMultiAdapter((self.context, self.request),
+                                        name=u'plone_context_state')
+        props = getToolByName(self.context, 'portal_properties')
+        livesearch = props.site_properties.getProperty('enable_livesearch', False)
+
+        if livesearch:
+            self.search_input_id = "searchGadget"
+        else:
+            self.search_input_id = "nolivesearchGadget" # don't use "" here!
+
+        folder = context_state.folder()
+        self.folder_path = '/'.join(folder.getPhysicalPath())

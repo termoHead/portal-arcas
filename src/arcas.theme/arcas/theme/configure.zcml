@@ -37,6 +37,14 @@
         layer=".interfaces.IArcasTheme"
         />
 
+    <!-- The search box -->
+    <browser:viewlet
+    name="plone.searchbox"
+    manager="plone.app.layout.viewlets.interfaces.IPortalHeader"
+    class=".common.SearchBoxViewlet"
+    permission="zope2.View"
+    layer=".interfaces.IArcasTheme"
+    />
 </configure>
 
 

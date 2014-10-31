@@ -1160,6 +1160,9 @@ border-bottom:1px solid #ffffff;
     margin: 24px 0 0 70px;
 	line-height:25px
 }
+.template-folder_listing .cabezalInterno h1;
+.portaltype-arcas-sugerencia .cabezalInterno h4{letter-spacing:0em; font-family: Arial;}
+
 body.listadoColecciones .cabezalInterno h2{color: #ffffff;
 }
 body.faq .cabezalInterno{
@@ -1507,8 +1510,11 @@ a.linkFuentes img{ margin:0 8px 0 8px; float:left;padding-top:5px}
     display:none ;}
 .cabezalInterno .titulo{color:#403a31; margin: 0px 0 0 68px; padding-top: 10px;}
 .cabezalInterno .titulo span{font-size: 10px}
-.cabezalInterno .titulo h4{color:#403a31;font-size:25px}
+.cabezalInterno .titulo h4{  color: #403a31;font-size: 25px;font-weight: normal;}
 .portaltype-arcas-biografia  h2{color:#ffcc66; margin: 0 0 25px 0;}
 .portaltype-arcas-biografia  .textoBox{margin-top: 25px;}
+.portaltype-arcas-sugerencia h1{color:#eee}
+.portaltype-arcas-sugerencia .autores{margin-bottom: 16px;color:#ffcc66; font-style: italic}
+.portaltype-arcas-sugerencia .descri{margin-bottom:8px;}
 .portrait img{width: 48px; height: 48px}
 .searchSection{display:none}

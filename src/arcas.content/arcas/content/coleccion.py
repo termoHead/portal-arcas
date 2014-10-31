@@ -91,7 +91,7 @@ class View(DisplayForm):
 
     def getUrlAFuente(self):
         """devuelv la dirección a la fuente primaria"""
-        baseURL=URL_GREENSTON_DOC+self.context.GS_ID+"/browse/CL1"
+        baseURL=URL_GREENSTON_DOC+self.context.GS_ID+"/browse/CL2"
         return baseURL
 
     def dameCurador(self):

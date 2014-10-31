@@ -51,6 +51,7 @@ class View(DisplayForm):
 
         try:
             if self.context.exhiDestacada!=None:
+
                 destacado=self.context.exhiDestacada.to_object
                 colecTRelated=destacado.coleccionR.to_object
                 colecUtils=ColeccionUtils(colecTRelated)
@@ -63,7 +64,7 @@ class View(DisplayForm):
                     'tituloColec': colecTRelated.title,
                     'descri' : descrD,
                     'exhiurl': destacado.absolute_url(),
-                    'curador': colecUtils.dameCurador(),#esta dameCurador funcion ya devuelve una lista,
+                    'curador': colecUtils.dameCurador(destacado.id),#esta dameCurador funcion ya devuelve una lista,
                     'integrantes': colecUtils.getCoordinadores()+colecUtils.dameIntegrantes()
                 }
 

@@ -45,11 +45,12 @@
         </div>
         <div class="clr"></div>
         <div class="boxColumnas">
-            <div class="columnaUno">
+            <div class="columnaUno"
+                    tal:define="cuerpoText context/cuerpo/output|nothing">
                 <div class="descriColect">
                     <h4>Acerca de esta Coleccion</h4>
                     <p tal:content="context/description">Descripción de la colección</p>
-                    <div id="extraColeccion" style="display:none" tal:content="structure  context/cuerpo/output">Descripción de la colección</div>
+                    <div tal:condition="cuerpoText" class="extraColeccion" style="display:none" tal:content="structure  cuerpoText">Descripción de la colección</div>
                     <div class="pie">
                         <a href="#" id="masColecBoton" tal:attributes="title context/title">(+) expandir texto</a>
                     </div>
@@ -149,7 +150,7 @@
                         <tal:repite tal:repeat="img imags">
 							<div class="photoAlbumEntry">
 								<a href="#" class="colorboxLink cboxElement"
-								rel="colorbox"
+								rel="colorbox" target="_blank"
 								tal:attributes="href  string:${img/brain/getURL};
 								title img/brain/Title;">
 								<img src="" alt="" tal:attributes="

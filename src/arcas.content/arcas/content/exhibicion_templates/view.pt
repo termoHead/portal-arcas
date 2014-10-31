@@ -25,7 +25,7 @@
                     <h3 class="tituloE" tal:content="context/title">y las cartas desde nueva york</h3>
                 </div>
                 <div class="boxResponsables">
-						<div tal:condition="curadorObj">
+						<div class="responsables" tal:condition="curadorObj">
 								<span class="labelTitulo">Curador</span>
 								<ul>						
 								<li tal:repeat="cura curadorObj">
@@ -38,7 +38,7 @@
 								
 						</div>
 						<tal:coor tal:condition="colabs">
-							<div>
+							<div class="responsables">
 							<span  class="labelTitulo">
 							<tal:span tal:condition="python:len(colabs)>1">Colaboradores en</tal:span>
 							<tal:span tal:condition="python:len(colabs)<2">Colaborador de</tal:span>
@@ -83,7 +83,7 @@
 									</a>
 									</div>
 									<span class="titulo oculto" tal:content="link/Title" ></span>
-									<span class="cuerpo oculto" tal:content="structure textCuerpo/output">
+									<span class="cuerpo oculto" tal:condition="textCuerpo" tal:content="structure textCuerpo/output">
 									</span>
 							   </li>
 							</tal:rep>
@@ -115,8 +115,10 @@
 
                 <div class="texto">
 					<tal:block tal:condition="datosFull">
+                        <tal:d tal:define="textoF python:listaFotos[0].cuerpo or None">
 						<h3 class="tituloSlide" tal:content="python:listaFotos[0].Title" >El Beso de la Mujer Ara&ntilde;a</h3>
-						<p  class="textoSlide" tal:content="structure python:listaFotos[0].cuerpo.output">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sed vulputate dolor, et ornare mauris. Donec tincidunt magna eget mauris volutpat bibendum. Maecenas ac est vel eros dapibus pulvinar. Fusce nec tristique elit. Morbi ornare scelerisque interdum. Sed tempor tellus ornare tincidunt luctus. Sed at volutpat orci, ac cursus velit. Integer blandit tincidunt sodales. Nunc augue nisl, volutpat eu erat tempus, ullamcorper ultrices neque. Vestibulum tempor justo sit amet dolor pretium mollis. Cras dignissim eleifend erat quis aliquet. Ut velit nisl, blandit id ullamcorper eget, sodales a ipsum. Nam dignissim nisl eget enim laoreet, at volutpat nibh aliquet. Pellentesque pellentesque ornare lacus, congue pellentesque nisi porta pharetra. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sed vulputate dolor, et ornare mauris. Donec tincidunt magna eget mauris volutpat bibendum. Maecenas ac est vel eros dapibus pulvinar. Fusce nec tristique elit. Morbi ornare scelerisque interdum. Sed tempor tellus ornare tincidunt luctus. Sed at volutpat orci, ac cursus velit. Integer blandit tincidunt sodales. Nunc augue nisl, volutpat eu erat tempus, ullamcorper ultrices neque. Vestibulum tempor justo sit amet dolor pretium mollis. Cras dignissim eleifend erat quis aliquet. Ut velit nisl, blandit id ullamcorper eget, sodales a ipsum. Nam dignissim nisl eget enim laoreet, at volutpat nibh aliquet. Pellentesque pellentesque ornare lacus, congue pellentesque nisi porta pharetra. </p>
+						<p  class="textoSlide" tal:condition="textoF" tal:content="structure textoF/output">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sed vulputate dolor, et ornare mauris. Donec tincidunt magna eget mauris volutpat bibendum. Maecenas ac est vel eros dapibus pulvinar. Fusce nec tristique elit. Morbi ornare scelerisque interdum. Sed tempor tellus ornare tincidunt luctus. Sed at volutpat orci, ac cursus velit. Integer blandit tincidunt sodales. Nunc augue nisl, volutpat eu erat tempus, ullamcorper ultrices neque. Vestibulum tempor justo sit amet dolor pretium mollis. Cras dignissim eleifend erat quis aliquet. Ut velit nisl, blandit id ullamcorper eget, sodales a ipsum. Nam dignissim nisl eget enim laoreet, at volutpat nibh aliquet. Pellentesque pellentesque ornare lacus, congue pellentesque nisi porta pharetra. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sed vulputate dolor, et ornare mauris. Donec tincidunt magna eget mauris volutpat bibendum. Maecenas ac est vel eros dapibus pulvinar. Fusce nec tristique elit. Morbi ornare scelerisque interdum. Sed tempor tellus ornare tincidunt luctus. Sed at volutpat orci, ac cursus velit. Integer blandit tincidunt sodales. Nunc augue nisl, volutpat eu erat tempus, ullamcorper ultrices neque. Vestibulum tempor justo sit amet dolor pretium mollis. Cras dignissim eleifend erat quis aliquet. Ut velit nisl, blandit id ullamcorper eget, sodales a ipsum. Nam dignissim nisl eget enim laoreet, at volutpat nibh aliquet. Pellentesque pellentesque ornare lacus, congue pellentesque nisi porta pharetra. </p>
+                        </tal:d>
 					</tal:block>
                 </div>
                 <div class="clr"></div>

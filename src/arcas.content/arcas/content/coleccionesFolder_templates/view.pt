@@ -8,14 +8,14 @@
 <body>
 <metal:content-core fill-slot="main">
     <metal:content-core define-macro="main">
-	<div class="markListColeccion">
+	<div class="markListColeccion" tal:define="cuerpo context/cuerpo/output|nothing">
         <div class="cabezalInterno">
             <h2>COLECCIONES</h2>
             <div class="clr"></div>
         </div>
-		<div class="conColumnas">
+		<div class="conColumnas" tal:condition="cuerpo">
 			<div class="texto">
-            <p tal:content="structure context/cuerpo/output">texto</p>
+            <p tal:content="structure cuerpo">texto</p>
 			</div>
 		</div>
         <div class="lista" tal:define="listado view/dameListaColecciones|nothing">

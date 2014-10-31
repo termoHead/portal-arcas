@@ -33,7 +33,7 @@
                                 <p class="curador" tal:condition="curas">
                                     <span>Curador:</span>
                                     <tal:rr tal:repeat="cura curas">
-                                        <span tal:content="cura/title"></span>
+                                        <span tal:content="cura/nombre"></span>
                                     </tal:rr>
                                 </p>
                                 <div class="colaboradores">

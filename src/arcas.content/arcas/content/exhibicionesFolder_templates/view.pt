@@ -8,14 +8,15 @@
 <body>
 <metal:content-core fill-slot="main">
     <metal:content-core define-macro="main">
-	<div class="markListExhibicion">
+	<div class="markListExhibicion"
+            tal:define="textoF context/cuerpo|nothing">
         <div class="cabezalInterno">
             <h2>EXHIBICIONES VIRTUALES</h2>
             <div class="clr"></div>
         </div>
 		<div class="conColumnas">
-			<div class="texto">
-				<p  tal:content="structure context/cuerpo/output">texto</p>
+			<div class="texto" tal:condition="textoF">
+				<p  tal:content="structure textoF/output">texto</p>
 			</div>
 		</div>
         <div class="lista"  tal:define="listado view/dameListaExhi|nothing">
@@ -40,7 +41,7 @@
                         <div class="datosExtra"
                                 tal:define="coordinadores colec/coors|nothing">
                             <span class="portrait"><img src=""  tal:replace="structure curador/portrait"/></span>
-                            <div>
+                            <div class="responsales">
                                 <span class="label">Curador</span>
                                 <span class="special">
                                 <a href="#" tal:attributes="href string:mailto:${curador/mail};

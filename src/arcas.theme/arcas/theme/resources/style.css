@@ -142,12 +142,21 @@ margin: 2px 0 0 345px;
 padding-left: 8px;
 }
 .tituloExhibicion{
-float:left;
-clear:left;
-font-family:"Attic",serif;
-text-align:left;
+    float:left;
+    clear:left;
+    font-family:"Attic",serif;
+    text-align:left;
+    height: 213px;
+    overflow: hidden;
 }
-.tituloExhibicion a {width:180px;height:129px;display:block;padding: 30px 0 0 10px ;}
+.bloque .tituloExhibicion{height: 90px; width: 198px; padding: 17px 0 0 23px}
+.tituloExhibicion a {width:180px;height:129px;}
+.bloque .titulo .tituloExhibicion a {display:block;padding: 30px 0 0 10px ;}
+.bloque .tituloExhibicion  .subtitulo{color: #fff;
+    font-size:18px; width: 112px;
+    line-height: 18px;
+    display: block;}
+.bloque .tituloExhibicion  .titulo{color:#f4eba6; font-size: 22px}
 body.home .tituloExhibicion{margin: 20px 0 0 345px;}
 
 .tituloExhibicion .titulo{font-family:"Attic",serif !important;
@@ -159,9 +168,11 @@ font-size:41px;color:#fff;font-weight:normal;line-height: 41px;width: 170px;disp
 .tituloExhibicion h2 span.size1{font-size:40px;}
 .tituloExhibicion h3{
     font-family:"Attic",serif !important;
-    font-size:22px;color:#ffffff;font-weight:normal;line-height: 25px;color:#f4eba6;width: 270px;display: block;
+    font-size:22px;color:#ffffff;font-weight:normal;lcolor:#f4eba6;width: 290px;display: block;
 }
-.tituloExhibicion h3 .size2{font-size:45px;color:#f4eba6;}
+.bloque .tituloExhibicion h3{line-height: 25px;color:#f4eba6;width: 270px;display: block}
+.tituloExhibicion h3 {font-size:45px;color:#f4eba6;line-height:46px;}
+.bloque .tituloExhibicion h3 .size1{font-size:21px;color:#f4eba6;line-height: 45px;}
 .tituloExhibicion h3 .size3{font-size:37px;color:#f4eba6;line-height: 45px;}
 .tituloExhibicion h3 .size4{font-size:23px;}
 .datosExcibicion{
@@ -177,17 +188,25 @@ font-size:41px;color:#fff;font-weight:normal;line-height: 41px;width: 170px;disp
 .datosExcibicion p.curador{font-style:normal;}
 .datosExcibicion p.colaboradores{font-style:normal;font-size:12px;}
 .masExhibiciones{
-	width:100%;
+	/*width:100%;
 	background:url(/++theme++arcas.theme/img/pie_exhi_home.gif) left top no-repeat;
     color: #FFFFFF;
     font-family: "Arial",sans-serif;
     font-size: 11px;
-    position: absolute;
-    right: 643px;
+
+    right: 30px;
     text-decoration: none;
-    top: 396px;
+    top: 396px;*/
+    clear: both;
+    color: #FFFFFF;
+    font-family: "Arial",sans-serif;
+    font-size: 11px;
+    text-decoration: none;
+    width: 190px;
+    padding-left: 860px;
+    padding-top: 5px;
 }
-.masExhibiciones a{position:relative; top :0; left:880px}
+.masExhibiciones a{position:relative; top :0; float: right; margin-right: 50px;}
 #coleccionesHome{
 background:url(images/bgColeccionesHomeTop.png) left top repeat-x #23231f;
 text-align:center;
@@ -257,11 +276,13 @@ text-indent:11px;
 .bloqueColeccion .textoInterno .parrafo{
 margin:11px;
 height:177px;
+    text-align:justify;
 } 
 .bloqueColeccion .textoInterno .parrafo p{
 font-size:11px;
 color:#ffffff;
 line-height:17px;
+
 } 
 .bloqueColeccion .textoInterno .links{
 margin:11px;
@@ -384,7 +405,8 @@ color:#ffffff;
 -webkit-column-gap: 27px;
 column-count: 2;
 column-gap: 27px;
-line-height: 19px;	
+line-height: 19px;
+text-align: justify;
 }
 
 #contenido .presentacion .pie{
@@ -1185,7 +1207,7 @@ body.listadoExhibiciones .containerRight .datosExtra{
     font-family:"Florencesans","Arial",sans-serif;
 	float:left;
 	width:256px;
-	margin-left:100px
+	margin-left:0px
 }
 .containerRight div.datosExtra  .special,
 .containerRight div.datosExtra  li a{font-family:"Florencesans","Arial",sans-serif;color:white}
@@ -1194,9 +1216,7 @@ width:180px;float:right;padding-top:15px;color:white;font-size:16px;
 }
 .containerRight div.datosExtra div .label{color:#4a423b; display:block; font-size:11px;padding-top:5px}
 .containerRight div.datosExtra div .label:nth-child(1){padding-top:12px}
-body.listadoExhibiciones .tituloExhibicion{
-padding: 12px 0 0 22px;
-}
+
 body.listadoExhibiciones .tituloExhibicion h2,
 body.listadoExhibiciones .tituloExhibicion h3{
 letter-spacing:1px;
@@ -1322,7 +1342,7 @@ border:2px solid #d2cac2;
 float:left;
 margin-top:7px;
 }
-body.listadoExhibiciones .datosExtra div{
+body.listadoExhibiciones .datosExtra .responsables{
 width:180px;
 float:left;
 margin:25px 0 0 10px;
@@ -1344,12 +1364,13 @@ padding-bottom:7px;
 display:block;
 }
 body.listadoExhibiciones .bloque p{
-width:306px;
+width:290px;
 float:left;
 font-size:11px;
 color:#ffffff;
 line-height:17px;
-margin-top:20px;
+margin-top:10px;
+text-align:justify
 }
 .containerRight{
 float:right;
@@ -1384,7 +1405,7 @@ body.listadoColecciones .lista .bloque .tituloColeccion a {
     display: block;
 	width:205px;
 	height:105px;
-	padding-top:105px;
+	padding-top:95px;
     margin: 0 0 0 10px;
     color: #fff;
 }

@@ -121,7 +121,12 @@
             />
 
 
-
+    <!--RestringeDocumentosEnCarpetasDentroDEColeccione-->
+     <subscriber
+        for="Products.ATContentTypes.interfaces.IATFolder
+             Products.Archetypes.interfaces.IObjectInitializedEvent"
+             handler=".eventos.onCreaFolder"
+       />
 
     <!--eventos exhibicion-->
     <subscriber

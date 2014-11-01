@@ -155,11 +155,22 @@ def onModificaExhibicion(exhiObj,event):
     for userid in exhiObj.integrantes:
         exhiObj.manage_setLocalRoles(userid, ["Contributor",])
 
-    
-    
-    
-    
-    
+def onCreaFolder(folder,evento):
+    """Restringe los tipos de contenido dependiendo si objeto es hijo de Coleccion"""
+    from Products.ATContentTypes.lib import constraintypes
+    from Acquisition import aq_parent, aq_inner
+
+    if aq_parent(folder).portal_type()=="arcas.coleccion":
+        # Enable contstraining
+        folder.setConstrainTypesMode(constraintypes.ENABLED)
+
+        # Types for which we perform Unauthorized check
+        folder.setLocallyAllowedTypes(["arcas.sugerencia","Archive","Link","arcas.enlacegs"])
+
+        # Add new... menu  listing
+        folder.setImmediatelyAddableTypes(["arcas.sugerencia","Archive","Link","arcas.enlacegs"])
+
+
 def agregaRolesAGrupo(contexto,groupid,listRoles):
     """Agrega un grupoid con los roles en listRoles a una carpeta"""
     for gs in contexto.aq_base.get_local_roles():

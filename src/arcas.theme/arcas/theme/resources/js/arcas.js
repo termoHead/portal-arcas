@@ -35,18 +35,20 @@ $(document).ready(function() {
 			}
 		});
 	}
-    $("#masColecBoton").click(function(ev){
-        if($( ev.currentTarget).html().indexOf("(+)")>=0){
-           $(ev.currentTarget).html("(-) colapsar texto")
-        }else{
-           $(ev.currentTarget).html("(+) expandir texto")
-        }
-        $("div.extraColeccion").toggle("slow");
-        return false;
-    })
+
 
 });
+function togTexto(ev){
 
+    if($( ev).html().indexOf("(+)")>=0){
+       $(ev).html("(-) colapsar texto")
+        $(".extraColeccion").show("slow");
+    }else{
+       $(ev).html("(+) expandir texto")
+        $(".extraColeccion").hide("slow");
+    }
+
+}
 function cambiaSlide(ev){
     /*Cambia slide de la exhibición*/
 	if (ev.currentTarget!=hojaActiva){

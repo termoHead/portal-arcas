@@ -355,6 +355,7 @@ letter-spacing:1px;
 }
 #contenido .pie{
 height:15px;
+    margin-top: 20px;
 background:url(images/pieNovedades.png) right top no-repeat transparent;
 }
 body.home #contenido .pie{
@@ -542,6 +543,7 @@ font-family:"Arial",sans-serif;
 font-size:14px;
 font-weight:normal;
 color:#ffffff;
+    line-height: 22px;
 }
 .subtituloColeccion{
 font-family:"Florencesans",sans-serif;
@@ -784,16 +786,15 @@ font-size:19px;
     font-family: "Florencesans",sans-serif;
 margin-bottom:7px;
 }
-.biografia p{
-font-size:12px;
-color:#ff9933;
-margin-bottom:15px;
-line-height:15px;
+.biografia p,
+.biografia .produccion{
+    margin-top: 15px;
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 17px;
+    text-align: justify;
+}
 
-}
-.produccion{
-margin-top: 15px;
-}
 .produccion h4{
 color:#f5a661;
 font-size:14px;

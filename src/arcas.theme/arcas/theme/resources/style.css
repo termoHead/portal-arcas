@@ -127,7 +127,6 @@ margin: 22px 60px 0 0;
 
 #exhibicionHome{
 	height:270px;
-    background: url("images/excibicionPuig.jpg") no-repeat scroll top left transparent;
 	border-bottom:1px solid #ffffff;
 }
 .volanta{
@@ -448,7 +447,7 @@ margin-top: 20px;
 }
 #pie .logos{
 float:right;
-margin:25px 65px 0 0;
+margin:25px 55px 0 0;
 }
 #pie .logos a{
 display:block;
@@ -470,7 +469,7 @@ font-weight:bold;
     font-family: "Calibri",sans-serif;
     font-size: 11px;
     line-height: 15px;
-    margin: 10px 85px 0 0;
+    margin: 10px 69px 0 0;
 	-webkit-font-smoothing: antialiased;
 }
 #pie .institucional a{
@@ -1517,4 +1516,11 @@ a.linkFuentes img{ margin:0 8px 0 8px; float:left;padding-top:5px}
 .portaltype-arcas-sugerencia .autores{margin-bottom: 16px;color:#ffcc66; font-style: italic}
 .portaltype-arcas-sugerencia .descri{margin-bottom:8px;}
 .portrait img{width: 48px; height: 48px}
-.searchSection{display:none}
+.searchSection{display:none;}
+#pie div.central{
+    float:left;
+    width: 258px;
+    margin-left: 48px;
+    padding-top: 54px;
+}
+#pie div.central a{margin-right: 25px}

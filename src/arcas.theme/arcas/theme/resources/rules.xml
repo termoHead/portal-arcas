@@ -11,7 +11,6 @@
 	 
     <rules if-path="/arcas/portada/">
 
-
         <xi:include href="arcas-header.xml" />
         <theme href="index.html" />
         <replace css:theme-children="#exhibicionHome" css:content-children="div.exhiV"></replace>
@@ -32,27 +31,19 @@
 	<rules if-not-path="/arcas/portada/">
 		
         <xi:include href="arcas-header.xml" />
-
-
-
         <rules if-not-path="@@gsSearch">
-
             <rules css:if-content=".markColeccion">
                 <xi:include href="arcas_coleccion.xml" />
             </rules>
             <rules if-content="//div[@class='markListExhibicion']">
-                
                 <theme href="listadoExhibiciones.html" />
-
             </rules>
-
             <rules if-content="//div[@class='markListColeccion'] or //div[@class='markListExhibicion']">
                 <theme href="listadoColecciones.html" />
                 <replace css:content-children=".cabezalInterno" css:theme-children=".cabezalInterno"/>
                 <replace css:content-children=".texto" css:theme-children=".texto"/>
                 <replace css:content-children=".lista" css:theme-children=".lista"/>
             </rules>
-
             <rules if-not-path="@@overview-controlpanel and edit
                     and @@syndication-settings and plone_control_panel and
                     @@navigation-controlpanel and contact-info and
@@ -61,15 +52,11 @@
                                    not(//div[@class='markExhibicion']) and
                                    not(//div[@class='markListColeccion']) and
                                    not(//div[@class='markListExhibicion'])">
-
                     <theme href="estandar.html" />
-
                     <merge attributes="class" css:theme="body" css:content="body" />
-
                     <replace css:theme=".cabezalInterno h2">
                         <xsl:copy-of select="//*[@id='parent-fieldname-title']" />
                     </replace>
-
                     <replace css:theme=".texto">
                         <div class="texto">
                            <xsl:for-each css:select="#content">
@@ -93,7 +80,6 @@
             <theme href="estandar.html" />
             <replace css:content="#portal-column-content" css:theme-children=".texto"/>
             <merge attributes="class" css:theme="body" css:content="body" />
-
         </rules>
 	
 		 <rules css:if-content=".portaltype-arcas-exhibicion">

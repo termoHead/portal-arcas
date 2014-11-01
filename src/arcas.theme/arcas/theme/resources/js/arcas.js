@@ -35,18 +35,16 @@ $(document).ready(function() {
 			}
 		});
 	}
-
-    $("#masColecBoton").click(function(e){
-        e.preventDefault()
-
-        if($( e.currentTarget).html().indexOf("(+)")>=0){
-           $( e.currentTarget).html("(-) colapsar texto")
+    $("#masColecBoton").click(function(ev){
+        if($( ev.currentTarget).html().indexOf("(+)")>=0){
+           $(ev.currentTarget).html("(-) colapsar texto")
         }else{
-           $( e.currentTarget).html("(+) expandir texto")
+           $(ev.currentTarget).html("(+) expandir texto")
         }
-        $("#extraColeccion").toggle("slow");
-
+        $("div.extraColeccion").toggle("slow");
+        return false;
     })
+
 });
 
 function cambiaSlide(ev){

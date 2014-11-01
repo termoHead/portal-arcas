@@ -52,7 +52,7 @@
                     <p tal:content="context/description">Descripción de la colección</p>
                     <div tal:condition="cuerpoText" class="extraColeccion" style="display:none" tal:content="structure  cuerpoText">Descripción de la colección</div>
                     <div class="pie">
-                        <a href="#" id="masColecBoton" tal:attributes="title context/title">(+) expandir texto</a>
+                        <a href="#" id="masColecBoton" onclick="togTexto(this);return false" tal:attributes="title context/title">(+) expandir texto</a>
                     </div>
 
                 </div>

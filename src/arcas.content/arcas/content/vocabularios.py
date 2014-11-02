@@ -111,6 +111,7 @@ class GroupPotencialesExhi(object):
         return SimpleVocabulary([SimpleVocabulary.createTerm("", str(""), "")])
 
 
+
 GroupMembersVocabFactory = GroupMembers("Coordinadores")
 InvestigadoresVocabFactory = GroupPotenciales()
 CuradoresVocabFactory = GroupPotencialesExhi()

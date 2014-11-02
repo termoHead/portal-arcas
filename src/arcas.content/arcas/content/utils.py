@@ -121,7 +121,7 @@ class ColeccionUtils(object):
             return None
 
         infoCoor = []
-        userssource = UsersSource(grupoObj)
+        """userssource = UsersSource(grupoObj)"""
 
         for coordina in grupoObj.getGroupMembers():
             infoCoor.append({'type' : 'user',
@@ -130,6 +130,7 @@ class ColeccionUtils(object):
                              'email': coordina.getProperty('email'),
                              'img'  : mtool.getPersonalPortrait(id=coordina.id),
                              })
+
         return infoCoor
 
     def dameGrupo(self,colec):
@@ -141,7 +142,6 @@ class ColeccionUtils(object):
 
     def dameCurador(self,idExhi):
         """devuelve el curador de una coleccion en lista"""
-
         coleccion=self.coleccion
         ls=[]
         catalogo=getToolByName(coleccion,"portal_catalog")

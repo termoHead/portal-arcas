@@ -52,7 +52,7 @@ class View(DisplayForm):
 
             miOb = contexto.unrestrictedTraverse(exhi.getPath())
             if miOb.coleccionR!=None:
-                miCol= miOb.coleccionR.to_object
+                miCol= miOb.coleccionR[0].to_object
                 ppa=ColeccionUtils(miCol)
 
                 listados.append({
@@ -65,7 +65,7 @@ class View(DisplayForm):
                     "coors"     :ppa.getCoordinadores(),
                     "idColec"   :miCol.id,
                     "urlFuente" :ppa.getUrlAFuente(),
-                    "curador":  ppa.dameCurador(exhi.id)
+                    "curador"   :ppa.dameCurador(exhi.id)
                 })
 
         return listados

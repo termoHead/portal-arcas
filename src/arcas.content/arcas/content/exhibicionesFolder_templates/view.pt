@@ -22,8 +22,9 @@
         <div class="lista"  tal:define="listado view/dameListaExhi|nothing">
             <tal:r tal:repeat="colec listado">
 
-            <div class="bloque bloqueSaer"  tal:attributes="style string:background:url(${colec/url}/images/bgCabezalLista) no-repeat"
-                 tal:define="listado view/dameListaExhi|nothing" tal:condition="listado">
+            <div class="bloque bloqueSaer"
+                    tal:attributes="style string:background:url(${colec/url}/images/bgCabezalLista) no-repeat"
+                    tal:define="listado view/dameListaExhi|nothing" tal:condition="listado">
                 <div class="tituloExhibicion">
                         <a class="size1" href="#" tal:attributes="href colec/url;
                                                 title colec/titulo">
@@ -33,13 +34,14 @@
 
                 </div>
                 <div class="containerRight"
-                        tal:define="curadores colec/curador | nothing">
+                        tal:define="curadores colec/curador | nothing;
+                                coordinadores colec/coors|nothing">
                     <p class="descri" tal:content="colec/descri">
                         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-                    <tal:cu tal:repeat="curador curadores"
-                            tal:condition="curadores">
+
+                    <tal:cu tal:repeat="curador curadores" tal:condition="curadores">
                         <div class="datosExtra"
-                                tal:define="coordinadores colec/coors|nothing">
+                                >
                             <span class="portrait"><img src=""  tal:replace="structure curador/portrait"/></span>
                             <div class="responsales">
                                 <span class="label">Curador</span>
@@ -62,6 +64,24 @@
                             <div class="clr"></div>
                         </div>
                     </tal:cu>
+
+                    <tal:coor tal:condition="not:curadores">
+                        <div class="datosExtra">
+                         <div class="responsales">
+                        <div class="seccionCoor" tal:condition="coordinadores">
+                                    <span>Coordinador<tal:o tal:condition="python:len(coordinadores)>1">es</tal:o></span>
+
+                                    <ul>
+                                    <tal:rC tal:repeat="coor coordinadores">
+                                        <li > <a href="#" tal:attributes="href string:mailto:${coor/email}; title coor/title"
+                                           tal:content="coor/title">Nombre coordinador</a></li>
+                                    </tal:rC>
+                                    </ul>
+                                </div>
+                         </div>
+                         </div>
+                    </tal:coor>
+
                     <div class="clr"></div>
                 </div>
                 <div class="clr"></div>

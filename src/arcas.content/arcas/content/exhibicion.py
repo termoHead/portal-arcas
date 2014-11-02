@@ -20,6 +20,10 @@ from z3c.relationfield.schema import RelationList, RelationChoice
 from plone.formwidget.contenttree import ObjPathSourceBinder
 from plone.formwidget.autocomplete import AutocompleteFieldWidget
 from plone.formwidget.contenttree import ContentTreeFieldWidget
+from plone.formwidget.contenttree import ObjPathSourceBinder
+
+
+
 class IExhibicion(form.Schema):
     """A conference program. Programs can contain Sessions.
     """
@@ -52,13 +56,9 @@ class IExhibicion(form.Schema):
         description=u"Imagen completa del baner que se muestra en la vista de coleccion. Si desea componer uno nuevo, puede utilizar los ejemplos del banco de imágenes",
         required=False,
     )
-    form.widget('coleccionR', ContentTreeFieldWidget)
-    coleccionR = RelationChoice(
-        title=u"Coleccion a la que corresponde",
-        description=u"Seleccione la Coleccion a la que pertenece esta exhibicion",
-        source=ObjPathSourceBinder(object_provides=IColeccion.__identifier__),
-        required=False,
-    )
+
+
+
     curador=schema.List(
         title=_("Curadores"),
         value_type=schema.Choice(source="arcas.ExhibicionMembersVocab",),
@@ -69,6 +69,18 @@ class IExhibicion(form.Schema):
         value_type=schema.Choice(source="arcas.ExhibicionMembersVocab",),
         required=False,
     )
+
+
+    coleccionR = RelationList(
+        title=u"Colección Relacionada",
+        description=u"Colección a la que pertenece esta exhibicón",
+        value_type=RelationChoice(
+            source=ObjPathSourceBinder(portal_type='arcas.coleccion')
+            ),
+        required=False,
+    )
+
+
 from Acquisition import aq_inner
 from plone.directives.dexterity import DisplayForm
 
@@ -91,9 +103,9 @@ class View(DisplayForm):
     
     def dameObjectoColeccion(self):
         from arcas.content.coleccion import IColeccion
-        try:
-            miColec=self.context.coleccionR.to_object
 
+        try:
+            miColec=self.context.coleccionR[0].to_object
             if IColeccion.providedBy(miColec):
                 return miColec
             else:
@@ -102,16 +114,15 @@ class View(DisplayForm):
             print "no hay coleccion asignada"
         return None
 
-
     def dameCoordinador(self):
         """Devuelve los usuarios del grupo coor"""
         groups_tool = getToolByName(self.context, 'portal_groups')
         fUser=[]
-        
+
         colecR=self.dameObjectoColeccion()
 
         
-        
+
         if colecR:
             ppa=IColecGroupName(colecR)
             group_id = ppa.groupName.replace("_g",PREFIJO_COOR_GROUP)

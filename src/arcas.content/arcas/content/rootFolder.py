@@ -178,14 +178,14 @@ class View(DisplayForm):
 
     def dameTextoDescri(self):
         """Texto de destacado"""
-        caracteresCorte=600
+        caracteresCorte=900
         idObject="el_proyecto_arcas"
         catalog=getToolByName(self.context,"portal_catalog")
         brain=catalog(id=idObject)[0]
 
         texto=brain.getObject().getText()
         if texto>caracteresCorte:
-            corteTexto=texto[:caracteresCorte]
+            corteTexto=texto[:texto[:caracteresCorte].rfind(" ")]+" ..."
             apertura= corteTexto.rfind("<p>")
             cierre  = corteTexto.rfind("</p>")
             if cierre<apertura:

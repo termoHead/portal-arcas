@@ -58,9 +58,9 @@
 
 
         <replace css:theme=".cabezalInterno div" >
-            <div class="titulo">
+            <!--div class="titulo">
                 <xsl:copy-of select="//div[@id='seccion']/*" />
-            </div>
+            </div-->
         </replace>
         <drop css:content-children=".bioTemplate #seccion"></drop>
 

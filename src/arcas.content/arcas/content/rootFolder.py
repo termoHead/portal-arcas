@@ -178,7 +178,7 @@ class View(DisplayForm):
 
     def dameTextoDescri(self):
         """Texto de destacado"""
-        caracteresCorte=900
+        caracteresCorte=950
         idObject="el_proyecto_arcas"
         catalog=getToolByName(self.context,"portal_catalog")
         brain=catalog(id=idObject)[0]

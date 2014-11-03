@@ -1520,8 +1520,9 @@ a.linkFuentes img{ margin:0 8px 0 8px; float:left;padding-top:5px}
 .searchSection{display:none;}
 #pie div.central{
     float:left;
-    width: 258px;
-    margin-left: 48px;
+    width: 150px;
+    margin-left: 150px;
     padding-top: 54px;
 }
-#pie div.central a{margin-right: 25px}
+#pie div.central a{display:block}
+#pie div.central a:first-child{margin-bottom: 10px}

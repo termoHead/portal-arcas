@@ -13,21 +13,26 @@
     <metal:content-core define-macro="main">
     <div class="contenido" id="bioTemplate">
     <div id="seccion">
-    <span class="bioText">colección</span>
-    <h4 tal:content="view/dameColeccionNombre"></h4>
+       <h1 id="parent-fieldname-title" class="documentFirstHeading">BIOGRAFIA </h1>
     </div>
-    <span class="bioText">Biografía</span>
     <div id="contenedoText">
-        <h2 tal:content="context/title">Nombre</h2>
         <div class="textoBox"
              tal:define="descri context/descri|nothing;
                         cv      context/cuerpo|nothing;
                         obras   context/produccion|nothing">
-        <div class="columnas" >
-            <div class="descri" tal:content="descri" tal:condition="descri"></div>
-            <div class="cv" tal:content="structure cv/output" tal:condition="cv"></div>
-            <span class="label">Obras</span>
-            <div class="bras" tal:content="structure obras/output" tal:condition="obras"></div>
+
+            <h2 tal:content="context/title"></h2>
+            <div class="columnas" >
+                <div class="columnaL">
+                    <div class="descri" tal:content="descri" tal:condition="descri"></div>
+                    <div class="cv" tal:content="structure cv/output" tal:condition="cv"></div>
+                    <div class="clr"> </div>
+                </div>
+                <div class="columnaR">
+                    <span class="label">Obras</span>
+                    <div class="bras" tal:content="structure obras/output" tal:condition="obras"></div>
+                    <div class="clr"> </div>
+                </div>
             <div class="clr"> </div>
         </div>
             <div class="clr"> </div>

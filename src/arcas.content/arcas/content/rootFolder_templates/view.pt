@@ -108,7 +108,7 @@
                     <div class="buscadorColecciones">
 
                         <form>
-                            <input type="text" value="Buscar en las colecciones"/><img class="lupa" src="++theme++arcas.theme/img/lupa-negra.jpg"/>
+                            <input type="text" value="Buscar en las colecciones" disabled/><img class="lupa" src="++theme++arcas.theme/img/lupa-negra.jpg"/>
                         </form>
                     </div>
                 </div>

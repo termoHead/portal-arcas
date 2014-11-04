@@ -84,7 +84,7 @@ class GroupPotencialesExhi(object):
     def __call__(self, context):
         acl_users = getToolByName(context, 'acl_users')
         try:
-            miColeccion=context.coleccionR.to_object              
+            miColeccion=context.coleccionR[0].to_object
             idGAsign=IColecGroupName(miColeccion).groupName
         except:
             print "No se puedo asignar IColectGroupName"

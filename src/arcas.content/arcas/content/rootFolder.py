@@ -24,14 +24,15 @@ class IRootFolder(form.Schema):
     )
 
 
-    form.widget('exhiDestacada', ContentTreeFieldWidget)
-    exhiDestacada = RelationChoice(
-        title=u'Selecciones una Exhibicion',
+
+    exhiDestacada = RelationList(
+        title=u"Selecciones una Exhibicion",
         description=u"Seleccione la exhibicion a destacar",
-        source=ObjPathSourceBinder(object_provides=IExhibicion.__identifier__),
+        value_type=RelationChoice(
+            source=ObjPathSourceBinder(portal_type='arcas.exhibicion')
+            ),
         required=False,
     )
-
 class CarpetaRaiz(Container):
     grok.implements(IRootFolder,INavigationRoot)
 
@@ -50,10 +51,11 @@ class View(DisplayForm):
 
 
         try:
+
             if self.context.exhiDestacada!=None:
 
-                destacado=self.context.exhiDestacada.to_object
-                colecTRelated=destacado.coleccionR.to_object
+                destacado=self.context.exhiDestacada[0].to_object
+                colecTRelated=destacado.coleccionR[0].to_object
                 colecUtils=ColeccionUtils(colecTRelated)
                 descrD=destacado.description
                 if len(descrD)>250:

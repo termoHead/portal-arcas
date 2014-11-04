@@ -27,9 +27,9 @@ class JSONExhibicionesList(View):
     grok.context(Interface)
     grok.name("json_exhibiciones")
 
-    def update(self):
+    def update(self,idColeccion="puig"):
         self.contexto= aq_inner(self.context)
-        idColeccion="puig"
+
         if self.request.form.has_key("idC"):
             idColeccion=self.request.form["idC"]
 
@@ -80,3 +80,7 @@ class JSONExhibicionesList(View):
             available=False,
         )
         return data
+
+
+
+

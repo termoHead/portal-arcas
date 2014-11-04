@@ -16,7 +16,7 @@
                       tal:attributes="style string:background:url(${artDestacado/exhiurl}/@@images/bgCabezalHome) no-repeat">
 
                     <div class="volanta">
-                        <a href="#" tal:attributes="href artDestacado/exhiurl">exhibicion virtual</a>
+                        <a href="#" tal:attributes="href artDestacado/exhiurl">exhibición virtual</a>
                     </div>
                     <div class="bloqueExhi">
                         <div class="tituloExhibicion">
@@ -27,7 +27,7 @@
                         </div>
                         <div class="datosExcibicion">
 
-                            <p tal:content="artDestacado/descri" />
+                            <p class="descri" tal:content="artDestacado/descri" />
 
                             <div class="responsables" tal:define="curas artDestacado/curador|nothing">
                                 <p class="curador" tal:condition="curas">
@@ -37,7 +37,7 @@
                                     </tal:rr>
                                 </p>
                                 <div class="colaboradores">
-                                    <span>Colaboradores: </span>
+                                    <span>Director de la colección: </span>
                                     <tal:ri tal:repeat="int artDestacado/integrantes">
                                         <span tal:content="int/title ">Hernesto Corona</span>
                                         <span tal:replace="string:," tal:condition="not: repeat/int/end"></span>

@@ -160,7 +160,7 @@ def onCreaFolder(folder,evento):
     from Products.ATContentTypes.lib import constraintypes
     from Acquisition import aq_parent, aq_inner
 
-    if aq_parent(folder).portal_type()=="arcas.coleccion":
+    if aq_parent(folder).portal_type=="arcas.coleccion":
         # Enable contstraining
         folder.setConstrainTypesMode(constraintypes.ENABLED)
 

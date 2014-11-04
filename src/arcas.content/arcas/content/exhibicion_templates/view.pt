@@ -140,9 +140,13 @@
                             </tal:rr>
                         </ul>
 					</div>
+
 					<div class="boxOtrosDatos">
-						<div class="boxCuradorCV" tal:condition="curadorObj">						
+
+
+						<div class="boxCuradorCV" tal:condition="curadorObj">
 							<div class="responsables" tal:define="cureta python:curadorObj[0]">
+
 								<div class="top">
 									<div class="contacto">
 										<a href="mailto:mail@mail.com"
@@ -151,9 +155,8 @@
 									</div>
 								</div>
 								<div class="curadorIMG">
-									<img class="fotoCurador" src="#"
-									tal:attributes="src string:${context.portal_url}/portal_memberdata/portraits/${cureta/id};
-													title python:cureta['nombre']"/>
+
+                                    <img src=""  tal:replace="structure cureta/img"/>
 								</div>
 								<tal:cur tal:repeat="cura curadorObj">
 								<div class="datosCurador">		

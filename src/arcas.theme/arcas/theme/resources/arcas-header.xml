@@ -31,6 +31,8 @@
     <notheme if-path="++add++arcas.rootFolder" />
     <notheme if-path="++add++arcas.enlacegs" />
     <notheme if-path="folder_constraintypes_form" />
+     <notheme if-path="plonebrowser.htm"/>
+    <notheme if-path="source_editor.htm"/>
 
 
     <replace

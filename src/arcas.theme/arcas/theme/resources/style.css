@@ -1535,3 +1535,11 @@ a.linkFuentes img{ margin:0 8px 0 8px; float:left;padding-top:5px}
 .columnas{width: 90%;}
 .columnas .columnaL,.columnas .columnaR{ width: 48%; float: left; text-align: justify}
 .columnas .columnaL{margin-right: 4%}
+.template-folder_listing #content-core .documentByLine{display:none}
+.template-folder_listing #content-core dt{padding-top: 10px; padding-left: 3%}
+.template-folder_listing #content-core dd{width:70%;  padding-left: 3%}
+#content-core dt .summary img{margin-right: 12px;}
+#feedback_form input,#feedback_form textarea{width: 35%}
+#feedback_form  div.field.error,#feedback_form .portalMessage dd{ border-color:#99928B !important;background-color:#99928B !important}
+ dl.portalMessage dd{color:black !important}
+

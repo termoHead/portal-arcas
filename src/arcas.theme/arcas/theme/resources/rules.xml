@@ -8,7 +8,7 @@
     <!-- Rules applying to standard Plone pages  -->
 
 	<drop css:content="#portaltab-index_html"/>
-	 
+
     <rules if-path="/arcas/portada/">
 
         <xi:include href="arcas-header.xml" />
@@ -46,13 +46,15 @@
             </rules>
             <rules if-not-path="@@overview-controlpanel and edit
                     and @@syndication-settings and plone_control_panel and
-                    @@navigation-controlpanel and contact-info and
-                    @@site-controlpanel">
+                    @@navigation-controlpanel and
+                    @@site-controlpanel and contacto">
                 <rules if-content="not(//div[@class='markColeccion']) and
                                    not(//div[@class='markExhibicion']) and
                                    not(//div[@class='markListColeccion']) and
                                    not(//div[@class='markListExhibicion'])">
                     <theme href="estandar.html" />
+
+
                     <merge attributes="class" css:theme="body" css:content="body" />
                     <replace css:theme=".cabezalInterno h2">
                         <xsl:copy-of select="//*[@id='parent-fieldname-title']" />
@@ -94,7 +96,19 @@
                 <replace css:content-children=".listadoEnlaces" css:theme-children=".listadoEnlaces"/>
             </rules>
         </rules>
-	</rules>
+
+
+         <rules css:if-content=".template-contact-info">
+             <theme href="estandar.html" />
+             <replace css:theme-children=".texto" css:content-children="#portal-column-content"/>
+              <replace css:theme=".cabezalInterno h2">
+                        <xsl:copy-of select="//*[@class='documentFirstHeading']" />
+              </replace>
+
+             <drop css:content=".documentFirstHeading"></drop>
+         </rules>
+
+    </rules>
 
 
 	<!--

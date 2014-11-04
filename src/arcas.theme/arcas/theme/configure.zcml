@@ -7,12 +7,15 @@
     i18n_domain="arcas.theme">
 
 
-  <includeDependencies package="."
-  />
+  <includeDependencies package="." />
   <plone:static
             directory="./resources"
-            type="theme"
-  />
+            type="theme"/>
+  <!-- z3c.jbot overrides -->
+  <include package="z3c.jbot" file="meta.zcml" />
+  <browser:jbot
+      directory="jbot_templates" />
+
   <genericsetup:registerProfile
       name="default"
       title="arcas.theme"

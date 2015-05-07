@@ -197,7 +197,8 @@ class View(DisplayForm):
             catalog=getToolByName(self.context,"portal_catalog")
             idF=self.context.id+'_enlace'
             ruta='/'.join(self.context[idF].getPhysicalPath())
-            result=catalog(review_state='published',path={'query': ruta, 'depth': 1},sort_on='getObjPositionInParent')
+            result=catalog(review_state=('published','private'),path={'query': ruta, 'depth': 1},sort_on='getObjPositionInParent')
+			
             return result
         except:
             return None

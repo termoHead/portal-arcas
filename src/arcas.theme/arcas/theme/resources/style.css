@@ -1481,7 +1481,7 @@ background-image: url("images/buscar.gif");
 body.listadoColecciones .lista .bloque .busquedaColeccion .buscaTexto:focus{color:#333;}
 #searchSection,.LSBox{ text-align: right;
     position: relative;}
-#LSResult{z-index: 10; background-color: #999999; text-align: left; font-size: 12px}
+#LSResult{z-index: 10; background-color: #999999; text-align: left; font-size: 12px; top:55px}
 .LSTable {text-align: left}
 #searchbox_currentfolder_only{ width: auto;}
 

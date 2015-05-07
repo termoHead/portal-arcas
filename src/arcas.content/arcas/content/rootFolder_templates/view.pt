@@ -37,7 +37,7 @@
                                     </tal:rr>
                                 </p>
                                 <div class="colaboradores">
-                                    <span>Director de la colección: </span>
+                                    <span>Coordinador de la colección: </span>
                                     <tal:ri tal:repeat="int artDestacado/integrantes">
                                         <span tal:content="int/title ">Hernesto Corona</span>
                                         <span tal:replace="string:," tal:condition="not: repeat/int/end"></span>

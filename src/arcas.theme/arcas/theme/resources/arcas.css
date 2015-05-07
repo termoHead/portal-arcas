@@ -127,3 +127,13 @@
 #cboxOverlay {
     background: none ;
 }
+input.searchPage{font-size:24px!important;
+border: 1px solid #5A544B;
+color: #D0CAC1;
+padding: 6px;}
+#search-field input.searchButton{width: 28px !important; height:45px; text-align: middle;
+font-size:1px; color: transparent; background-position:3px}
+.template-search  .documentFirstHeading{color: #FC6; font-size:24px}
+.template-search #search-results dt  a:link{color: #FC6 !important}
+.template-search #search-results dt img{ margin-right:5px;}
+#search-filter{color: #333}

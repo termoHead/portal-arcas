@@ -79,6 +79,7 @@ height:20px;
 background:url("/++theme++arcas.theme/images/separadorMenu.gif") no-repeat left top transparent;
 padding:0 9px;
 }
+ul.menu .actionMenu li{background-image: none !important}
 ul.menu li a{
 color:#ffcc66;
 text-decoration:none;

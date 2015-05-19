@@ -53,7 +53,7 @@ class JSONExhibicionesList(View):
 
         colectFolder=self.context.unrestrictedTraverse(colecFolder[0].getPath())
         desta_path = '/'.join(colectFolder.getPhysicalPath())
-        cataloDest=catalog.searchResults(path={'query':desta_path , 'depth': 1})
+        cataloDest=catalogo.searchResults(path={'query':desta_path , 'depth': 1})
 
         for coleccion in cataloDest:
             colecObj=self.context.unrestrictedTraverse(coleccion.getPath())

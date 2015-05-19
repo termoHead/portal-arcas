@@ -62,7 +62,8 @@ class BuscarExhibiciones(BrowserView):
         self.context    =context
         self.request    =request
         self.idCol  =request.form["idCol"]
-
+        self.portal_transforms = getToolByName(self.context, 'portal_transforms')
+		
     def dameListaExhib(self):
         miColeBrain=self.dameColeccionById(self.idCol)
 
@@ -120,3 +121,44 @@ class RedidectionView(BrowserView):
         return self.request.response.redirect(contextURL+"/portada")
         
         
+class DocumentView(BrowserView):
+    """Reemplazo del la vista original de DocumentView"""
+
+    def __init__(self, context, request):
+        self.context    =context
+        self.request    =request
+
+    def dameCuerpo(self):
+		contenido=self.context.getText()
+		return contenido
+    def dameSeccion(self):
+		return aq_parent(self.context)
+		
+    def dameSeccion(self):
+		"""Devuelve el titulo Noticias si esta dentro de la secciòn noticias
+		si no, el title del parent"""
+		if "noticias" in self.context.getPhysicalPath():
+			return "Noticias"
+		else:
+			padre=self.context.aq_parent
+			return padre.title
+		
+		
+    def dameImagenes(self):
+		from lxml import etree
+		from lxml.html import fromstring, tostring
+		contenido=self.dameCuerpo()
+		descri=self.context.Description()
+		#data = self.portal_transforms.convertTo('text/html', text, mimetype='text/-x-web-intelligent')
+		#html = data.getData()
+		parseado=etree.HTML(contenido)
+		listaEnlaces=[{"src":elem.get("src"),"width":elem.get("width"),"height":elem.get("height")} for elem in parseado.xpath("//img")]
+		texto=""
+		for element in parseado.iter("*"):
+			if element.text!=None and element!="":
+				if element.tag!="img":
+					texto+=element.text.encode('latin1')
+					
+		return texto,listaEnlaces,descri
+		
+	

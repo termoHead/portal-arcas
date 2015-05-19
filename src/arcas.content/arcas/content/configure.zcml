@@ -7,8 +7,6 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     xmlns:plone="http://namespaces.plone.org/plone"
     i18n_domain="arcas.content">
-
-
   <include package="plone.behavior" file="meta.zcml" />
   <include package="plone.directives.form" file="meta.zcml" />
   <include package="plone.directives.form" />
@@ -16,6 +14,7 @@
   <includeDependencies package="." />
   <include file="permissions.zcml" />
   <include package="plone.app.portlets" />
+  
   <browser:resourceDirectory
             name="arcas.content"
             directory="static"
@@ -30,12 +29,16 @@
       />
   <include package="plone.directives.form" file="meta.zcml" />
   <include package="plone.directives.form" />
-  <!-- -*- extra stuff goes here <plone:behavior
-            title="GroupColeccion"
-            description="Agrega un campo nombre de grupo."
-            provides=".behaviors.IColecGroupName"
-            factory =".behaviors.ColecGroupName"
-            />-*- -->
+	<!-- 
+	-*- extra stuff goes here <plone:behavior
+		title="GroupColeccion"
+		description="Agrega un campo nombre de grupo."
+		provides=".behaviors.IColecGroupName"
+		factory =".behaviors.ColecGroupName"
+		/>
+	-*-
+
+	-->
 
     <browser:page
           name="gsSearch"
@@ -76,6 +79,14 @@
             permission="zope2.View"
             layer="arcas.theme.interfaces.IArcasTheme"
             />
+	<browser:page
+     for="Products.ATContentTypes.content.document.ATDocument"
+     name="document_view"
+	 class=".browser.DocumentView"
+     template="browse/document_view.pt"
+                 layer="arcas.theme.interfaces.IArcasTheme"
+     permission="zope2.View"
+     />
 
     <utility
             component=".vocabularios.GroupMembersVocabFactory"

@@ -5,9 +5,9 @@
         i18n:domain="arcas.sugerencia">
 
     <!-- Basic metadata -->
-    <property name="title" i18n:translate="">Sugerencia</property>
+    <property name="title" i18n:translate="">Enlace sugerido</property>
     <property name="description"
-              i18n:translate="">Una lectura, o material complementario para la Colección o la Exhibicion</property>
+              i18n:translate="">Un enlace a una lectura o material complementario</property>
     <property name="icon_expr">string:++resource++arcas.content/sugerido.png</property>
     <property name="factory">arcas.sugerencia</property>
     <property name="global_allow">True</property>

@@ -10,13 +10,11 @@
 	<drop css:content="#portaltab-index_html"/>
 
     <rules if-path="/arcas/portada/">
-
         <xi:include href="arcas-header.xml" />
         <theme href="index.html" />
         <replace css:theme-children="#exhibicionHome" css:content-children="div.exhiV"></replace>
         <drop css:content-children=".buscadorColecciones"></drop>
         <before css:theme=".cabezalInterno .clr" css:content-children="#seccion"></before>
-
         <replace
                 css:theme-children="div#vi"
                 css:content-children="div#boxColecciones"
@@ -24,7 +22,6 @@
         <replace css:theme-children="#contenido .novedades" css:content-children="#contenido .novedades"/>
         <replace css:theme-children="#contenido .presentacion .centro" css:content-children="div#contenido div.presentacion .centro  " />
         <replace css:theme-children="#contenido .presentacion .pie" css:content-children="div#contenido div.presentacion .pie" />
-		
     </rules>
 
 
@@ -59,7 +56,17 @@
                     <replace css:theme=".cabezalInterno h2">
                         <xsl:copy-of select="//*[@id='parent-fieldname-title']" />
                     </replace>
-                    <replace css:theme=".texto">
+					
+					<replace css:theme=".texto"
+                             css:if-content=".template-document_view">
+						<div class="texto">
+							<xsl:copy-of select="//h2" />
+							<xsl:copy-of select="//p[@class='descri']" />
+							<xsl:copy-of select="//div[@id='bodyBox']" />
+						</div>
+					</replace>					
+                    <replace css:theme=".texto" 
+                             css:if-not-content=".template-document_view">
                         <div class="texto">
                            <xsl:for-each css:select="#content">
                                 <xsl:copy-of select="div[@id!='viewlet-below-content-title']"/>
@@ -74,23 +81,19 @@
 
         </rules>
 
-
-
-
-
         <rules if-path="@@gsSearch">
             <theme href="estandar.html" />
             <replace css:content="#portal-column-content" css:theme-children=".texto"/>
             <merge attributes="class" css:theme="body" css:content="body" />
         </rules>
 	
-		 <rules css:if-content=".portaltype-arcas-exhibicion">
+		<rules css:if-content=".portaltype-arcas-exhibicion">
              <rules css:if-not-content="body.template-edit">
                 <theme href="internaExhibicion.html" />
                 <merge attributes="style" css:theme="#presentacionExhibicion" css:content=".boxHeader" />
                 <replace css:content-children=".boxTitulo" css:theme-children=".tituloExhibicion"/>
                 <replace css:theme-children=".columnaDerecha .curador" css:content-children=" .boxCuradorCV .responsables"/>
-                <replace css:theme-children="#presentacionExhibicion .datosExtra" css:content-children=".boxHeader .responsables"/>
+                <replace css:theme-children="#presentacionExhibicion .datosExtra" css:content-children=".boxHeader .responsables"/>		
 
                 <replace css:theme-children=".introExhibicion" css:content-children=".boxDescri"/>
                 <replace css:content-children=".boxSlide" css:theme-children=".obra"/>
@@ -100,16 +103,22 @@
             </rules>
         </rules>
 
-
-         <rules css:if-content=".template-contact-info">
-             <theme href="estandar.html" />
-             <replace css:theme-children=".texto" css:content-children="#portal-column-content"/>
-              <replace css:theme=".cabezalInterno h2">
+		<rules css:if-content=".template-document_view"> 
+			<before css:theme=".cabezalInterno .clr" css:content="h1"/>
+			
+			
+			
+		</rules>
+		
+        <rules css:if-content=".template-contact-info">
+            <theme href="estandar.html" />
+            <replace css:theme-children=".texto" css:content-children="#portal-column-content"/>
+             <replace css:theme=".cabezalInterno h2">
                         <xsl:copy-of select="//*[@class='documentFirstHeading']" />
-              </replace>
+             </replace>
 
              <drop css:content=".documentFirstHeading"></drop>
-         </rules>
+        </rules>
 
     </rules>
 

@@ -4,9 +4,9 @@
         xmlns:css="http://namespaces.plone.org/diazo/css"
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <!-- Rules applying to standard Plone pages-->
-            <notheme if-path="/home/@@manage-portlets" />
-        <notheme if-path="folder_contents" />
-        <notheme if-path="require_login" />
+    <notheme if-path="/home/@@manage-portlets" />
+    <notheme if-path="folder_contents" />
+    <notheme if-path="require_login" />
     <notheme if-path="@@manage-portlets" />
     <notheme if-path="folder_contents" />
     <notheme if-path="@@gsSearch?" />
@@ -33,8 +33,8 @@
     <notheme if-path="folder_constraintypes_form" />
      <notheme if-path="plonebrowser.htm"/>
     <notheme if-path="source_editor.htm"/>
-
-
+    
+	<drop css:content=".LSBox"/>
     <replace
             theme-children="//div[@id='header']/ul"
             css:content-children="ul#portal-globalnav"
@@ -44,6 +44,7 @@
         <link href="++theme++arcas.theme/arcas.css" media="screen" type="text/css" rel="stylesheet" />
         <link href="++theme++arcas.theme/style.css" media="screen" type="text/css" rel="stylesheet" />
     </after>
+	
     <after theme-children="//link">
         <xsl:copy-of css:select="head script"/>
     </after>

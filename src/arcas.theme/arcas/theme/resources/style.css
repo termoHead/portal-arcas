@@ -41,10 +41,15 @@ line-height:0;
 font-size:0;
 height:0;
 }
+#content ul.formTabs {background-color: #4E4E4E;
+border: 0.3em solid #4E4E4E;}
+.formHelp{color: #C9C9C9  !important;margin: 0px 0px 0.2em;display: block;font-weight: normal;}
+.mceFirst,#form.widgets.cuerpo_toolbargroup{background-color:#4E4E4E !important}
+.mceIframeContainer{background-color:#fff !important}
 body{
     -webkit-font-smoothing: antialiased;
     text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
-font-family:"Arial",sans-serif;
+    font-family:"Arial",sans-serif;
 }
 h2{display:inline;color:#eee; margin-top: 12px;}
 h3{display:inline;}
@@ -191,7 +196,8 @@ font-size:41px;color:#fff;font-weight:normal;line-height: 41px;width: 170px;disp
 .datosExcibicion div.colaboradores{font-style:normal;font-size:12px;color:#f2e4cd}
 .datosExcibicion div.colaboradores span:last-child{font-weight: bold;}
 
-.datosExcibicion p.descri{line-height: 20px;}
+.datosExcibicion p.descri{line-height: 20px; font-size:14px}
+.datosExcibicion  div.responsables p{font-size:12px}
 .masExhibiciones{
 	/*width:100%;
 	background:url(/++theme++arcas.theme/img/pie_exhi_home.gif) left top no-repeat;
@@ -328,6 +334,7 @@ height:27px;
 #contenido{
 border-bottom:1px solid #99928b;
 padding-bottom:38px;
+
 }
 #contenido .novedades{
 float:left;
@@ -403,7 +410,7 @@ float:left;
 }
 #contenido .presentacion .centro div{
 float:left;
-font-size:14px;
+font-size:12px;
 color:#ffffff;
 -moz-column-count: 2;
 -moz-column-gap: 27px;
@@ -460,6 +467,7 @@ margin:25px 55px 0 0;
 display:block;
 float:left;
 clear:both;
+margin-bottom:14px
 }
 #pie .logos .itemLink{
 margin-left:102px;
@@ -751,7 +759,7 @@ margin-top:32px;
 float:left;
 clear:both;
 margin-left:17px;
-margin-top: 17px;
+margin-top: 3px;
 }
 
 .licencia p{
@@ -1187,6 +1195,7 @@ background-image:url("/++theme++arcas.theme/images/tituloTrama.png");
 }*/
 body.estandar .texto{
     margin:38px 60px 40px 69px;
+	font-size:14px;
 }
 .listadoColecciones .texto,.listadoExhibiciones .texto{
     -moz-column-count: 2;
@@ -1537,11 +1546,13 @@ a.linkFuentes img{ margin:0 8px 0 8px; float:left;padding-top:5px}
 #pie div.central{
     float:left;
     width: 150px;
-    margin-left: 150px;
-    padding-top: 54px;
+    margin-left: 105px;
+    padding-top: 45px;
 }
+.estandar .texto h2{margin-bottom:1em;}
+
 #pie div.central a{display:block}
-#pie div.central a:first-child{margin-bottom: 10px;}
+#pie div.central a:first-child{margin-bottom: 30px;}
 .columnas{width: 90%;}
 .columnas .columnaL,.columnas .columnaR{ width: 48%; float: left; text-align: justify}
 .columnas .columnaL{margin-right: 4%}
@@ -1554,3 +1565,16 @@ a.linkFuentes img{ margin:0 8px 0 8px; float:left;padding-top:5px}
  dl.portalMessage dd{color:black !important}
 #pie .licencia img{display: none}
 .logoIdihcs{margin-left: 8px}
+.links:nth-child(2) > ul:nth-child(1){margin-bottom:17px}
+
+.template-document_view .listImages{margin-top: 1.1em; width:20%; float: left; overflow:hidden}
+.template-document_view   .conImages .textoBody{ width:70%;
+    margin-left:5%;}
+.template-document_view .textoBody{     
+	margin-top:1em;
+	-webkit-column-count: 2; /* Chrome, Safari, Opera */
+    -moz-column-count: 2; /* Firefox */
+    column-count: 2;
+	-webkit-column-gap: 40px; /* Chrome, Safari, Opera */
+    -moz-column-gap: 40px; /* Firefox */
+    column-gap: 40px;}

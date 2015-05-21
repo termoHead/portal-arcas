@@ -22,7 +22,7 @@
                 </div>
                 
                 <div class="colecBox">
-				<a href="navFuentes.php"  class="linkFuentes" tal:attributes="href view/getUrlAFuente">
+				<a href="navFuentes.php"  class="linkFuentes" tal:attributes="href view/getUrlAFuente; title context/altNavegarFuente">
 				<img src="/++theme++arcas.theme/images/irA.gif" alt=""/>Navegar Fuentes</a>
                     <form target="_blank" method="get" tal:attributes="action string:http://arcas.fahce.unlp.edu.ar:8383/greenstone3/library/collection/${context/GS_ID}/search/TextQuery">
                        <span tal:replace="structure context/@@authenticator/authenticator" />

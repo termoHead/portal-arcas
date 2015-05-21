@@ -56,7 +56,8 @@ class View(DisplayForm):
                 "scales":miOb,
                 "coors":colUtils.getCoordinadores(),
                 "idColec":miOb.GS_ID,
-                "urlFuente":colUtils.getUrlAFuente()}
+                "urlFuente":colUtils.getUrlAFuente(),
+                "altFuente":miOb.altNavegarFuente,}
                 )
 
         return listados

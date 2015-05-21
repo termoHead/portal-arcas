@@ -51,7 +51,7 @@
                             <div class="clr"></div>
                         </div>
                         <div class="busquedaColeccion ">
-						<a href="navFuentes.php"  class="linkFuentes" tal:attributes="href colec/urlFuente">
+						<a href="navFuentes.php"  class="linkFuentes" tal:attributes="href colec/urlFuente; title colec/altFuente">
 						<img src="/++theme++arcas.theme/images/irA.gif" alt=""/>Navegar Fuentes</a>
                             
 

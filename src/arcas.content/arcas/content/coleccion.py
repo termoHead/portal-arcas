@@ -65,9 +65,9 @@ class IColeccion(form.Schema):
         description=_(u"Nombre de la colección en GS3. Se requiere para hacer las busquedas"),
         required=True,
     )
-    creativeURL=schema.TextLine(
-        title=_(u"URL al Creative Commons"),
-        description=_(u"url a la Licencia CC"),
+    altNavegarFuente=schema.Text(
+        title=_(u"Navegar Fuente"),
+        description=_(u"Escriba aquì una descripción para el botón Navegar Fuente, que permita al usuario comprender mejor como está organizada la colección."),
         required=False,
     )
 

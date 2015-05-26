@@ -102,14 +102,23 @@
                 <replace css:content-children=".listadoEnlaces" css:theme-children=".listadoEnlaces"/>
             </rules>
         </rules>
-
+        <rules css:if-content=".template-newsitem_view ">
+            
+        </rules>
 		<rules css:if-content=".template-document_view"> 
 			<before css:theme=".cabezalInterno .clr" css:content="h1"/>
-			
-			
-			
 		</rules>
-		
+		<rules css:if-content=".portaltype-arcas-enlacegs"> 
+			<before css:theme=".cabezalInterno .clr" css:content="h1"/>
+            <replace css:theme-children=".texto" css:content-children="#portal-column-content"/>
+            <replace css:theme=".cabezalInterno h2">
+                        <xsl:copy-of select="//*[@class='documentFirstHeading']" />
+             </replace>
+
+		</rules>
+        
+        
+        
         <rules css:if-content=".template-contact-info">
             <theme href="estandar.html" />
             <replace css:theme-children=".texto" css:content-children="#portal-column-content"/>

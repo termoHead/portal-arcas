@@ -137,3 +137,8 @@ font-size:1px; color: transparent; background-position:3px}
 .template-search #search-results dt  a:link{color: #FC6 !important}
 .template-search #search-results dt img{ margin-right:5px;}
 #search-filter{color: #333}
+
+.portaltype-news-item .newsImageContainer{ float:left; width:250px; }
+.portaltype-news-item .newsImageContainer a{clear:both;float:left}
+.portaltype-news-item .newsImageContainer p.discreet{ display:none}
+.portaltype-news-item ·#parent-fieldname-text{}

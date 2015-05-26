@@ -8,6 +8,12 @@
 jQuery.fn.exists = function(){return this.length>0;}
 var solapaActiva
 var hojaActiva
+
+var objFormEnlaceGs = {};
+objFormEnlaceGs.tmpValor=""
+objFormEnlaceGs.setCampoTmp=function(valor){
+    this.tmpValor=valor    
+}
 $(document).ready(function() {
     var lastSlide=""
 	if ($(".thumbnails li")[0]){
@@ -98,7 +104,6 @@ function activaSolapas(){
 	})
 }
 
-
 function comodaGaleria(){
     var lW=350;
     var suma=0;
@@ -159,3 +164,21 @@ function comodaGaleria(){
 
 }
 
+function ocultaCamposEnlaceGS(valor){
+    
+    if(valor=='1'){
+        miHelp='Enlace externo <span class="formHelp">URL hacia un recurso externo. debe incluir el http://</span>'
+        $('#formfield-form-widgets-ficha').hide()
+        if($("#form-widgets-ficha").attr("value")!=""){
+            objFormEnlaceGs.setCampoTmp($("#form-widgets-ficha").attr("value"))
+        }
+        $("#form-widgets-ficha").attr("value","")
+    }else{
+        $('#formfield-form-widgets-ficha').show()
+        miHelp='Enlace a la fuente primaria  <span class="formHelp">Enlace a la fuente primaria en Greenstone, debe incluir el http://</span>'
+        if(objFormEnlaceGs.tmpValor!=""){
+           $("#form-widgets-ficha").attr("value",objFormEnlaceGs.tmpValor)
+        }
+    }
+    $('#formfield-form-widgets-urlRemoto label').html(miHelp)
+}

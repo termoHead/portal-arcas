@@ -11,17 +11,27 @@
 
 <metal:content-core fill-slot="main">
     <metal:content-core define-macro="main">
-        <h2>
-            <img src="" tal:attributes="src string:++resource++arcas.content/${view/dameIcon}; title context/tipoMedio"/>
-            <span tal:content="context/title"></span>
-        </h2>
-        <div class="texto">
+        <h1 tal:content="view/dameSeccion">Manuel PUIG</h1>		
+        <div id="portal-column-content">
+        <div class="texto">        
+            <h2 tal:content="context/title"></h2>		
             <div tal:content="structure context/cuerpo/output"></div>
+            <div class="img">            
+            <img src="" tal:attributes="src view/dameImagen" />
         </div>
-        <div class="img">
-            <img src="" tal:attributes="src view/dameThumb" />
-
+        <div class="enlace" tal:define="fPrimaria context/urlRemoto | nothing;
+                                        g3Doc context/ficha | nothing">
+            
+            <a href=""  tal:condition="g3Doc"
+               tal:attributes="href g3Doc">Ir a la colección</a>
+            <a href=""  tal:condition="not: g3Doc"
+               tal:attributes="href fPrimaria">Ir a la fuente</a>
         </div>
+        </div>
+        
+        
+        </div>
+        
     </metal:content-core>
 </metal:content-core>
 

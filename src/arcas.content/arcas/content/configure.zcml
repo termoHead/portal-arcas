@@ -173,6 +173,7 @@
             editview    ="arcas.content.portlets.colecciones_portlet.EditForm"
             />
     <include package="plone.app.contentmenu" />
+    
     <browser:menuItem
         for="Products.CMFPlone.interfaces.siteroot.IPloneSiteRoot"
         menu="plone_displayviews"
@@ -181,4 +182,6 @@
         description="Dirigir a porta"
         layer="arcas.theme.interfaces.IArcasTheme"
         />
+        
+
 </configure>

@@ -15,6 +15,8 @@ from plone.directives import form
 
 from z3c.relationfield.schema import RelationList, RelationChoice
 import unicodedata
+
+
 class IColeccion(form.Schema):
     """A conference program. Programs can contain Sessions."""
     form.fieldset(
@@ -27,12 +29,21 @@ class IColeccion(form.Schema):
         u"Ilustraciones",
         fields=['imagenCabecera','imagenHome','imagenLista'],
     )
-
+    form.fieldset(
+        'columnaDer',
+        u"Columna derecha",
+        fields=[],
+    )
+    
+    tipoColeccion = schema.Choice(
+            title=u"Categoría",
+            description=u"Elija una categoría a la que responde esta Colección. Si la categoría no existe debe pedirle al administrador que genere una nueva.",
+            source="arcas.Categorias",
+        )
     cuerpo = RichText(
         title=_(u"Texto principal"),
         required=False,
     )
-
     coordinador=schema.List(
         title=_("Coordinador"),
         value_type=schema.Choice(source="arcas.CoorMembersVocab",),
@@ -91,7 +102,7 @@ class View(DisplayForm):
 
     def getUrlAFuente(self):
         """devuelv la dirección a la fuente primaria"""
-        baseURL=URL_GREENSTON_DOC+self.context.GS_ID+"/browse/CL2"
+        baseURL=URL_GREENSTON_DOC+self.context.GS_ID+"/browse/CL1"
         return baseURL
 
     def dameCurador(self):

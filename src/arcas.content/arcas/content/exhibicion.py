@@ -228,7 +228,7 @@ class View(DisplayForm):
         obj=self.context.unrestrictedTraverse(recu.getPath())
         if obj.tipoMedio=="imagen":
             urlT=obj.urlRemoto
-            if obj.ficha and obj.ficha!='':
+            if obj.ficha and obj.ficha!=u'':
                 ficha=obj.ficha
             else:
                 ficha = None

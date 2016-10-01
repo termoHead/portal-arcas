@@ -53,7 +53,9 @@
 
 
                     <merge attributes="class" css:theme="body" css:content="body" />
-                    <replace css:theme=".cabezalInterno h2">
+                    
+                    <replace css:theme=".cabezalInterno h2" 
+                             css:if-not-content=".portaltype-news-item">
                         <xsl:copy-of select="//*[@id='parent-fieldname-title']" />
                     </replace>
 					
@@ -103,7 +105,8 @@
             </rules>
         </rules>
         <rules css:if-content=".template-newsitem_view ">
-            
+            <replace css:theme-children=".cabezalInterno" ><h2>Novedades</h2></replace>
+            <before css:theme=".texto" css:content="h1#parent-fieldname-title"/>            
         </rules>
 		<rules css:if-content=".template-document_view"> 
 			<before css:theme=".cabezalInterno .clr" css:content="h1"/>

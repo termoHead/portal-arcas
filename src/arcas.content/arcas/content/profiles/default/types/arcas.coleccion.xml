@@ -15,13 +15,7 @@
     </property>
 
     <!-- schema interface -->
-    <property name="schema">arcas.content.coleccion.IColeccion</property>
-
-    <!-- class used for content items
-
-
-    <property name="klass">arcas.content.coleccion.Coleccion</property>
-    -->
+    <property name="schema">arcas.content.coleccion.IColeccion</property>   
     <property name="klass">plone.dexterity.content.Container</property>
 
     <!-- add permission -->
@@ -33,6 +27,7 @@
         <element value="plone.app.referenceablebehavior.referenceable.IReferenceable" />
         <element value="plone.app.dexterity.behaviors.metadata.IDublinCore" />
         <element value="arcas.content.behaviors.IColecGroupName" />
+        <element value="arcas.content.behaviors.IColDerSeccion" />
     </property>
 
     <!-- View information -->

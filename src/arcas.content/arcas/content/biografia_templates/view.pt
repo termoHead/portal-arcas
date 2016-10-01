@@ -13,7 +13,7 @@
     <metal:content-core define-macro="main">
     <div class="contenido" id="bioTemplate">
     <div id="seccion">
-       <h1 id="parent-fieldname-title" class="documentFirstHeading">BIOGRAFIA </h1>
+       <h1 id="parent-fieldname-title" class="documentFirstHeading">Biografía </h1>
     </div>
     <div id="contenedoText">
         <div class="textoBox"

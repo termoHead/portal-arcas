@@ -2,7 +2,7 @@
 <object name="arcas.sugerencia"
         meta_type="Dexterity FTI"
         xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-        i18n:domain="arcas.sugerencia">
+        i18n:domain="arcas.content">
 
     <!-- Basic metadata -->
     <property name="title" i18n:translate="">Enlace sugerido</property>
@@ -20,9 +20,9 @@
     <property name="klass">plone.dexterity.content.Item</property>
 
     <property name="behaviors">
-        <element value="plone.app.content.interfaces.INameFromTitle" />
+        
         <element value="plone.app.referenceablebehavior.referenceable.IReferenceable" />
-        <element value="plone.app.dexterity.behaviors.metadata.IDublinCore" />
+       
     </property>
 
     <!-- View information -->

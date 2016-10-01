@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<object name="exhibicion" meta_type="Dexterity FTI"
+<object name="arcas.exhibicion" meta_type="Dexterity FTI"
         i18n:domain="arcas.content" xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 
     <!-- Basic metadata -->
-    <property name="title" i18n:translate="">exhibicion</property>
+    <property name="title" i18n:translate="">Exhibicion</property>
     <property name="description" i18n:translate="">Una exhibicion en ARCAS</property>
     <property name="content_icon">++resource++arcas.content/folderExhibicion.png</property>
     <property name="allow_discussion">True</property>

@@ -18,6 +18,8 @@ from Acquisition import aq_get
 import unicodedata
 from Products.CMFCore.utils import getToolByName
 from arcas.content.exhibicion import IExhibicion
+from arcas.content.categoria import ICategoria
+from arcas.content.coleccion import IColeccion
 #from  arcas.content.curador import ICurador
 _ = MessageFactory('plone')
 from Acquisition import aq_inner
@@ -25,6 +27,75 @@ from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 from zope.security import checkPermission
 from zc.relation.interfaces import ICatalog
+from Products.CMFPlone.utils import safe_unicode
+
+class ColeccionesPorCategoria(object):
+    ###Devuleve una lista de Categorias, con sus respectivas colecciones"""
+    def __init__(self,contexto):
+        self.context=contexto
+        
+    def __call__(self,context):
+        return self._data(context)
+    
+    def _data(self,contexto):
+        """devuleve los resultados de la base"""
+        catalogo = getToolByName(contexto, 'portal_catalog', None)
+        queryColecciones= dict(object_provides=IColeccion.__identifier__)
+        queryCategorias = dict(object_provides=ICategoria.__identifier__)
+        colecciones=catalogo(queryColecciones)
+        colLista=[]
+        results=[]
+        for brain in colecciones:
+            col=contexto.unrestrictedTraverse(brain.getPath())
+            try: 
+                pp=col.tipoColeccion
+            except:
+                pp="Autor"
+                
+            colLista.append({'titulo':brain.Title,'url':brain.getURL(),'tipoColeccion':pp,'id':col.id})
+            
+        
+        catQes=catalogo(queryCategorias)
+        for elem in catQes:
+            cat=contexto.unrestrictedTraverse(elem.getPath())
+            tmpR=filter(lambda col: col['tipoColeccion'] == self.elimina_tildes(elem.Title.decode('utf8')), colLista)
+            if(len(tmpR)>0):                
+                try:
+                    imagen=cat.ilustra
+                except:
+                    imagen="catGenerica.jpg"                    
+                results.append({"categoria":elem.Title,"color":cat.color,"ilustra":imagen,"url":elem.getPath(),"colecciones":tmpR})
+        
+        return results
+    
+    def elimina_tildes(self,s):
+        return ''.join((c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn'))
+
+class CatColecVocabulary(object):
+    implements(IVocabularyFactory)
+    def __call__(self,context):
+        items = []
+
+        site = context
+        return self._data(site)
+
+    @memoize
+    def _data(self,contexto):
+        """devuleve los resultados de la base"""
+        catalogo = getToolByName(contexto, 'portal_catalog', None)
+        query = dict(object_provides=ICategoria.__identifier__)
+        result=[]
+        for cate in catalogo(query):                 
+            cat=contexto.unrestrictedTraverse(cate.getPath())           
+            tituC=self.elimina_tildes(cate.Title.decode('utf8'))            
+            result.append(SimpleTerm(tituC,tituC))
+        return SimpleVocabulary(result)
+    
+    
+    def elimina_tildes(self,s):
+        return ''.join((c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn'))
+    
+CatColeccionesVocabFactory = CatColecVocabulary()
 
 class CanalesVocabulary(object):
     implements(IVocabularyFactory)
@@ -121,7 +192,7 @@ class ColeccionUtils(object):
             return None
 
         infoCoor = []
-        """userssource = UsersSource(grupoObj)"""
+        userssource = UsersSource(grupoObj)
 
         for coordina in grupoObj.getGroupMembers():
             infoCoor.append({'type' : 'user',
@@ -130,7 +201,6 @@ class ColeccionUtils(object):
                              'email': coordina.getProperty('email'),
                              'img'  : mtool.getPersonalPortrait(id=coordina.id),
                              })
-
         return infoCoor
 
     def dameGrupo(self,colec):
@@ -142,6 +212,7 @@ class ColeccionUtils(object):
 
     def dameCurador(self,idExhi):
         """devuelve el curador de una coleccion en lista"""
+
         coleccion=self.coleccion
         ls=[]
         catalogo=getToolByName(coleccion,"portal_catalog")

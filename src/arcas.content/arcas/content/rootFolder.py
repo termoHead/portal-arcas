@@ -13,7 +13,7 @@ from arcas.content.coleccionesFolder import IColeccionesFolder
 from plone.formwidget.contenttree import ObjPathSourceBinder
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.dexterity.content import Container
-
+from arcas.content.utils import ColeccionUtils,ColeccionesPorCategoria
 
 class IRootFolder(form.Schema):
     """Una carpeta principal para documentos publicos
@@ -39,7 +39,7 @@ class CarpetaRaiz(Container):
 
 from Acquisition import aq_inner
 from plone.directives.dexterity import DisplayForm
-from arcas.content.utils import ColeccionUtils
+
 class View(DisplayForm):
     grok.context(IRootFolder)
     grok.require('zope2.View')
@@ -87,6 +87,26 @@ class View(DisplayForm):
         else:
             return False
 
+
+    def getCategoriasColec(self):
+        ##recupera las categorias y las colecciones de cada una
+        resuList=[]
+        listado=ColeccionesPorCategoria(self.context)
+        
+        for elem in listado(self.context):            
+            miCat={"titulo":elem["categoria"],"color":elem["color"],"colecciones":[],"ilustra":elem["ilustra"],"url":elem["url"]}
+            for elC in elem["colecciones"]:
+                extraFUrl="%s/%s_estudios" %(elC["url"],elC["id"])
+                extraFT="Estudios"
+                elC["extraFolderUrl"]   =extraFUrl
+                elC["extraFolderTitulo"]=extraFT
+                miCat["colecciones"].append(elC)
+            resuList.append(miCat)
+        
+        
+        return resuList
+        
+        
     def getColecciones(self):
         ##recreaFolder= self.getContainer(folder.encode('utf8'))
         ##cuando busca documento hace referencia al campo "documento" que es el destacado del directorio

@@ -10,7 +10,7 @@
     <metal:content-core define-macro="main">
 	<div class="markListColeccion" tal:define="cuerpo context/cuerpo/output|nothing">
         <div class="cabezalInterno">
-            <h2>COLECCIONES</h2>
+            <h2>Colecciones</h2>
             <div class="clr"></div>
         </div>
 		<div class="conColumnas" tal:condition="cuerpo">
@@ -25,11 +25,11 @@
                 <div class="bloque" >
 
                     <div class="tituloColeccion" tal:attributes="style string:background:url(${colec/url}/@@images/imagenLista) no-repeat">
-                        <h2 >
+                        <h2>
                         <a href="" tal:attributes="href colec/url;
                                                 title colec/titulo"
                            tal:content="colec/titulo">Titulo coleccion</a>
-                        </h2 >
+                        </h2>
                     </div>
 
                     <div class="containerRight">
@@ -41,7 +41,7 @@
                             <tal:rC tal:repeat="coor colec/coors">
                                 <img class="coordinador" src="images/horacioPrekel.jpg" tal:replace="structure coor/img" />
                                 <div class="datos">
-                                    <span>Coordinador de la Colecci&oacute;n</span>
+                                    <span>Coordinador/a de la Colecci&oacute;n</span>
 
                                     <h4> <a href="#" tal:attributes="href string:mailto${coor/email}; title coor/title"
                                             tal:content="coor/title">Nombre coordinador</a></h4>

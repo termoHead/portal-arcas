@@ -11,7 +11,7 @@
 	<div class="markListExhibicion"
             tal:define="textoF context/cuerpo|nothing">
         <div class="cabezalInterno">
-            <h2>EXHIBICIONES VIRTUALES</h2>
+            <h2>Exhibiciones virtuales</h2>
             <div class="clr"></div>
         </div>
 		<div class="conColumnas">
@@ -44,14 +44,14 @@
                                 >
                             <span class="portrait"><img src=""  tal:replace="structure curador/portrait"/></span>
                             <div class="responsales">
-                                <span class="label">Curador</span>
+                                <span class="label">Curador/a</span>
                                 <span class="special">
                                 <a href="#" tal:attributes="href string:mailto:${curador/mail};
                                                             title curador/nombre"
                                        tal:content="curador/nombre">Nombre coordinador</a>
                                 </span>
                                 <div class="seccionCoor" tal:condition="coordinadores">
-                                    <span>Coordinador<tal:o tal:condition="python:len(coordinadores)>1">es</tal:o></span>
+                                    <span>Coordinador/a<tal:o tal:condition="python:len(coordinadores)>1">es</tal:o></span>
 
                                     <ul>
                                     <tal:rC tal:repeat="coor coordinadores">

@@ -26,7 +26,7 @@
                 </div>
                 <div class="boxResponsables">
 						<div class="responsables" tal:condition="curadorObj">
-								<span class="labelTitulo">Curador</span>
+								<span class="labelTitulo">Curador/a</span>
 								<ul>						
 								<li tal:repeat="cura curadorObj">
 									<span class="special" tal:content="python:cura['nombre']">
@@ -57,7 +57,9 @@
 
             <div class="boxDescri">
                 <div class="galDescri" tal:content="structure view/dameSaftyDescri"></div>
-                <div class="pie"><a href="#">(+) Leer toda la exhibici&oacute;n</a></div>
+                <div class="pie"><a href="infoExhi_view">(+) Leer toda la exhibici&oacute;n</a></div>
+                
+          
             </div>
 
             <div class="boxSlide" >
@@ -72,11 +74,15 @@
 							<tal:rep tal:repeat="link listaFotos">
 								<li tal:define="numVuelta repeat/link/index;
 												esPrimera repeat/link/start;
+                                                esExterna python:link.getObject().tipoEnlace;
 												textCuerpo python:link.getObject().cuerpo"
 										tal:attributes="class string:slide_${numVuelta}">
 										<div class="marcoBorde">
-									<a href="#" tal:attributes="href link/getURL;
-																class python:esPrimera and 'activo' or ''">
+									<a href="#" tal:define="classPos python:esPrimera and 'activo' or '';
+                                                            classTipo python:esExterna == 0 and 'greenston' or 'externa';
+                                                            finClass python:'%s %s' %(classPos,classTipo)"
+                                                tal:attributes="href link/getURL;
+																class python: finClass">
 									<img src="#" width="52"
 										 tal:attributes="src link/urlRemoto;
 														 title link/Description" />
@@ -127,7 +133,7 @@
             <div class="contenedorDatosExhibicion">
                 <div class="columnaIzquierda">
                     <div class="indice">
-                        <h3>Indice de Archivos exhibidos</h3>
+                        <h3>Indice de documentos exhibidos</h3>
                         <ul tal:condition="listaFotos">
                             <tal:rr tal:repeat="li listaFotos">
                                 <li tal:define="liObj python:li.getObject();
@@ -160,15 +166,15 @@
 								</div>
 								<tal:cur tal:repeat="cura curadorObj">
 								<div class="datosCurador">		
-									<span class="labelM">Curador</span>
+									<span class="labelM">Curador/a</span>
 									<span class="special" tal:content="python:cura['nombre']">Ernesto Trambonati</span>
 								</div>
 								</tal:cur>								
 								<tal:coor tal:condition="coord">
 								<div>									
 									<span class="labelM">
-										<tal:span  tal:condition="python:len(coord)>1">Coordinadores</tal:span>
-										<tal:span  tal:condition="python:len(coord)<2">Coordinador</tal:span>
+										<tal:span  tal:condition="python:len(coord)>1">Coordinadores/as</tal:span>
+										<tal:span  tal:condition="python:len(coord)<2">Coordinador/a</tal:span>
 										de la Colección
 									</span>
 									<tal:rr tal:repeat="coordina coord">
@@ -223,7 +229,7 @@
 			</div>
 			
 			
-			
+	
 		</metal:content-core>
     </metal:content-core>
 

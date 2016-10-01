@@ -5,7 +5,7 @@
         i18n:domain="arcas.enlacegs">
 
     <!-- Basic metadata -->
-    <property name="title" i18n:translate="">Enlace GS</property>
+    <property name="title" i18n:translate="">Enlace Greenstone</property>
     <property name="description"
               i18n:translate="">Enlace a fuetne primaria</property>
     <property name="icon_expr">string:++resource++arcas.content/enlacegs.png</property>

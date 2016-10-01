@@ -21,12 +21,17 @@ from plone.indexer import indexer
 from plone.z3cform.textlines.textlines import TextLinesFieldWidget
 tiposVocab = SimpleVocabulary(
     [SimpleTerm(value=u'articulo', title='Artículo'),
-     SimpleTerm(value=u'audio', title='Audio'),
+     SimpleTerm(value=u'libro', title='Libro'),
+     SimpleTerm(value=u'compilacion', title='Compilación'),
+     SimpleTerm(value=u'cap', title='Capítulo de libro'),
+     SimpleTerm(value=u'tesis', title='Tesis'),
      SimpleTerm(value=u'resena', title='Reseña'),
-     SimpleTerm(value=u'texto', title='Texto'),
-     SimpleTerm(value=u'video', title='Video'),
-     SimpleTerm(value=u'web', title='Página web')]
+     SimpleTerm(value=u'entrada', title='Entrada de Blog'),
+     SimpleTerm(value=u'trad', title='Traducción'),
+     SimpleTerm(value=u'audio', title='Audio'),
+     SimpleTerm(value=u'video', title='Video')]
 )
+
 
 
 def isValidURL(value):
@@ -39,6 +44,14 @@ class ISugerencia(form.Schema):
     """
     Sugerencia de lectura que complementa una colección o una exhibición
     """
+    title = schema.TextLine(
+        title=u"Titulo",        
+        required=False,
+    )
+    description = schema.Text(
+        title=u"Año de publicacion",        
+        required=False,
+    )
     tipoMedio = schema.Choice(
         title=u"Tipo de sugerencia",
         vocabulary=tiposVocab,

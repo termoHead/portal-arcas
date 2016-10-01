@@ -2,7 +2,7 @@
 <object name="arcas.biografia"
         meta_type="Dexterity FTI"
         xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-        i18n:domain="arcas.biografia">
+        i18n:domain="arcas.content">
     <!-- Basic metadata -->
     <property name="title" i18n:translate="">Biografia</property>
     <property name="description"

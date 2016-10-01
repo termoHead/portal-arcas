@@ -47,8 +47,8 @@ class View(DisplayForm):
             colUtils=ColeccionUtils(miOb)
             descrip=colec.Description
             if len(descrip)>280:
-                descrip=descrip[:descrip[:280].rfind(" ")]+" ..."
-
+                descrip=descrip[:descrip[:280].rfind("</p>")]+"."
+                
             listados.append({
                 "titulo":colec.Title,
                 "descri":descrip,

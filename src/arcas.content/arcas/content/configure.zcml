@@ -88,6 +88,13 @@
      permission="zope2.View"
      />
 
+    <browser:page
+            name="infoExhi_view"
+            for="arcas.content.exhibicion.IExhibicion"     
+            template="exhibicion_templates/infoExhibicion.pt"            
+            permission="zope2.View"
+            layer="arcas.theme.interfaces.IArcasTheme"
+            /> 
     <utility
             component=".vocabularios.GroupMembersVocabFactory"
             name="arcas.CoorMembersVocab"
@@ -104,6 +111,14 @@
             component=".utils.ExhibicionesVocabFactory"
             name="arcas.ExhibicionesVocab"
             />
+    <utility
+            component=".utils.CatColeccionesVocabFactory"
+            name="arcas.Categorias"
+            />        
+            
+            
+            
+            
     <!--eventos coleccion -->
     <subscriber
             for="arcas.content.coleccion.IColeccion
@@ -156,6 +171,7 @@
             provides=".behaviors.IColecGroupName"
             factory =".behaviors.ColecGroupName"
             />
+            
     <plone:portlet
             name        ="exhibicion_portlet"
             interface   ="arcas.content.portlets.exhibiciones_portlet.IExhibPortlet"
@@ -183,5 +199,33 @@
         layer="arcas.theme.interfaces.IArcasTheme"
         />
         
-
+    <plone:behavior
+        title="Columna Derecha"
+        description="Agrega capos para que se pueda customizar la columna derecha de un documento"
+        provides=".behaviors.IColDerSeccion"
+        for="arcas.content.coleccion.IColeccion"
+        />
+        
+    <!--adapter
+        for="Products.CMFCore.interfaces.IFolderish
+            zope.publisher.interfaces.browser.IDefaultBrowserLayer
+            plone.dexterity.interfaces.IDexterityFTI"
+        provides="zope.publisher.interfaces.browser.IBrowserPage"
+        factory=".coleccion.AddView"
+        name="arcas.coleccion"
+        />
+    <class class=".coleccion.AddView">
+        <require
+            permission="cmf.AddPortalContent"
+            interface="zope.publisher.interfaces.browser.IBrowserPage"
+            />
+    </class>
+    <browser:page
+    for=".coleccion.IColeccion"
+    name="edit"
+    class=".coleccion.EditForm"
+    permission="cmf.ModifyPortalContent"
+    / -->
+        
+        
 </configure>

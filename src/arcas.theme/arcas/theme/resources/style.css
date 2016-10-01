@@ -238,14 +238,13 @@ margin-top:24px;
 padding-top:7px;
 margin-bottom: 7px;
 }
-#vi{position:relative;clear:both;}
+#vi{position:relative;clear:both;overflow: hidden;width:898px; margin-left:62px;}
 .controlC{clear:both;}
 .imgDummy{border:0; width:180px;height:263px; }
 .mascaraImg{display:block; width:120px; height:263px; float:left;}
 #carrusel{
-width:899px;
- margin-left: 62px;
-overflow:hidden;
+ width:2000px;
+ margin-left:0; 
 }
 
 #coleccionesHome .separador{
@@ -556,10 +555,10 @@ color:#ffcc66;
 }
 .acerca p{
 font-family:"Arial",sans-serif;
-font-size:14px;
+font-size:12px;
 font-weight:normal;
 color:#ffffff;
-    line-height: 22px;
+    line-height: 18px;
 }
 .subtituloColeccion{
 font-family:"Florencesans",sans-serif;
@@ -807,7 +806,7 @@ margin-bottom:7px;
     margin-top: 15px;
     color: #ffffff;
     font-size: 12px;
-    line-height: 17px;
+    line-height: 18px;
     text-align: justify;
 }
 
@@ -1194,8 +1193,8 @@ background-image:url("/++theme++arcas.theme/images/bgCabezalListadoColecciones.j
 background-image:url("/++theme++arcas.theme/images/tituloTrama.png");
 }*/
 body.estandar .texto{
-    margin:38px 60px 40px 69px;
-	font-size:14px;
+    margin:38px 60px 40px 69px;	
+	font-size:12px;
 }
 .listadoColecciones .texto,.listadoExhibiciones .texto{
     -moz-column-count: 2;
@@ -1399,7 +1398,7 @@ float:right;
 width:661px;
 }
 body.listadoColecciones .lista .bloque {
-    height: 127px;
+    height: 137px;
 	margin:0 0 23px 68px;
     width: 892px;
 	border:1px solid #999999;
@@ -1521,7 +1520,7 @@ column-count:2;}
 .linkFuentes{display:block; background-color:#403a31; width:218px; height:23px;}
 a.linkFuentes{color:white; font-size:12px; line-height:23px}
 a.linkFuentes img{ margin:0 8px 0 8px; float:left;padding-top:5px}
-#content-core{background-color: #555;padding: 8px;}
+#content-core{background-color: #555;padding: 8px;min-height: 250px;}
 .columnaDerecha .labelM{color:#cec4ba; display:block; font-size:11px; font-weight:bold; padding-top:15px; padding-left:19px;}
 .columnaDerecha .labelM
 .columnaDerecha .specialDestacado{color:#fffefb; font-size:18px;font-family: "Calibri",sans-serif;}

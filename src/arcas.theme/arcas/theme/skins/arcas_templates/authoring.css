@@ -56,7 +56,7 @@
 #content-views a,
 #content li.formTab a,
 #content-core li.formTab a {
-    line-height: 26px;
+    line-height: 21px;
     padding: 0 0.75em;
     text-decoration: none;
     border: none;
@@ -228,5 +228,6 @@ dl.actionMenu.activated dd a,
 dl.actionMenu.activated dd div {
     margin: 0 0.25em;
 }
+
 
 /* @end */

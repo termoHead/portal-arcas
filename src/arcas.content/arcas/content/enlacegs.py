@@ -53,7 +53,8 @@ class IEnlacegs(form.Schema):
     cuerpo = RichText(
         title=u"Enlace a la fuente primaria",
         required=True,
-    )    
+    ) 
+    
     tipoMedio = schema.Choice(
         title=_(u"Tipo de recurso"),
         vocabulary=tiposVocab,

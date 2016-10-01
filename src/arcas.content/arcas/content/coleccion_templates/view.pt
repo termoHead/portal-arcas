@@ -76,9 +76,9 @@
                                     <a href="mailto:mail@mail.com"
                                        tal:attributes="title coor/title;
                                                        href string:mailto:${coor/email}">
-                                            <img src="++images/mail.gif" tal:attributes="src string:/++theme++arcas.theme/images/mail.gif;title coor/title;"/> cv</a>
+                                            <img src="++images/mail.gif" tal:attributes="src string:/++theme++arcas.theme/images/mail.gif;title coor/title;"/></a>
                                 </div>
-                                <span>Coordinador de la Colecci&oacute;n</span>
+                                <span>Coordinador/a de la Colecci&oacute;n</span>
                                 <h4 tal:content="coor/title">Horacio A. Prekel</h4>
                             </div>
                             <div class="clr"></div>
@@ -195,11 +195,7 @@
                                    alt="más sobre su vida">(+) sobre su vida</a>
                             </div>
                         </div>
-                        <div class="produccion">
-                            <h4>PRODUCCION</h4>
-                            <div class="produccion" tal:content="structure unAutor/listado"></div>
-                        </div>
-
+               
 
                     </tal:unBio>
                     <tal:unBio tal:condition="python:len(listBios)>1">

@@ -1,0 +1,15 @@
+<sharing xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+         i18n:domain="plone">
+  <role
+      id="Coordinador"
+      title="Coordinador de una Coleccion"
+      permission="Arcas: Add Coleccion"
+      i18n:attributes="title"
+      />
+  <role
+      id="Curador"
+      title="Curador de una Exhibicion"
+      permission="Arcas: add Carpetas en Exhibicion"
+      i18n:attributes="title"
+      />
+</sharing>

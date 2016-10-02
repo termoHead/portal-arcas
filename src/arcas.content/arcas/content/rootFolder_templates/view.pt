@@ -67,28 +67,35 @@
                                 
                             
                                 <tal:odd tal:define="oddrow repeat/artDestacado/start">                                
-                                    <div class="bloqueColeccion"
-                                        tal:define="imgCategoria string:artDestacado/url"
-                                         tal:attributes="style string:background:url('${imgCategoria}/@@images/imagenHome') no-repeat;
-                                                         class python:oddrow and 'bloqueColeccion primero' or 'bloqueColeccion'">
+                                    <div class="bloqueColeccion "
+                                        
+                                        tal:define="imgCategoria artDestacado/url"
+                                         tal:attributes="style string:background:url('${imgCategoria}/@@images/ilustra') no-repeat;
+                                                         class python:oddrow and 'bloqueColeccion or 'bloqueColeccion'">
                                         <a href="#" class="mascaraImg"
                                             tal:attributes="href artDestacado/url">
                                             <img src="/++theme++arcas.theme/img/empty.gif" alt="" class="imgDummy"/>
                                         </a>
                                     <div class="textoInterno">
-                                        <h4>
+                                        <!--h4>
                                             <span href="#" title="Categoria"
                                             tal:content="artDestacado/titulo"
                                             tal:attributes="style python:'background-color:#%s' %artDestacado['url']">Categoria</span>
-                                        </h4>
+                                        </h4-->
                                         <div class="parrafo" >
                                             <tal:rr tal:repeat="cco artDestacado/colecciones">
-                                                <div class="col1Linea">
-                                                    <a  href="#" alt="" tal:content="cco">titulo de la coleccion</a>
-                                                    <div class="links">                                                    
-                                                        <a href="#" class="der" alt="">Ver Estudios</a>
+                                            <tal:def tal:define="coleccionURL cco/url"
+                                                >
+                                                <div class="col1Linea"
+                                                tal:attributes="style string:background:url('${coleccionURL}/@@images/imagenHome')">
+                                                    <div class="tituColect">
+                                                    <a tal:attributes="href coleccionURL" href="#" alt="" tal:content="cco/titulo">titulo de la coleccion</a>
+                                                    </div>
+                                                    <div class="links"> 
+                                                        <a tal:attributes="href cco/extraFolderFuenteUrl" href="#" class="enlaceComp" alt="">Fuentes</a> | <a tal:attributes="href cco/extraFolderUrl" href="#" class="enlaceComp" alt="">Estudios</a>
                                                     </div>        
-                                                <div/>
+                                                </div>
+                                                </tal:def>
                                             </tal:rr>
                                             
                                             

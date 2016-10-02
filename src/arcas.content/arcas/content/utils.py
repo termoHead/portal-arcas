@@ -52,7 +52,7 @@ class ColeccionesPorCategoria(object):
             except:
                 pp="Autor"
                 
-            colLista.append({'titulo':brain.Title,'url':brain.getURL(),'tipoColeccion':pp,'id':col.id})
+            colLista.append({'titulo':brain.Title,'url':brain.getURL(),'tipoColeccion':pp,'id':col.id,"urlGS":col.GS_ID})
             
         
         catQes=catalogo(queryCategorias)

@@ -148,3 +148,12 @@ font-size:1px; color: transparent; background-position:3px}
 .pb-ajax .introExhibicion{background-image: none; text-align: left;color:white}
 .pb-ajax{ background-color:#99928B}
 .listadoColecciones .lista{ margin-top:50px;}
+div.col1Linea {
+  background-position: right center !important;
+    background-repeat: no-repeat !important;
+    height: 87px;
+    position: relative;
+}
+.tituColect a{ font-family: 'Attic', serif;font-size:18px; padding-top:12px}
+.tituColect{ letter-spacing: 1px;
+    padding: 20px 8px 0 10px;}

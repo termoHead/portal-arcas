@@ -67,21 +67,15 @@
                                 
                             
                                 <tal:odd tal:define="oddrow repeat/artDestacado/start">                                
-                                    <div class="bloqueColeccion "
-                                        
+                                    <div class="bloqueColeccion "             
                                         tal:define="imgCategoria artDestacado/url"
-                                         tal:attributes="style string:background:url('${imgCategoria}/@@images/ilustra') no-repeat;
-                                                         class python:oddrow and 'bloqueColeccion or 'bloqueColeccion'">
+                                        tal:attributes="style string:background:url('${imgCategoria}/@@images/ilustra') no-repeat;
+                                                        class python: oddrow and 'bloqueColeccion' or 'bloqueColeccion'">
                                         <a href="#" class="mascaraImg"
                                             tal:attributes="href artDestacado/url">
                                             <img src="/++theme++arcas.theme/img/empty.gif" alt="" class="imgDummy"/>
                                         </a>
-                                    <div class="textoInterno">
-                                        <!--h4>
-                                            <span href="#" title="Categoria"
-                                            tal:content="artDestacado/titulo"
-                                            tal:attributes="style python:'background-color:#%s' %artDestacado['url']">Categoria</span>
-                                        </h4-->
+                                    <div class="textoInterno">                        
                                         <div class="parrafo" >
                                             <tal:rr tal:repeat="cco artDestacado/colecciones">
                                             <tal:def tal:define="coleccionURL cco/url"
@@ -117,11 +111,13 @@
                         
                         
                         
-                            <div class="controlC">
-                                <a href="#" class="Xmas">mas</a> | <a href="#" class="Xmenos">menos</a>
+                           
+                    </div>
+                   
+                    </div>
+                      <div class="controlC">
+                                <a href="#" class="carrI">mas</a> | <a href="#" class="carrD">menos</a>
                             </div>
-                    </div>
-                    </div>
                     <div class="buscadorColecciones">
                         <form>
                             <input type="text" value="Buscar en las colecciones" disabled/><img class="lupa" src="++theme++arcas.theme/img/lupa-negra.jpg"/>

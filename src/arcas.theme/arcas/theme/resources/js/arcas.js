@@ -20,19 +20,30 @@ objFormEnlaceGs.setCampoTmp=function(valor){
     this.tmpValor=valor    
 }
 
-
-
+function correCarDer(e){    
+    e.preventDefault()
+    var st=$(".bloqueColeccion").width()+40        
+    $("#mask").animate({"margin-left":"+="+st+"px"},"slow")    
+}
+function correCarIzq(e){    
+e.preventDefault()
+    var st=$(".bloqueColeccion").width()+40        
+    $("#mask").animate({"margin-left":"-="+st+"px"},"slow")    
+}
 
 $(document).ready(function() {
     /*carrusel home */
     /*--------------*/
-    if($(".bloqueColeccion").length>0){
+    if($(".bloqueColeccion").length>-1){
         //Step para el slider del HOME
         HomeSlider.stepSlide=$(".bloqueColeccion").width()+40
-        if($(".bloqueColeccion").length>2){
+        if($(".bloqueColeccion").length>1){
             //ACTIVA BOTONES PARA EL SLIDER
-            $(".btnL").bind()
+            $(".carrD").click(correCarDer)
+            $(".carrI").click(correCarIzq)
+            
         }
+        
     }
     
     var lastSlide=""

@@ -91,17 +91,17 @@ class IColDerSeccion(form.Schema):
             required=False,
         )
     titulo2= schema.TextLine(
-        title=_(u"Título de la sección 1"),
+        title=_(u"Título de la sección 2"),
         description=_(u"Título que encabeza la sección de la columna derecha. Puede estar vacío y no se mostrará nada"),
         required=False,        
     )
     textoSeccion2 = RichText(
-        title=_(u"Texto de las sección 1"),
+        title=_(u"Texto de las sección 2"),
         required=False,
     )
     ria2 = RelationChoice(
-        title=_(u"Video o Imagen sección 1"),
-        description=_(u"Elegir un video o imagen. Cualquiera de los dos archivos debe subirse previamente"),
+        title=_(u"Video o Imagen sección 2"),
+        description=_(u"El contenido debe ser cargado"),
         source=ObjPathSourceBinder(),        
         required=False,
     )

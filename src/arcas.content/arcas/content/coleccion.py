@@ -97,7 +97,12 @@ class View(DisplayForm):
     grok.context(IColeccion)
     grok.require('zope2.View')
     
-    galeria_template = ViewPageTemplateFile("viewlets/galeria_viewlet.pt")
+    video_template = ViewPageTemplateFile("viewlets/video_snipet.pt")
+    texto_template = ViewPageTemplateFile("viewlets/texto_snipet.pt")
+    imagen_template = ViewPageTemplateFile("viewlets/imagen_snipet.pt")
+    galeria_template = ViewPageTemplateFile("viewlets/galeria_snipet.pt")
+    bio_template = ViewPageTemplateFile("viewlets/bio_snipet.pt")
+    flagSecActual=0
 
     def manageColDer(self):
         """Gestiona las secciones de la columan derecha"""
@@ -205,21 +210,16 @@ class View(DisplayForm):
         if hasattr(context,context.id+"_gale"):
             galeFold=context[context.id+"_gale"]
             galePath="/".join(galeFold.getPhysicalPath())
-            result=catalogo(path=galePath,portal_type="Image",sort_on='getObjPositionInParent')
-            
+            result=catalogo(path=galePath,portal_type="Image",sort_on='getObjPositionInParent')            
             for re in result:
-
                 foto=context.unrestrictedTraverse(re.getPath())
-
                 iniH=foto.height
                 altoSugerido=80
                 relH=((altoSugerido*100)/iniH)
                 widthH=(foto.width*relH)/100
                 tmpX.append({"width":widthH,"brain":re})
-
         else:
             return None
-
         return tmpX
         
 
@@ -253,16 +253,45 @@ class View(DisplayForm):
                 result.append(obj)
         return  result
     
-
+    def dameSeccionActual(self):
+        return self.flagSecActual
+        
 
     def getSecc1(self):
         """ Render summary box
-
         @return: Resulting HTML code as Python string
         """
-        return self.galeria_template()
+        self.flagSecActual=1
+        tsec=self.context.tipoSecc1        
+        if tsec == "biografia":            
+            return self.bio_template()
+        elif tsec == "texto":
+            return self.bio_template()        
+        elif tsec== "imagen":
+            return self.imagen_template()
+        elif tsec == "galeria":
+            return self.imagen_template()
+        elif tsec== "video":
+            return self.video_template()
         
-
+        
+        
+    def getSecc2(self):
+        """ Render summary box
+        @return: Resulting HTML code as Python string
+        """
+        self.flagSecActual=2
+        tsec=self.context.tipoSecc2        
+        if tsec == "biografia":            
+            return self.bio_template()        
+        elif tsec == "texto":
+            return self.texto_template()        
+        elif tsec== "imagen":            
+            return self.imagen_template()
+        elif tsec == "galeria":
+            return self.imagen_template()
+        elif tsec== "video":
+            return self.video_template()
         
 from arcas.theme.interfaces import IArcasTheme
 class ColeccionDataView(grok.View):

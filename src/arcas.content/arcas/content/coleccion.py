@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Paul'
+
 from arcas.content import ArcasMessageFactory as _
 
 from five import grok
@@ -15,10 +16,12 @@ from plone.directives import form
 
 from z3c.relationfield.schema import RelationList, RelationChoice
 import unicodedata
-
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 class IColeccion(form.Schema):
-    """A conference program. Programs can contain Sessions."""
+    """Esquema básico de la colección. 
+       En behaviors se implementan la customización de las columnas"""
+    
     form.fieldset(
         'responsables',
         u"Responsables",
@@ -93,6 +96,14 @@ from five import grok
 class View(DisplayForm):
     grok.context(IColeccion)
     grok.require('zope2.View')
+    
+    galeria_template = ViewPageTemplateFile("viewlets/galeria_viewlet.pt")
+
+    def manageColDer(self):
+        """Gestiona las secciones de la columan derecha"""
+
+        return self.context.tipoSecc1
+
 
     def getCoordinadores(self):
         """Devuelve los curadores de la coleción"""
@@ -241,7 +252,18 @@ class View(DisplayForm):
                 obj={'url':exhi.absolute_url(),'titulo':exhi.title}
                 result.append(obj)
         return  result
+    
 
+
+    def getSecc1(self):
+        """ Render summary box
+
+        @return: Resulting HTML code as Python string
+        """
+        return self.galeria_template()
+        
+
+        
 from arcas.theme.interfaces import IArcasTheme
 class ColeccionDataView(grok.View):
     grok.context(IColeccion)

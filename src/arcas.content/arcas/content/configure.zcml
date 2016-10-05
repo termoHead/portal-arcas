@@ -37,9 +37,38 @@
 		factory =".behaviors.ColecGroupName"
 		/>
 	-*-
-
 	-->
-
+    
+    <browser:viewletManager
+        name="arcas.coleccion.seccion1"
+        provides=".colDerViewlets.ISeccionUno"
+        permission="zope2.View"
+        class="plone.app.viewletmanager.manager.OrderedViewletManager"
+    />
+    
+    <browser:viewletManager
+        name="arcas.coleccion.seccion2"
+        provides=".colDerViewlets.ISeccionDos"
+        permission="zope2.View"
+        class="plone.app.viewletmanager.manager.OrderedViewletManager"
+    />
+    
+    <!--browser:viewlet
+        name="arcas.content.galeriaViewletUp"
+        manager="arcas.coleccion.seccion1"
+        class=".colDerViewlets.GaleriaViewlet"
+        permission="zope2.View"
+        layer="arcas.theme.interfaces.IArcasTheme"
+        />
+        
+    <browser:viewlet
+        name="arcas.content.galeriaViewletDwn"
+        manager="arcas.coleccion.seccion2"
+        class=".colDerViewlets.GaleriaViewlet"
+        permission="zope2.View"
+        layer="arcas.theme.interfaces.IArcasTheme"
+        /-->
+        
     <browser:page
           name="gsSearch"
           for="*"

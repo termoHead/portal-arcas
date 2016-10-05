@@ -28,10 +28,11 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from z3c.form import action
 
 tiposDeSeccion = SimpleVocabulary(
-    [SimpleTerm(value=u'video', title=_(u'Video')),
-     SimpleTerm(value=u'texto', title=_(u'Texto')),
+    [SimpleTerm(value=u'biografia', title=_(u'Biografía')),
+     SimpleTerm(value=u'galeria', title=_(u'Galeria imágenes')),
      SimpleTerm(value=u'imagen', title=_(u'Una imagen')),
-     SimpleTerm(value=u'galeria', title=_(u'Galeria imágenes'))]
+     SimpleTerm(value=u'texto', title=_(u'Texto')),
+     SimpleTerm(value=u'video', title=_(u'Video')) ]
     )
     
 class IColecGroupName(form.Schema):

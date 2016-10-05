@@ -294,15 +294,15 @@ line-height:17px;
 
 } 
 .bloqueColeccion .textoInterno .links{
-  border-bottom: 1px solid #a68762;
+     border-bottom: 1px solid #a68762;
     color: #fff;
     font-size: 11px;
     margin-left: 0;
-    padding: 11px 0 5px 18px;
+    padding: 9px 0 7px 35px;
     position: absolute;
     text-transform: uppercase;
     top: 56px;
-    width: 243px;
+    width: 223px;
 } 
 .bloqueColeccion .textoInterno .links a{
 color:#ffcc66;

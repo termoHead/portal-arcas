@@ -106,9 +106,7 @@ class View(DisplayForm):
 
     def manageColDer(self):
         """Gestiona las secciones de la columan derecha"""
-
         return self.context.tipoSecc1
-
 
     def getCoordinadores(self):
         """Devuelve los curadores de la coleción"""

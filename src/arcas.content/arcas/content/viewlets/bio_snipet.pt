@@ -1,4 +1,5 @@
-<div class="summary-box" i18n:domain="arcas.content">    
+<div class="componente-box" i18n:domain="arcas.content">
+ <div class="wrapComp">
      <div class="boxBio" tal:define="listBios view/getBioList|nothing"
             tal:condition="listBios">
         <tal:unBio tal:condition="python:len(listBios)<2"
@@ -30,5 +31,5 @@
             </tal:rep>
         </tal:unBio>
     </div>
-    
+</div>
 </div>

@@ -1,4 +1,5 @@
-<div class="galeria-box" i18n:domain="arcas.content">
+<div class="componente-box" i18n:domain="arcas.content">
+<div class="wrapComp">
     <div class="galeriaBox"
             tal:define="imags view/getImagenes|nothing"
             tal:condition="imags">
@@ -29,5 +30,6 @@
             </tal:repite>
         </div>
         <div class="clr"></div>
+    </div>
     </div>
 </div>

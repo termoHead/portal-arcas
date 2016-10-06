@@ -20,6 +20,8 @@ from plone.formwidget.contenttree import ObjPathSourceBinder
 from plone.app.textfield import RichText
 from z3c.form import button
 from plone.autoform.interfaces import IFormFieldProvider
+from plone.namedfile.field import NamedBlobImage,NamedBlobFile
+
 from zope.interface import provider
 ID_SET=""
 
@@ -56,10 +58,10 @@ class IColecGroupName(form.Schema):
 class IColDerSeccion(form.Schema):
     """Campos para gestionar una sección"""
     form.fieldset('colDerecha', label=u"Col. derecha Sec1",
-                  fields=['tipoSecc1','titulo1', 'textoSeccion1', 'ria1']
+                  fields=['tipoSecc1','titulo1', 'textoSeccion1', 'ria1','picture1']
                   )
     form.fieldset('colDerecha', label=u"Col. derecha Sec2",
-                  fields=['tipoSecc2','titulo2', 'textoSeccion2', 'ria2']
+                  fields=['tipoSecc2','titulo2', 'textoSeccion2', 'ria2','picture2']
                   )
     
     tipoSecc1 = schema.Choice(
@@ -77,13 +79,14 @@ class IColDerSeccion(form.Schema):
         title=_(u"Texto de las sección 1"),
         required=False,
     )
-    ria1 = RelationChoice(
-        title=_(u"Video o Imagen sección 1"),
-        description=_(u"Elegir un video o imagen. Cualquiera de los dos archivos debe subirse previamente"),
-        source=ObjPathSourceBinder(),        
+    ria1 = NamedBlobFile(
+        title=_(u"Suba un video"),
         required=False,
     )
-
+    picture1 = NamedBlobImage(
+        title=_(u"Suba la imagen"),
+        required=False,
+    )
     tipoSecc2 = schema.Choice(
             title=_(u"Tipo de seccion"),
             description=_(u"Elija un tipo para esta sección"),
@@ -99,10 +102,12 @@ class IColDerSeccion(form.Schema):
         title=_(u"Texto de las sección 2"),
         required=False,
     )
-    ria2 = RelationChoice(
-        title=_(u"Video o Imagen sección 2"),
-        description=_(u"El contenido debe ser cargado"),
-        source=ObjPathSourceBinder(),        
+    ria2 =   NamedBlobFile(
+        title=_(u"Suba un video"),
+        required=False,
+    )
+    picture2 = NamedBlobImage(
+        title=_(u"Suba la imagen"),
         required=False,
     )
     

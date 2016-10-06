@@ -25,4 +25,8 @@
         <replace css:theme-children="#contenido .novedades" css:content-children="#contenido .novedades"/>
         <replace css:theme-children="#contenido .presentacion .centro" css:content-children="div#contenido div.presentacion .centro  " />
         <replace css:theme-children="#contenido .presentacion .pie" css:content-children="div#contenido div.presentacion .pie" />
+
+        <replace css:theme-children="#contenido .colDerSec1" css:content-children=".columnaDos .colDerSec1"/>
+        <replace css:theme-children="#contenido .colDerSec2" css:content-children=".columnaDos .colDerSec2"/>
+
 </rules>

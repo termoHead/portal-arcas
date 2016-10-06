@@ -1,3 +1,0 @@
-<div class="summary-box" i18n:domain="arcas.content">
-    <h1 tal:content="view/context/Title">vto va en una galeria, no?</h1>
-</div>

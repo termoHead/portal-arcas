@@ -551,6 +551,7 @@ body.coleccion-puig #presentacionColeccion{
 
 border-bottom: 1px solid #FFFFFF;
 }
+.columnaDerecha h4{color:#f5a661; font-size:19px}
 .acerca h4{
 font-family:"Florencesans",sans-serif;
 font-size:24px;
@@ -773,31 +774,23 @@ width:305px;
 line-height:16px;
 margin:3px 0 0 14px;
 }
-.galeriaImagenes{
-margin-top:20px;
-border-bottom:1px solid #ffcc66;
-padding-bottom:2px;
-}
-.galeriaImagenes .botonera{
-text-align:center;
-}
-.galeriaImagenes .botonera span{
+.galeriaBox{margin-top:20px;}
+.boxTexto {padding-bottom:20px!important}
+.boxTexto,.galeriaBox{border-bottom:1px solid #ffcc66;
+padding-bottom:2px;}
+.galeriaBox .botonera{text-align:center;}
+.galeriaBox .botonera span{
 	color:#f5a661;
     font-family: "Florencesans",sans-serif;
 	font-size:18px;
 }
-.galeriaImagenes .imagenes{
+.galeriaBox .imagenes{
 	text-align:justify;
     margin-top: 6px;
 	border-bottom:1px solid #ffcc66;
 }
-.galeriaImagenes .imagenes img{
-	margin-bottom:10px;
-
-}
-.biografia{
-margin-top:20px;
-}
+.galeriaBox .imagenes img{margin-bottom:10px;}
+.biografia{margin-top:20px;}
 .biografia h4{
 color:#f5a661;
 font-weight:normal;
@@ -805,6 +798,8 @@ font-size:19px;
     font-family: "Florencesans",sans-serif;
 margin-bottom:7px;
 }
+.boxTexto p,
+.boxBio .bio p,
 .biografia p,
 .biografia .produccion{
     margin-top: 15px;

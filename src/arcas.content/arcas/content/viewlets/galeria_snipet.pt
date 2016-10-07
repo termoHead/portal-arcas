@@ -5,7 +5,7 @@
             tal:condition="imags">
         <div class="botonera">
             <a href="#" id="moveLeft"> <img src="++theme++arcas.theme/img/flechaL.gif" class="oculto" title="Mostrar más" /> </a>
-            <span>GALERIA DE IMAGENES</span>&nbsp;
+            <h4>GALERIA DE IMAGENES</h4>&nbsp;
             <a href="#" id="moveRight"> 
                 <img src="++theme++arcas.theme/img/flechaR.gif" class="oculto"  title="Mostrar más" /> 
             </a>
@@ -23,7 +23,7 @@
                         alt img/brain/Title;
                         width img/width;" />
                     </a>
-                </div>   
+                </div>
                 <script language="javascript" tal:condition="repeat/img/end">
                     comodaGaleria()
                 </script>

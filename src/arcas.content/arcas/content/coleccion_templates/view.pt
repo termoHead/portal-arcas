@@ -130,26 +130,24 @@
                         tal:define="banners view/dameBanners | nothing"
                         tal:condition="banners">
                     <tal:a tal:repeat="baner banners ">
-
                         <a href="#" tal:attributes="href baner/url;title baner/titulo">
                             <img src="images/bannerExhibicionPuig.jpg"
                                  tal:attributes="src string:${baner/url}/images/baner;
                                                 title baner/titulo"/></a>
-
                     </tal:a>
                 </div>
             </div>
-            <div class="columnaDos">            
+            <div class="columnaDos">
                 <div class="colDerSec1">
-                    <!--Seccion 1 -->                                   
-                    <div tal:replace="structure view/getSecc1" />
+                    <!--Seccion 1 -->
+                        <div tal:replace="structure view/getSecc1" />
                     <!--fin Seccion 1 -->
                 </div>
                 <div class="colDerSec2">
                     <!--Seccion 2 -->
-                    <div tal:replace="structure view/getSecc2" />
+                        <div tal:replace="structure view/getSecc2" />
                     <!--fin Seccion 2 -->
-                </div>                
+                </div>
             </div>
         </div>
 	</div>

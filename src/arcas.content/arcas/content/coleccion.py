@@ -111,7 +111,7 @@ class View(DisplayForm):
     def getCoordinadores(self):
         """Devuelve los curadores de la coleción"""
         colec=ColeccionUtils(self.context)
-        infoCoor=colec.getCoordinadores()
+        infoCoor=colec.getCoordinadores()        
         return infoCoor
 
     def getUrlAFuente(self):
@@ -205,6 +205,7 @@ class View(DisplayForm):
         context = aq_inner(self.context)
         catalogo=getToolByName(context,"portal_catalog")
         tmpX=[]
+
         if hasattr(context,context.id+"_gale"):
             galeFold=context[context.id+"_gale"]
             galePath="/".join(galeFold.getPhysicalPath())
@@ -218,6 +219,7 @@ class View(DisplayForm):
                 tmpX.append({"width":widthH,"brain":re})
         else:
             return None
+
         return tmpX
         
 
@@ -260,15 +262,16 @@ class View(DisplayForm):
         @return: Resulting HTML code as Python string
         """
         self.flagSecActual=1
-        tsec=self.context.tipoSecc1        
+        tsec=self.context.tipoSecc1
+                
         if tsec == "biografia":            
             return self.bio_template()
         elif tsec == "texto":
-            return self.bio_template()        
+            return self.texto_template()        
         elif tsec== "imagen":
             return self.imagen_template()
         elif tsec == "galeria":
-            return self.imagen_template()
+            return self.galeria_template()
         elif tsec== "video":
             return self.video_template()
         
@@ -287,7 +290,7 @@ class View(DisplayForm):
         elif tsec== "imagen":            
             return self.imagen_template()
         elif tsec == "galeria":
-            return self.imagen_template()
+            return self.galeria_template()
         elif tsec== "video":
             return self.video_template()
         

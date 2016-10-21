@@ -9,42 +9,49 @@
     <form method="get" tal:attributes="action string:${context/absolute_url}/${view/__name__}">
         <span tal:replace="structure context/@@authenticator/authenticator" />
         <span>Buscar</span>
+        <select>
+            <tal:o tal:repeat="clas view/dameClasificadores">
+            <option tal:content="python:clas"></option>
+            </tal:o>
+        </select>
         <input name="buscaTexto" id="buscaTexto" type="text"
-                tal:attributes="value python:context.REQUEST['buscaTexto']"/>
+                tal:attributes="value python:context.REQUEST['buscaTexto'] or ''"/>
 
         <input name="idColec" id="idColec"  type="hidden"
-               tal:attributes="value python:context.REQUEST['idColec']" />
+               tal:attributes="value python:context.REQUEST['idColec'] or ''" />
 
         <input type="submit" class="context"
                    name="form.button.Search"
                    value="Search"/>
-
-
     </form>
+    
 	
-    <div class="resultBox" tal:define="listResult view/buscaTexto|nothing">
+    <!--div class="resultBox" tal:define="listResult view/buscaTexto|nothing">
         <div class="itemResult" tal:repeat="dato listResult"
              tal:condition="listResult">
             <tal:def tal:define="titulo  python:dato['titulo'].encode('utf-8') or None;
-                                 filTitulo python:dato['preserva'];
+                                 filTitulo python:dato['preserva'] or None;
                                  fullText python:dato['texto'].encode('utf-8') or None">
                 <div class="labelR" >
                     <a href="#" tal:attributes="href string:${view/dameRutaDocGS}/${dato/hash};
                                                 title titulo"
-                       tal:content="titulo">Titulo</a>
+                       tal:content="titulo"
+                       tal:condition="titulo">Titulo</a>
                 </div>
-                <div tal:content="filTitulo">Full text</div>
-                <div tal:content="fullText">Full text</div>
+                <div tal:condition="filTitulo" tal:content="filTitulo">Full text</div>
+                <div tal:condition="fullText" tal:content="fullText"
+                >Full text</div>
             </tal:def>
-<div class="clr"></div>
+            <div class="clr"></div>
         </div>
+        
         <div tal:condition="python: not listResult and view.error!=''">
             <div class="msj" tal:condition="python:view.error=='urlError'">No se pudo acceder al servicio de Greenstone. Inténtelo más tarde</div>
             <div class="msj" tal:condition="python:view.error!='urlError'"
                     tal:content="view/error"></div>
         </div>
 
-    </div>
+    </div-->
      <div class="clr"></div>
 </div>
 </body>

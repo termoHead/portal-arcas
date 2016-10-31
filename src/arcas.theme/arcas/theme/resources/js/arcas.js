@@ -9,17 +9,82 @@ jQuery.fn.exists = function(){return this.length>0;}
 var solapaActiva
 var hojaActiva
 
-
-
 var HomeSlider={}
 HomeSlider.stepSlide=0
 
 var objFormEnlaceGs = {};
 objFormEnlaceGs.tmpValor=""
-objFormEnlaceGs.setCampoTmp=function(valor){
-    this.tmpValor=valor    
-}
+objFormEnlaceGs.setCampoTmp=function(valor){ this.tmpValor=valor}
 
+function enviaLoco(){
+    $('#form').submit()
+}
+var MOD_GSEDIT=(function(){
+    var my = {},
+        privateVariable = 1;
+	function i() {
+            if($("#form-buttons-guardar").length==0){
+                //ocultaCamposEdit()
+            }
+            $("#form-widgets-obra").change(function(e){    
+              var valor=$('#form-widgets-obra option:selected').attr('value')              
+              $("#form-widgets-obraTmp").attr('value',valor)
+            })
+            $("#form-widgets-coleccion ").blur(function(){
+                $("#form-widgets-obra").html('')                
+                var colec=$("#form-widgets-coleccion option:selected" ).attr("value")
+                buscaObrajson("/json_gs",colec)
+            })
+	}
+	function ocultaCamposEdit(){
+            $("#formfield-form-widgets-itemT").hide()
+            $("#formfield-form-widgets-itemNat").hide()
+            $("#formfield-form-widgets-itemEdi").hide()          
+            $("#formfield-form-widgets-anotacion").hide()
+        }
+        function muestraCamposEdit(){
+            $("#formfield-form-widgets-itemT").show()
+            $("#formfield-form-widgets-itemNat").show()
+            $("#formfield-form-widgets-itemEdi").show()          
+            $("#formfield-form-widgets-anotacion").show()
+        }
+        
+        function buscaObrajson(url,colec){
+            $.ajax({
+                dataType: "json",
+                url: "/json_gs",
+                data: {"obra":colec},
+            }).done(function(data) {                
+                
+                $.each( data, function( key, val ) {           
+                    op=$('<option value="' + val.value + '">' + val.title + '</option>')
+                    $("#form-widgets-obra").append(op);
+                })
+               $('#form').append( $('<input type="button" value="Enviar" onClick="enviaLoco" />'))
+                return data
+            })
+        }
+        
+        function buscaFuentejson(url,obra){
+            $.ajax({
+                dataType: "json",
+                url: "/json_gs",
+                data: {"fuente":obra},
+            }).done(function(data) {
+                $.each( data, function( key, val ) {            
+                var op=$('<option value="' + val.valor + '">' + val.title + '</option>')                
+                    $("#form-widgets-fuente").append(op);
+                })
+                return data
+            });
+        }        
+        
+	my.moduleProperty = 1;
+	my.inicia = function () {
+		i()
+	};
+    return my
+})()
 function correCarDer(e){    
     e.preventDefault()
     var st=$(".bloqueColeccion").width()+40        
@@ -40,10 +105,8 @@ $(document).ready(function() {
         if($(".bloqueColeccion").length>1){
             //ACTIVA BOTONES PARA EL SLIDER
             $(".carrD").click(correCarDer)
-            $(".carrI").click(correCarIzq)
-            
+            $(".carrI").click(correCarIzq)            
         }
-        
     }
     
     var lastSlide=""
@@ -82,7 +145,11 @@ $(document).ready(function() {
         initFormColeccion()
     }
     
-    
+    if($(".template-editgs").length>0){
+        //estoy en el formulario edicion greenstone
+       var objEGS=MOD_GSEDIT
+       objEGS.inicia()
+    }
 });
 function togTexto(ev){
 
@@ -146,7 +213,6 @@ function activaSolapas(){
 		return false
 	})
 }
-
 function comodaGaleria(){
     var lW=350;
     var suma=0;
@@ -206,7 +272,6 @@ function comodaGaleria(){
     }
 
 }
-
 function ocultaCamposEnlaceGS(valor){
     
     if(valor=='1'){
@@ -225,9 +290,6 @@ function ocultaCamposEnlaceGS(valor){
     }
     $('#formfield-form-widgets-urlRemoto label').html(miHelp)
 }
-
-
-
 function initFormColeccion(){     
     var widgets=["formfield-form-widgets-IColDerSeccion-titulo1","formfield-form-widgets-IColDerSeccion-textoSeccion1","formfield-form-widgets-IColDerSeccion-ria1",
         "formfield-form-widgets-IColDerSeccion-titulo2","formfield-form-widgets-IColDerSeccion-textoSeccion2","formfield-form-widgets-IColDerSeccion-ria2"]

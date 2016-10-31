@@ -2,7 +2,7 @@
 __author__ = 'Paul'
 #"lucene-jdbm-demo",
 from plone.directives import form
-
+import os
 from zExceptions import Forbidden
 from suds.client import Client
 from suds.plugin import MessagePlugin
@@ -10,6 +10,7 @@ import urllib2
 import xml.etree.ElementTree as ET
 
 
+from Products.CMFPlone.utils import safe_unicode
 
 """
 
@@ -21,7 +22,7 @@ from plone.directives import form
 
 from zope import schema
 from z3c.form import button
-from z3c.form.interfaces import HIDDEN_MODE, DISPLAY_MODE
+from z3c.form.interfaces import HIDDEN_MODE, DISPLAY_MODE, INPUT_MODE
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.statusmessages.interfaces import IStatusMessage
 from plone.app.textfield import RichText
@@ -30,66 +31,69 @@ from plone.app.textfield.value import RichTextValue
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from z3c.form import action
 from zope.component import getMultiAdapter
+from zope.schema.interfaces import IContextSourceBinder
+from zope.interface import directlyProvides
 
 
-coleccionesVocab = SimpleVocabulary(
-    [SimpleTerm(value=u'cordemia', title=u'CorDeMiA'),
-     SimpleTerm(value=u'puig', title=u'M. Puig'),
-     SimpleTerm(value=u'vigo', title=u'E. Vigo')
-     ]
-    )
-puig_obrasVocab = SimpleVocabulary(
-    [SimpleTerm(value=u'puigNBpDesc0001', title=u'Boquitas pintadas'),
-     SimpleTerm(value=u'puigNCntDesc0001', title=u'Cae la noche tropical'),
-     SimpleTerm(value=u'puigNBmaDesc0001', title=u'El beso de la mujer araña'),
-     SimpleTerm(value=u'puigNTrhDesc0001', title=u'La traición de Rita Hayworth'),
-     SimpleTerm(value=u'puigNMeqlepDesc0001', title=u'Maldición eterna a quien lea estas páginas')
-     ]
-    )    
-vigo_obrasVocab = SimpleVocabulary(
-    [SimpleTerm(value=u'puigNBpDesc0001', title=u'Vigo_Bopintadas'),
-     SimpleTerm(value=u'puigNCntDesc0001', title=u'Vigo_Ca'),
-     SimpleTerm(value=u'puigNBmaDesc0001', title=u'Vigo_El mujer araña'),
-     SimpleTerm(value=u'puigNTrhDesc0001', title=u'Vigo_Rita Hayworth'),
-     SimpleTerm(value=u'puigNMeqlepDesc0001', title=u'Vigo_Maldáginas')
-     ]
-    )    
-cordemia_obrasVocab = SimpleVocabulary(
-    [SimpleTerm(value=u'puigNBpDesc0001', title=u'cordemia 1'),
-     SimpleTerm(value=u'puigNCntDesc0001', title=u'coordemia tropical'),
-     SimpleTerm(value=u'puigNBmaDesc0001', title=u'coordemia  araña'),
-     SimpleTerm(value=u'puigNTrhDesc0001', title=u'24524525424'),
-     SimpleTerm(value=u'puigNMeqlepDesc0001', title=u'cordemia  a quien lea estas páginas')
-     ]
-    )
+ 
+    
+
+ppo_vocab=SimpleVocabulary([
+    SimpleTerm(value=u'b', title=(u'Bill')),
+    SimpleTerm(value=u'a', title=(u'Bill')),
+    ])
+
+def coleccionesVocab(context):
+    "colecciones en "
+    cl=ClienteGS()
+    terms = []  
+    return SimpleVocabulary.fromValues(cl.dameListadoColecciones())
+
+directlyProvides(coleccionesVocab, IContextSourceBinder)
+
 
 class IEditGS(form.Schema):
-    """ Define form fields """
+    """Campos del formulario de edición de un documento Greenston3 en el import!"""    
+    form.widget('coleccion', klass='recargaForm')
     
     coleccion= schema.Choice(
         title=u"Colección",
         description=u"Elija una colección para editar",
-        vocabulary=coleccionesVocab,
+        source=coleccionesVocab,        
         required=True,
-    )
-    
+    )   
     obra = schema.Choice(
         title=u"Obra",
         description=u"Elija una obra para editar",        
-        vocabulary=cordemia_obrasVocab,
+        source=obrasVocab,
         required=False,
     )
-    anotacion = schema.Text(
-        title=u"Editar Metadato",        
+    obraTmp= schema.TextLine(
+        title=u"obraTmp",
+        description=u"una pavada",
         required=False,
     )
-
-        
+    itemT= schema.TextLine(
+        title=u"Item Título",
+        description=u"no se que es... sera el título del documento",
+        required=False,
+    )    
+    itemNat= schema.TextLine(
+        title=u"Naturaleza del documento",
+        description=u"y esto que es?",
+        required=False,
+    )
+    itemEdi= schema.TextLine(
+        title=u"Item edición",
+        description=u" esto que es?",
+        required=False,
+    )
+    form.widget('anotacion', klass='recargaForm',size=5)
+    anotacion = schema.Text(title=u"Editar Metadato",required=False,)
+    
 class EditGS(form.SchemaForm):
-    """ Define Form handling
-
-    This form can be accessed as http://yoursite/@@my-form
-
+    """ 
+    Edita un documento de Greenstone3 desde el import!
     """
     grok.name('editGs')
     grok.require('zope2.View')
@@ -101,86 +105,103 @@ class EditGS(form.SchemaForm):
     label = u"Editando un Documento GS"
     description = u"Solo modificación de anotacion"
     fsmanager=""
+    coleccion=""
     editOk=False
-    def update(self):
-        super(EditGS, self).update() 
+    
+    @property
+    def mmi_vocab(self):
+        cl=ClienteGS()
         
+        return SimpleVocabulary.fromValues(cl.getObras(self.coleccion))
         
-    def actulizaObras(self):
-        # Set a custom widget for a field for this form instance only        
-        if len(self.widgets["obra"].value)>0:
-            if self.widgets["coleccion"].value[0]== u"vigo":
-                self.widgets["obra"].field.vocabulary=vigo_obrasVocab
-            elif self.widgets["coleccion"].value[0]== u"cordemia":
-                self.widgets["obra"].field.vocabulary=cordemia_obrasVocab
-            elif self.widgets["coleccion"].value[0]== u"puig":
-                self.widgets["obra"].field.vocabulary=puig_obrasVocab
-
+    
     def updateWidgets(self):
         super(EditGS, self).updateWidgets()
-        self.actulizaObras()
-    
-    def showEdit(self):
-        if len(self.widgets["obra"].value)>0:
-            self.editOk=True
-            return True           
+        if len(self.widgets["coleccion"].value)>0:
+            self.coleccion=self.widgets["coleccion"].value[0]            
+        
+        if self.showObras():
+            self.widgets['obraTmp'].mode = INPUT_MODE            
+            self.widgets['obra'].field.vocabulary = self.mmi_vocab
         else:
-            self.editOk=False
+            self.widgets['obraTmp'].mode = HIDDEN_MODE
+    
+    def showObras(self):
+        # Set a custom widget for a field for this form instance only          
+        if self.widgets["obraTmp"].value!="":
+            return True
+        else:
             return False
         
+
     def showSave(self):
-        if self.widgets["anotacion"].value!="":
+        if "form.buttons.editar" in self.request.form:
             return True
         else:
             return False
     
-    
-    @button.buttonAndHandler(u'Actulizar')
-    def actualizarHandler(self, action):
+    @button.buttonAndHandler(u'Buscar identificador')
+    def obrasHandler(self, action):
         data, errors = self.extractData()
         if errors:
             self.status = self.formErrorsMessage
             return
-            
-    @button.buttonAndHandler(u'Guardar',condition=showSave)
-    def saveHandler(self, action):        
-        data, errors = self.extractData()
-        if errors:
-            self.status = self.formErrorsMessage
-            return        
-        dicDatos={
-            "version":"1",
-            "idColec":self.widgets["coleccion"].value[0],
-            "metadatos":[("bi.anotacion1",self.widgets["anotacion"].value),]
-            }
-        self.fsmanager=FSManager()
-        if self.fsmanager.saveFile(dicDatos):
-            self.status =u"Cambios guardados... mail to M. Pichinini!"
-        else:
-            self.status =u"No se pueden guardar los cambios... generando reporte"
-
-            
-    @button.buttonAndHandler(u'Editar',condition=showEdit)
-    def editHandler(self, action):
-        data, errors = self.extractData()
+        pass
         
+        
+    @button.buttonAndHandler(u'Editar',condition=showObras)
+    def editHandler(self, action):
+        """
+            [u'ae.itemtitulo',u'ae.itemedicion',u'ae.itemnaturaleza',u'pr.idpreservacion',u'ae.filetitulo',u'bi.anotacion1','ae.coleccionnombreautor',u'bi.ruta']
+        """
+        data, errors = self.extractData()
         if errors:
             self.status = self.formErrorsMessage
             return
 
+        infoMetadatos={"itemT":u"ae.itemtitulo","itemEdi":u"ae.itemedicion","itemNat":u"ae.itemnaturaleza","anotacion":u"bi.anotacion1"}
+        
+        #ruta del documento a editar
+        cli=ClienteGS()
+        ruta=cli.dameRutaXMLDeId(self.widgets["coleccion"].value[0], self.widgets["obraTmp"].value)
+        
+        if ruta=="":
+            print self.widgets["obraTmp"].value
+            self.status = 'Falta el metadato "bi.ruta"'
+            return        
+        
         # Do something with valid data here
-
         # Set status on this form page
         # (this status message is not bind to the session and does not go thru redirects)
         self.editOk=True
         self.fsmanager=FSManager()
         self.fsmanager.openF(self.widgets["coleccion"].value[0])
-        metaValue=self.fsmanager.dameMetadata('bi.anotacion1')        
-        self.widgets["anotacion"].value=metaValue
+        for v in infoMetadatos:
+            metaValue=self.fsmanager.dameMetadata(infoMetadatos[v])
+            self.widgets[v].value=metaValue
         self.status = "Articulo encontrado"
-        
 
-    @button.buttonAndHandler(u"Cancel", condition=showSave)
+    @button.buttonAndHandler(u'Guardar',condition=showObras)
+    def saveHandler(self, action):  
+        data, errors = self.extractData()
+        if errors:
+            self.status = self.formErrorsMessage
+            return
+        dicDatos={
+            "version":"1",
+            "idColec":self.widgets["coleccion"].value[0],
+            "metadatos":[("bi.anotacion1",self.widgets["anotacion"].value),
+                         ("ae.itemtitulo",self.widgets["itemT"].value),
+                         ("ae.itemedicion",self.widgets["itemEdi"].value),
+                         ("ae.itemnaturaleza",self.widgets["itemNat"].value),
+                         ]}
+        self.fsmanager=FSManager()
+        if self.fsmanager.saveFile(dicDatos):
+            self.status =u"CambiosDefine Form handling guardados... mail to M. Pichinini!"
+        else:
+            self.status =u"No se pueden guardar los cambios... generando reporte"
+
+    @button.buttonAndHandler(u"Cancel",condition=showObras)
     def handleCancel(self, action):
         """User cancelled. Redirect back to the front page.
         """
@@ -236,20 +257,43 @@ class FSManager:
             xmlFile = ET.parse(ruta)
             self.miXml=xmlFile
             print "ok"
-        except e:            
+        except e:        
             print e            
+
+
+    def dameSigVerison(self,carpeta):        
+        listado=os.listdir(carpeta)
+        tmp=["1"]
+        listR=[]
+        for elem in listado:            
+            fx="metadata"
+            ex=".xml"
+            if elem.find(ex)>-1 and elem.find(fx)>-1:                
+                version=elem[len(fx):elem.find(ex)]
+                listR.append(version)
+                
+        if len(listR)==0:
+            return "1"
+        
+        listR.sort()        
+        nex=listR[-1]
+        resultado = str(int(nex[1:])+1)        
+        return resultado
         
     def saveFile(self,obModificado):
-        """guarda los datos en el xml"""        
-        newfilename=self.xmlFileBase+obModificado["idColec"]+self.xmlFileResto+"metadataV"+obModificado["version"]+".xml"
+        """guarda los datos en el xml"""
+        pathFolder=self.xmlFileBase+obModificado["idColec"]+self.xmlFileResto        
+        version=self.dameSigVerison(pathFolder)        
+
+        newfilename=self.xmlFileBase+obModificado["idColec"]+self.xmlFileResto+"metadataV"+version+".xml"
+
         self.openF(obModificado["idColec"])
-        
+
         for met in obModificado["metadatos"]:
-            try:                
-                self.miXml.findall('//Metadata[@name="'+met[0]+'"]')[0].text=met[1]
+            try:             
+                self.miXml.findall('.//Metadata[@name="'+met[0]+'"]')[0].text=met[1]
+                
             except:
-                import pdb
-                pdb.set_trace()
                 print "no pude guardar el metadato %s > %s" %(met[0],met[1])  
         try:
             self.miXml.write(newfilename,encoding="UTF-8", xml_declaration=True)
@@ -265,7 +309,8 @@ class FSManager:
             print "no se puede parsear el xml"
             return []
         
-        metadato=self.miXml.findall('//Metadata[@name="'+strMeta+'"]')[0].text.encode("utf8")
+        meta=self.miXml.findall(u'.//Metadata[@name="'+strMeta+'"]')[0].text
+        metadato=meta
         return metadato
 
 
@@ -292,28 +337,47 @@ class ClienteGS:
             client = Client(self.urlServicio)
         except urllib2.URLError, e:
             self.error="urlError"
-            return []
-        
+            return []        
         return client 
 
     
     def dameListadoColecciones(self):
         ###Devuelve un listado de strings colecciones###
         query = self.client.service.describe("","collectionList")
+        query=ET.fromstring(query)
         result=[]
-        for e in query.findall('coletionList//collection'):
-            result.append(e.text)            
-        return result
         
-    def todasObrasDeColeccion(self,coleccion="puig"):
+            
+        for e in query.findall('.//collection'):
+            result.append(e.get('name'))
+            
+        
+        return result
+    
+    
+    
+    def dameRutaXMLDeId(self,coleccion,idDoc):
+        ###devuevle la bi.ruta de un idde documeento###
+        self.coleccion=coleccion
+        client=self.client
+        res=client.service.retrieveDocumentMetadata(coleccion,self.idioma,[idDoc],['bi.ruta'])
+        rtax=ET.fromstring(res)        
+        if len(rtax.findall(u".//metadata[@name='bi.ruta']"))>0:
+            rta=rtax.findall(u".//metadata[@name='bi.ruta']")[0]        
+            return rta.text
+        else:
+            return ""
+        
+    def todasObrasDeColeccion(self,coleccion):
         ###Dada una coleccion devuelve una listado de ids de documentos###    
+        self.coleccion=coleccion
         client=self.client
         listado=[]
         docsId              =client.factory.create("ArrayOf_xsd_string") 
         infoMetadatos       =client.factory.create("ArrayOf_xsd_string") 
         infoClasi           =client.factory.create("ArrayOf_xsd_string") 
         infoClasi.value     =[u"CL1"]
-        infoMetadatos.value =[u"pr.idpreservacion",u"ae.filetitulo",u"bi.anotacion1",u"Source"]
+        infoMetadatos.value=[u"ae.itemtitulo",u"ae.itemedicion",u"ae.itemnaturaleza",u"pr.idpreservacion",u"ae.filetitulo",u"bi.anotacion1","ae.coleccionnombreautor",u"bi.ruta"]
         
         try:
             query =client.service.browseDescendants(self.coleccion,"",self.idioma,infoClasi)
@@ -334,30 +398,53 @@ class ClienteGS:
         resp=[]
         
         
-        
-        for item in xmlTmp.getiterator():
-            if item.tag=="documentNode":
-                itemML=item.getchildren()[0]
-                itemMD=itemML.getchildren()[0]
-                itemMDTitu=itemML.getchildren()[1]
-                try:
-                    itemMDTexto=itemML.getchildren()[2]
-                except:
-                    itemMDTexto="st"
+        for item in squery.findall(".//documentNode"):
+            tmpL=item.findall(".//metadata")
+            obra={}
+            
+            if len(tmpL)>1:
+                obra["id"]=item.get("nodeID")                
+                for noD in infoMetadatos.value:
+                    obra[noD]=""
+                    for elt in tmpL:
+                        if noD==elt.get("name"):
+                            obra[noD]=safe_unicode(elt.text)
+                            break
+                    
+                resp.append(obra)                            
                 
-                if itemMD.tag=="metadata":
-                    resp.append({
-                        'hash':item.get("nodeID"),
-                        'preserva':itemMD.text,
-                        'titulo':itemMDTitu.text,
-                        'texto':safe_unicode(dato)
-                    })
-        return resp 
-    
+                   
         
+        return resp
+    
+    def getObras(self,colecName):
+        """devuelve una lista para armar el select"""
+        print colecName
+        
+        obras=self.todasObrasDeColeccion(colecName)
+        pasadas=[]
+        ls=[]
+        
+        for elem in obras:   
+            if elem["ae.filetitulo"] not in pasadas:
+                ls.append({"value":elem["id"],"title":elem["ae.filetitulo"]})
+                pasadas.append(elem["ae.filetitulo"])
+        return ls
+    
+    def getObrasList(self,colecName):
+        obras=self.getObras(colecName)
+        res=[]
+        for r in obras:
+            
+        
+        
+    
+    
+    
     def buscaEnColeccion(self,coleccion="puig"):
-        ###Devuelve los metadatos de las obras encontradas###
+        ###Devuelve los metadatos de las obras encontradas###        
         pass
+    
     def defDameObrasEmpaquetadas(self):
         ###Devuelve los metadatos de cada obra###    
         pass

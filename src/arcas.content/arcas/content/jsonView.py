@@ -17,6 +17,7 @@ import urllib2
 from urllib2 import HTTPError
 import logging
 from arcas.content.editGS import ClienteGS
+from arcas.content.editGS import FSManager
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -24,8 +25,8 @@ logger.setLevel(logging.DEBUG)
 class JSONGS_WS(View):
     """
     Devuleve un listado json de  documentos o fuente
-    /json_gs?obra=puig
-    /json_gs?fuente=boquitas pintadas
+    /json_gs?series=puig
+    /json_gs?docs=boquitas pintadas
     """
     grok.context(Interface)
     grok.name("json_gs")
@@ -34,44 +35,80 @@ class JSONGS_WS(View):
         self.contexto= aq_inner(self.context)
         self.cli=ClienteGS()
         
-        try:
-            self.metodo="obra"
-            self.valor=self.request.form["obra"]
-        except:
-            try:
-                self.metodo="fuente"
-                self.valor=self.request.form["fuente"]
-            except:
-                print "no llegon ninguna de las cosas"
+        if "series" in self.request.form:
+            self.coleccion=self.request.form["series"]
+            self.metodo="getSeries"
+            self.valor=self.request.form["series"]
+        if "docs" in self.request.form:
+            self.metodo="getDocs"
+            self.coleccion=self.request.form["coleccion"]
+            self.valor=self.request.form["docs"]
+            
+        if "ruta" in self.request.form:
+            self.metodo="getMetadata"
+            self.ruta=self.request.form["ruta"]
+            self.coleccion=self.request.form["coleccion"]
+            self.valor=self.request.form["docs"]
+        
 
     def render(self):
-        if self.metodo=="obra":
-            listing=self.dameObras()
-        else:
+        if self.metodo=="getSeries":
+            listing=self.dameSeries()
+        elif self.metodo=="getDocs":
             listing=self.dameFuentes()
+        else:            
+            listing=self.dameMetadatos()
+
         return self.empaqueta(listing)
 
 
     def empaqueta(self,listing):
+        """empaqueta para relegar"""
         pretty = json.dumps(listing)
         self.request.response.setHeader("Content-type", "application/json")
         self.request.response.setHeader('Access-Control-Allow-Origin', '*')
         return pretty
 
     def getSourceObra(self):
-        listing=self.dameObras()        
+        listing=self.dameObras()
         return empaquetaObra()
-
-    def dameObras(self):
-        """Aca deberia buscar en el QBRSOAPLocalsite
-        client.service.qeuryDocument(self.valor,"en",["CL1",])
-        """
-        obras=self.cli.getObras(self.valor)
+    
+    def dameFuentes(self):
+        """Devuleve todas las obras de la serie"""
+        docs=self.cli.getDocsFromSerie(self.coleccion,self.valor)
+        return docs
+    
+    def dameSeries(self):
+        """Devuelve todas las series de una coleccion"""
+        obras=self.cli.getSeries(self.valor)
         return obras
 
-   
+    def dameMetadatos(self):
+        """Devuelve todas las series de una coleccion"""
+        result={"serieMetadata":"","itemMetadata":""}
+        rutaItem=self.ruta
+        arTmp=rutaItem.split("/")
+        del arTmp[-2]        
+        rutaSerie="/".join(arTmp)
+        manageFS=FSManager()        
+        itemF=manageFS.openF(rutaItem,self.coleccion)
         
+        if type(itemF) != type(True):
+            result["itemMetadata"]="error"        
+        else:
+            result["itemMetadata"]=manageFS.getMetadataForItem()
+            
+        serieF=manageFS.openF(rutaSerie,self.coleccion)
         
+        if type(itemF) != type(True):
+            result["serieMetadata"]="error"        
+        else:
+            result["serieMetadata"]=manageFS.getMetadataForSerie()
+        
+        print result
+        return result
+
+
 class JSONContentListing(View):
     """
     Called from main.js to populate the content listing view.
@@ -104,6 +141,28 @@ class JSONContentListing(View):
             available=True,
         )
         return data
+
+class JSONAutenticado(View):
+    """
+    Called from main.js to populate the content listing view.
+    """
+    grok.context(Interface)
+    grok.name("json_autenticado")
+	
+    def update(self):
+        self.contexto= aq_inner(self.context)
+
+    def render(self):
+        listing = self.datos()
+        pretty = json.dumps(listing)
+        self.request.response.setHeader("Content-type", "application/json")
+        self.request.response.setHeader('Access-Control-Allow-Origin', '*')
+        return pretty
+
+    def datos(self):
+        sdm = self.context.session_data_manager
+        session_id = sdm.getSessionData(create=False)
+        return [{'id':session_id}]
 
 class JSONExportMenu(View):
     """

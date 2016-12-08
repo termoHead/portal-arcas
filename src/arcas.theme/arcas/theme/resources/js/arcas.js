@@ -45,7 +45,7 @@ var MOD_GSEDIT=(function(){
                     'bi.ruta':'f_ruta'}
     var my = {},
     privateVariable = 1;
-	function i() {
+        function i(){         
             if($("#form-buttons-guardar").length==0){
                 ocultaCamposEdit()
             }
@@ -60,33 +60,58 @@ var MOD_GSEDIT=(function(){
                 var colec=$("#form-widgets-coleccion option:selected" ).attr("value")
                 buscaSeriejson("/json_gs",colec)
             })
-            
-            $("#form-widgets-obra").change(function(){                
+            $("#form-widgets-subserie").change(function(){
+                $("#form-widgets-obra option").remove()
+                var colec=$("#form-widgets-coleccion option:selected" ).attr("value")
+                var subserie=$("#form-widgets-subserie option:selected" ).attr("value")
+                buscaSubSeriejson(colec,subserie)
+            })
+            $("#form-widgets-obra").change(function(){
                 var valor=$('#form-widgets-serie option:selected').attr('value')
                 var colec=$("#form-widgets-coleccion option:selected" ).attr("value")
                 var ruta=$("#form-widgets-obra option:selected" ).attr("value")
                 buscaMetadatajson("/json_gs",valor,colec,ruta)
             })
 	}
-	function ocultaCamposEdit(){
-            for (var a=1;a<grupos.length;a++){                
-                $("#"+grupos[a]).hide()
-                //oculta fieldset
+	function ocultaCamposEdit(){            
+            for (var a=1;a<grupos.length;a++){          
+                $("#"+grupos[a]).hide()   
                 $("#"+grupos[a+3]).hide()
-            }            
+            }
             for(var a =0;a<camposEdicion.length;a++){
                 $("#formfield-form-widgets-"+camposEdicion[a]).hide()
             }
         }
-        function muestraCamposEdit(){
-            for (var a=1;a<grupos.length;a++){                
+        function muestraCamposEdit(){            
+            for (var a=1;a<grupos.length;a++){         
                 $("#"+grupos[a]).show()
-                //muestra fieldset
                 $("#"+grupos[a+3]).show()
-            }            
-            for(var a =0;a<camposEdicion.length;a++){            
+            }
+            for(var a =0;a<camposEdicion.length;a++){      
                 $("#formfield-form-widgets-"+camposEdicion[a]).show()
             }
+        }
+        
+        
+        function buscaSubSeriejson(colec,subserie){
+            $.ajax({
+                dataType: "json",
+                url: "/json_gs",
+                data: {"coleccion":colec,"subserie":subserie},
+            }).done(function(data){
+                $("#form-widgets-serie option").remove()
+                var fa=0
+                op=$('<option id="form-widgets-obra-novalue" value="--NOVALUE--">Sin valor</option>')
+                $("#form-widgets-obra").append(op);
+
+                total = $(data).length;
+                $.each( data, function( key, val ) {
+                    op=$('<option value="' + val.value + '">' + val.title + '</option>')
+                    fa++
+                    $("#form-widgets-obra").append(op);
+                })
+                return data
+            })
         }
         
         function buscaSeriejson(url,colec){
@@ -94,38 +119,65 @@ var MOD_GSEDIT=(function(){
                 dataType: "json",
                 url: "/json_gs",
                 data: {"series":colec},
-            }).done(function(data) {                
+            }).done(function(data){                
                 $("#form-widgets-serie option").remove()
                 var fa=0
-                
+                 
                 op=$('<option id="form-widgets-serie-novalue" value="--NOVALUE--">Sin valor</option>')
                 $("#form-widgets-serie").append(op);
                 
-                $.each( data, function( key, val ) {
-                    op=$('<option value="' + val.value + '">' + val.title + '</option>')
-                    fa++
-                    $("#form-widgets-serie").append(op);
+                total = $(data).length;
+                
+                $.each( data, function( key, val ) {                                 
+                    if(val.value ){
+                        op=$('<option value="' + val.value + '">' + val.title + '</option>')
+                        fa++
+                        $("#form-widgets-serie").append(op);
+                    }else{
+                          if(val.subserie==false){
+                            $("#formfield-form-widgets-subserie").hide()
+                        }else{
+                            $("#formfield-form-widgets-subserie").show()
+                        }
+                    }
+                    
                 })
                 return data
             })
         }
         
-        function buscaFuentejson(url,serie,coleccion){
+        function buscaFuenteSubJson(){
+            
+        }
+        function buscaFuentejson(url,serie,coleccion){            
             $.ajax({
                 dataType: "json",
                 url: "/json_gs",
                 data: {"docs":serie,"coleccion":coleccion},
             }).done(function(data) {
-                $("#form-widgets-obra option").remove()                
-                op=$('<option id="form-widgets-obra-novalue" value="--NOVALUE--">Sin valor</option>')
-                $("#form-widgets-obra").append(op);                
-                $.each( data, function( key, val ) {       
-                    var op=$('<option value="' + val.value + '">' + val.title + '</option>')                
-                    $("#form-widgets-obra").append(op);
-                })
+                $("#form-widgets-subserie option").remove()
+                $("#form-widgets-obra option").remove()
+                
+                if(data[0].value=="tieneSubSerie"){
+                    op=$('<option id="form-widgets-subserie-novalue" value="--NOVALUE--">Sin valor</option>')
+                    $("#form-widgets-subserie").append(op);            
+                    $.each( data, function( key, val ){
+                        if (val.value !="tieneSubSerie" &&  val.value!="undefined"){
+                            var op=$('<option value="' + val.value + '">' + val.title + '</option>')                
+                            $("#form-widgets-subserie").append(op);
+                        }
+                    })
+                }else{
+                    op=$('<option id="form-widgets-obra-novalue" value="--NOVALUE--">Sin valor</option>')
+                    $("#form-widgets-obra").append(op);            
+                    $.each( data, function( key, val ){
+                        var op=$('<option value="' + val.value + '">' + val.title + '</option>')                
+                        $("#form-widgets-obra").append(op);
+                    })
+                }
                 return data
-            });
-        }      
+            })
+        }
         
         function buscaMetadatajson(url,serie,coleccion,ruta){            
             $.ajax({
@@ -185,7 +237,7 @@ $(document).ready(function() {
     if ($(".thumbnails li")[0]){
             hojaActiva=$(".thumbnails li")[0]
     }
-    $(".thumbnails li").click(        
+    $(".thumbnails li").click(
         function(ev){
             ev.preventDefault()
             cambiaSlide (ev)

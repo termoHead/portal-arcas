@@ -17,6 +17,7 @@ from plone.directives import form
 from z3c.relationfield.schema import RelationList, RelationChoice
 import unicodedata
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from plone.autoform import directives
 
 class IColeccion(form.Schema):
     """Esquema básico de la colección. 
@@ -47,6 +48,13 @@ class IColeccion(form.Schema):
         title=_(u"Texto principal"),
         required=False,
     )
+    
+    
+    
+    
+
+    directives.read_permission(coordinador='arcas.defineCurador')
+    directives.write_permission(coordinador='arcas.defineCurador')
     coordinador=schema.List(
         title=_("Coordinador"),
         value_type=schema.Choice(source="arcas.CoorMembersVocab",),
@@ -93,6 +101,7 @@ from arcas.content.config import URL_GREENSTON_DOC
 from arcas.content.utils import ColeccionUtils
 from five import grok
 
+
 class View(DisplayForm):
     grok.context(IColeccion)
     grok.require('zope2.View')
@@ -110,8 +119,35 @@ class View(DisplayForm):
 
     def getCoordinadores(self):
         """Devuelve los curadores de la coleción"""
-        colec=ColeccionUtils(self.context)
-        infoCoor=colec.getCoordinadores()        
+        coords=self.context.coordinador
+        homer=self.context.portal_url().split("/")[-1]
+
+        if(len(coords)==0):
+            return []
+          
+        
+        infoCoor=[]
+        tt=getToolByName(self.context,"portal_membership")
+        for idusr in coords:
+            
+            coordina=tt.getMemberById(idusr)
+            ur='/%s/Members/%s' %(homer,idusr)
+            
+            infoCoor.append({'type' : 'user',
+                                 'id'   : coordina.id,
+                                 'title': coordina.getProperty('fullname', None) or coordina.id,
+                                 'email': coordina.getProperty('email'),
+                                 'img'  : tt.getPersonalPortrait(id=coordina.id),
+                                 'cv':self.getCv(ur)
+                                 })
+        
+
+
+        
+        
+        
+        #colec=ColeccionUtils(self.context)
+        #infoCoor=colec.getCoordinadores()        
         return infoCoor
 
     def getUrlAFuente(self):
@@ -222,7 +258,26 @@ class View(DisplayForm):
 
         return tmpX
         
+    def getCv(self,ruta):
+        """busca un tipo de document File en la carpeta personal del coordinador"""
+        cvr=False
+        catalog = getToolByName(self.context, 'portal_catalog')
+        capetaU=catalog(path=dict(query=ruta, depth=1))
 
+		        
+        for elem in capetaU:
+            if elem.Title=="cv" or elem.Title=="CV":
+                cvr=elem.getPath()
+
+
+  
+		import pdb
+		pdb.set_trace()
+
+        return cvr
+        
+        
+        
     def getBioList(self):
         """Devuelve un listado de biografías que ese encuentra dentro de de la colección"""
         listBio=[]

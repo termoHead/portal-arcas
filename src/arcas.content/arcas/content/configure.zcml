@@ -77,14 +77,7 @@
           template="templates/gsSearch.pt"
 		  layer="arcas.theme.interfaces.IArcasTheme"
           />
-	<browser:page
-          name="gsDatos"
-          for="*"
-          class=".testWs.TestWs"
-          permission="zope2.View"
-          template="templates/gsSearch.pt"
-		  layer="arcas.theme.interfaces.IArcasTheme"
-          />
+
     <browser:page
             name="coleccionesView"
             for="*"

@@ -41,6 +41,22 @@ import xml.etree.ElementTree as ET
 ppo_vocab=SimpleVocabulary([])
 
 
+
+iso_idiomas=SimpleVocabulary([
+    SimpleTerm(value=u'ay', title=(u'aimara')),
+    SimpleTerm(value=u'de', title=(u'alemán')),
+    SimpleTerm(value=u'es', title=(u'español (o castellano)')),
+    SimpleTerm(value=u'fr', title=(u'francés')),
+    SimpleTerm(value=u'el', title=(u'griego (moderno)')),
+    SimpleTerm(value=u'gn', title=(u'guaraní')),
+    SimpleTerm(value=u'en', title=(u'inglés')),
+    SimpleTerm(value=u'it', title=(u'italiano')),
+    SimpleTerm(value=u'la', title=(u'latín')),
+    SimpleTerm(value=u'pt', title=(u'portugués')),
+    SimpleTerm(value=u'qu', title=(u'quechua'))
+    ])
+
+
 def coleccionesVocab(context):
     "colecciones en "
     cl=ClienteGS()    
@@ -75,8 +91,9 @@ class IGsMetaItem(form.Schema):
         title=u"Dimensiones",        
         required=False,
     )
-    f_idioma= schema.TextLine(
-        title=u"Idioma",        
+    f_idioma= schema.Choice(
+        title=u"Idioma",
+        vocabulary=iso_idiomas,
         required=False,
     )
     f_naturaleza= schema.TextLine(
@@ -98,10 +115,32 @@ class IGsMetaItem(form.Schema):
     form.widget('f_anotacion', klass='recargaForm',size=5)
     f_anotacion = schema.Text(title=u"Editar Metadato",required=False,)
 
+class IGsSubSerie(form.Schema):
+    model.fieldset('Subserie',
+        label=(u"Metadatos de la Sub Serie"),
+        fields=["sub_titulo","sub_alcance","sub_anotacion",]
+    )
+    sub_titulo= schema.TextLine(
+        title=u"Título",
+        description=u"titulo de la sub serie",
+        required=False,
+    ) 
+  
+    sub_alcance= schema.TextLine(
+        title=u"Alcance",
+        description=u"Alcance de la subserie",
+        required=False,
+    ) 
+    sub_anotacion=schema.TextLine(
+        title=u"Anotación",        
+        required=False,
+    ) 
+    
+    
+
 
 class IGsMetaSerie(form.Schema):
-    model.fieldset('Item',
-        label=(u"Metadatos de la serie"),
+    model.fieldset('Item',label=(u"Metadatos de la serie"),
         fields=["s_titulo","s_temporal","s_extension","s_dimension","s_creador","s_colaborador","s_caracteristicas","s_alcance","s_lenguaiso","s_ediciones"]
     )
     s_titulo= schema.TextLine(title=u"Titulo",
@@ -114,14 +153,18 @@ class IGsMetaSerie(form.Schema):
         description=u"no se que es... sera el título del documento",required=False,)             
     s_creador= schema.TextLine(title=u"Creador",
         description=u"no se que es... sera el título del documento",required=False,)
-    s_colaborador= schema.TextLine(title=u"Creador",
+    s_colaborador= schema.TextLine(title=u"Colaborador",
         description=u"no se que es... sera el título del documento",required=False,)
     s_caracteristicas= schema.TextLine(title=u"Caracteristicas",
         description=u"no se que es... sera el título del documento",required=False,)
     s_alcance= schema.TextLine(title=u"Alcance",
         description=u"no se que es... sera el título del documento",required=False,)
-    s_lenguaiso= schema.TextLine(title=u"Idioma",
-        description=u"no se que es... sera el título del documento",required=False,)            
+    s_lenguaiso = schema.Choice(
+        title=u"Idioma",
+        vocabulary=iso_idiomas,
+        required=False,
+    )
+
     s_ediciones= schema.TextLine(title=u"Ediciones",
         description=u"no se que es... sera el título del documento",required=False,)            
                 
@@ -154,11 +197,11 @@ class IGsMetaSerie(form.Schema):
 
 
 
-class IEditGS(form.Schema, IGsMetaItem, IGsMetaSerie ):
+class IEditGS(form.Schema, IGsMetaItem, IGsSubSerie,IGsMetaSerie ):
     """Campos del formulario de edición de un documento Greenston3 en el import!"""    
     model.fieldset('Datos',
         label=(u"Datos de la Obra"),
-        fields=["coleccion","serie","obra","obraTmp"]
+        fields=["coleccion","serie","subserie","obra","obraTmp"]
     )
     
     form.widget('coleccion', klass='recargaForm')
@@ -171,6 +214,12 @@ class IEditGS(form.Schema, IGsMetaItem, IGsMetaSerie ):
     serie = schema.Choice(
         title=u"Serie",
         description=u"Elija una obra para editar",        
+        vocabulary=ppo_vocab,
+        required=False,
+    )
+    subserie= schema.Choice(
+        title=u"Sub Serie",
+        description=u"Elija una sub serie para editar",        
         vocabulary=ppo_vocab,
         required=False,
     )
@@ -212,8 +261,6 @@ class EditGS(form.SchemaForm):
     obra=""
     
     
-    
-    
     lsw=["f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones","f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta"]
     
     infoMetadatosSerie={'s_titulo':'ae.filetitulo',
@@ -227,7 +274,12 @@ class EditGS(form.SchemaForm):
                 's_lenguaiso':'ae.filelenguaiso',
                 's_ediciones':'ae.fileediciones'
     }
-    infoMetadatoSubSerie={}
+    
+    infoMetadatoSubSerie={'sub_titulo':'ae.subserietitulo',    
+                        'sub_alcance'   :'ae.subseriealcance',
+                        'sub_anotacion':'ae.anotacionsubserie'
+    }
+    
     infoMetaItem={ 'f_fechaCreacion':'ae.itemcoberturatemporal', 
                     'f_lugarCreacion':'bi.lugar',
                     'f_descFisica':'ae.itemdescripcionfisica',
@@ -269,10 +321,9 @@ class EditGS(form.SchemaForm):
 
 
     def showObras(self):
-        # Set a custom widget for a field for this form instance only
+        # Set a custom widget for a field for this form instance only        
         
-        
-        if self.groups[1].widgets["f_ruta"].value!=u"":
+        if self.groups[2].widgets["f_ruta"].value!=u"":
             return True
         else:
             return False
@@ -300,6 +351,7 @@ class EditGS(form.SchemaForm):
         # Do something with valid data here
         # Set status on this form page
         # (this status message is not bind to the session and does not go thru redirects)
+        
         self.editOk=True
         self.fsmanager=FSManager()
         archivo=self.fsmanager.openF(ruta,self.widgets["coleccion"].value[0])
@@ -428,6 +480,7 @@ class FSManager:
         return True
         
     def dameMetadata(self,strMeta):
+        
         try:
             root = self.miXml.getroot()
         except e:
@@ -452,7 +505,7 @@ class FSManager:
     
     def getMetadataForSubSerie(self):
         """Metodo que devuelve un diccionario de METADATOS SUBSERIE para json"""
-        res=self.getMetadataFor(EditGS.infoMetadatoSubSerie)        
+        res=self.getMetadataFor(EditGS.infoMetadatoSubSerie)
         return res
     
     def getMetadataForSerie(self):
@@ -497,7 +550,6 @@ class ClienteGS:
         for e in query.findall('.//collection'):
             result.append(e.get('name'))
         return result    
-    
     
     def dameRutaXMLDeId(self,coleccion,idDoc):
         ###devuevle la bi.ruta de un idde documeento###
@@ -553,12 +605,19 @@ class ClienteGS:
     def dameDocumentos(self,coleccion,docsIds):
         """Dado un listado de ids, devuelve un listado de objetos con titulo,ruta,idoc"""
         client=self.client
-        metadatos=[u"ae.itemtitulo",u"ae.filetitulo",u"bi.ruta"]        
+        metadatos=[u"ae.itemtitulo",u"ae.filetitulo",u"bi.ruta"]
+        
+        
+        
         if self.coleccion=="":
             self.coleccion=coleccion
         
-        query =client.service.retrieveDocumentMetadata(self.coleccion,self.idioma,docsIds,metadatos)
+        query =client.service.retrieveDocumentMetadata(self.coleccion,self.idioma,docsIds,metadatos)        
         subSeries=ET.fromstring(query.encode('utf-8'))
+        
+  
+        
+        
         subsT=subSeries.findall('.//documentNode')
         resultado=[]
         flag=0
@@ -587,7 +646,9 @@ class ClienteGS:
 
         return resultado
     
-    def dame(self,coleccion):        
+    def dame(self,coleccion):    
+        print "quien llamo?"
+        """
         serieM=client.service.retrieveDocumentMetadata(coleccion,self.idioma,subS)
         serieMX==ET.fromstring(serieM.encode('utf-8'))
         arr=ppx.findall(".//metadata[@name='Title']")
@@ -596,9 +657,10 @@ class ClienteGS:
             resp.append(nodo.attrib["Title"])
             
         return  resp
+        """
 
 
-    """def todasObrasDeColeccion(self,coleccion):
+    def todasObrasDeColeccion(self,coleccion):
         ###Dada una coleccion devuelve una listado de ids de documentos###    
         self.coleccion=coleccion
         client=self.client
@@ -608,11 +670,14 @@ class ClienteGS:
         infoClasi           =client.factory.create("ArrayOf_xsd_string") 
         infoClasi.value     =[u"CL1"]
         
+        nivelSerie=""
+        nivelSubserie=""
+        
         infoMetadatos.value=[u"ae.itemtitulo",u"ae.itemedicion",u"ae.itemnaturaleza",u"pr.idpreservacion",u"ae.filetitulo",u"bi.anotacion1","ae.coleccionnombreautor",u"bi.ruta"]        
    
         try:
-            #query =client.service.browseDescendants(self.coleccion,"",self.idioma,infoClasi)
-            query =client.service.browse(self.coleccion,"",self.idioma,["CL1"],["descendants"])
+            query =client.service.browseDescendants(self.coleccion,"",self.idioma,infoClasi)
+            #query =client.service.browse(self.coleccion,"",self.idioma,["CL1"],["descendants"])
         except suds.WebFault, e:
             print "-------------------------"
             print e
@@ -621,59 +686,152 @@ class ClienteGS:
             return []
 
         mquery=ET.fromstring(query.encode('utf-8'))
-        docsIds=self.recorreDocNode(mquery)
-        docsId.value=docsIds
         
-        subQ=client.service.retrieveDocumentMetadata(self.coleccion,self.idioma,docsId,infoMetadatos)
         
-        squery=ET.fromstring(subQ.encode('utf-8'))
-        resp=[]
+        collectDATA=[{'conSubSeri':'boolean'},
+              {'serieId':'','serieVal':'',               
+               'subSList':[
+                   {'subId':'',
+                    'subSaval':'valor',
+                    'itemList':[{'itemsId':'','itemList':''}]}
+            ]}]        
         
+        listClass=mquery.findall(".//classifierNode")
+        nivel=0
+        subR=[]
+        
+        CDA=[]
+        
+        for clN in listClass:
+            if "childType" in clN.attrib.keys():
+                longNanme=len(clN.attrib['nodeID'])
+                
+                if longNanme==5:
+                    print "llegue a una serie"
+                    seriOb={'serieId':clN.attrib['nodeID'],'listSubs':[]}
+                    subtmp=0
+                    
+                    for ltmp in clN.iter("classifierNode"):    
+                        subtmp+=1
+                    
+                    if subtmp>0:
+                        #.findall(".//classifierNode")
+                        for ltmp in clN.findall(".//classifierNode"):
+                            if ltmp.attrib["nodeID"] not in subR:
+                                subSOb={'idSub':ltmp.attrib["nodeID"],'listDocs':[]}
+                                
+                                for ek in ltmp.findall('.//documentNode[@nodeType="root"]'):
+                                    subSOb['listDocs'].append(ek.attrib["nodeID"])           
+                                    
+                                seriOb['listSubs'].append(subSOb)
+                    else:
+                        for ek in clN.findall('.//documentNode[@nodeType="root"]'):
+                                    print "docu:%s"%ek.attrib["nodeID"]
+                    
+                    CDA.append(seriOb)
+
+
+
+        
+        #docsIds=self.recorreDocNode(mquery)
+        #docsId.value=docsIds
+        #squery.find("//response/classifierNode")
+        
+
+        subQ  = client.service.retrieveDocumentMetadata(self.coleccion,self.idioma,docsId,infoMetadatos)
+        squery= ET.fromstring(subQ.encode('utf-8'))
+
+        resp  = []
+
         for item in squery.findall(".//documentNode"):
             tmpL=item.findall(".//metadata")
             obra={}
             if len(tmpL)>1:
-                obra["id"]=item.get("nodeID")                
+                obra["id"]=item.get("nodeID")
                 for noD in infoMetadatos.value:
                     obra[noD]=""
                     for elt in tmpL:
                         if noD==elt.get("name"):
                             obra[noD]=safe_unicode(elt.text)
                             break
-                resp.append(obra)                            
+                resp.append(obra) 
         return resp
-        """
-   
+        
+    def getDescendats(self,colec):
+        """devuelve una lista para armar el select"""
+        re=self.todasObrasDeColeccion(colec)
+        return re
+        
+    def getDocsFromSubSerie(self,colecName,subSerie):
+        """devuelve una lista para armar el select"""
+        ls=[]
+        cco=self.client.service.retrieveDocumentMetadata(colecName,self.idioma,[subSerie],["contains"])
+        etMeta= ET.fromstring(cco.encode('utf-8'))
+        ddis=etMeta.find('.//metadata[@name="contains"]').text        
+        
+        docs=self.dameDocumentos(colecName,ddis.split(";"))
+        for elem in docs:
+            ls.append({"value":elem["ruta"],"title":elem["it"]})
+        
+        return ls
    
     def getDocsFromSerie(self,colecName,serieName):
         """devuelve una lista para armar el select"""
         series=self.dameSeriesDeColeccion(colecName)
+        
         ls=[]
-        ids=[]        
+        ids=[]
+        tmps=[]
         for elem in series:
             if elem["id"]==serieName:
-              ids=elem["docs"]  
+              tmps=elem["docs"]              
               break;
-          
+
+        for ee in tmps:
+            ids.append(ee.replace('"',serieName))
         
-        docs=self.dameDocumentos(colecName,ids)
-        for elem in docs:
+        if self.tieneSubSerie(self.coleccion):
+            subSeries=self.client.service.retrieveDocumentMetadata(self.coleccion,self.idioma,ids,["Title"])
+            SB= ET.fromstring(subSeries.encode('utf-8'))
+            ppa=SB.findall('.//documentNode')
+            ls.append({"value":"tieneSubSerie","title":"tieneSubSerie"})
+            for xl in ppa:
+                ls.append({'value':xl.attrib['nodeID'],'title':xl.find('.//metadata').text})
             
-            ls.append({"value":elem["ruta"],"title":elem["it"]}) 
+        else:
+            docs=self.dameDocumentos(colecName,ids)
+            for elem in docs:
+                ls.append({"value":elem["ruta"],"title":elem["it"]})
         
         return ls
         
    
     def getSeries(self,colecName):
-        """devuelve una lista para armar el select"""        
-        obras=self.dameSeriesDeColeccion(colecName)        
+        """devuelve una lista para armar el select"""
+        obras=self.dameSeriesDeColeccion(colecName)
+        subSerieOk=self.tieneSubSerie(colecName)
         ls=[]
+        ls.append({"conSub":subSerieOk,"subserie":subSerieOk})
         for elem in obras:
-            ls.append({"value":elem["id"],"title":elem["titulo"]})                            
+            ls.append({"value":elem["id"],"title":elem["titulo"]})
+            
         return ls
     
     
-
+    def tieneSubSerie(self,colecName):
+        client=self.client
+        try:
+            query = client.service.browse(self.coleccion,"",self.idioma,["CL1.1",],["children"])
+        except:
+            print "error buscando subSerie"
+            return False
+        
+        mquery=ET.fromstring(query.encode('utf-8'))
+        
+        if len(mquery.findall(".//classifierNode/classifierNode"))>0:
+            return True
+        else:
+            return False
 
     def recorreDocNode(self,xmlR):
         ###recorre el xml con un listado de documentos y devuelve sus IDs###
@@ -687,9 +845,5 @@ class ClienteGS:
         if len(dato)<1:
             self.error="No se recuperaron registros"
             return []
+
         return dato
-
-     
-
-        
-    

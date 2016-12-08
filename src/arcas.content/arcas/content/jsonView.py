@@ -36,31 +36,42 @@ class JSONGS_WS(View):
         self.cli=ClienteGS()
         
         if "series" in self.request.form:
-            self.coleccion=self.request.form["series"]
-            self.metodo="getSeries"
-            self.valor=self.request.form["series"]
+            self.coleccion  =self.request.form["series"]
+            self.metodo     ="getSeries"
+            self.valor      =self.request.form["series"]
+            
         if "docs" in self.request.form:
-            self.metodo="getDocs"
-            self.coleccion=self.request.form["coleccion"]
-            self.valor=self.request.form["docs"]
+            self.metodo     ="getDocs"
+            self.coleccion  =self.request.form["coleccion"]
+            self.valor      =self.request.form["docs"]
             
         if "ruta" in self.request.form:
-            self.metodo="getMetadata"
-            self.ruta=self.request.form["ruta"]
-            self.coleccion=self.request.form["coleccion"]
-            self.valor=self.request.form["docs"]
+            self.metodo     ="getMetadata"
+            self.ruta       =self.request.form["ruta"]
+            self.coleccion  =self.request.form["coleccion"]
+            self.valor      =self.request.form["docs"]
+            self.tienSub   =self.request.form["subserie"]
+            
+        elif "subserie" in self.request.form:
+            self.metodo     ="getSubSeries"
+            self.coleccion  =self.request.form["coleccion"]            
+            self.valor      =self.request.form["subserie"]
         
 
     def render(self):
+        #re=self.dameCL1()
+        #return re
         if self.metodo=="getSeries":
             listing=self.dameSeries()
         elif self.metodo=="getDocs":
             listing=self.dameFuentes()
-        else:            
+        elif self.metodo=="getSubSeries":
+            listing=self.dameSubSeries()
+        else:
             listing=self.dameMetadatos()
 
         return self.empaqueta(listing)
-
+        
 
     def empaqueta(self,listing):
         """empaqueta para relegar"""
@@ -74,38 +85,85 @@ class JSONGS_WS(View):
         return empaquetaObra()
     
     def dameFuentes(self):
-        """Devuleve todas las obras de la serie"""
+        """Devuleve todas las obras de la serie"""        
         docs=self.cli.getDocsFromSerie(self.coleccion,self.valor)
         return docs
     
+    def dameSubSeries(self):
+        """Devuelve todas las obras de una subSerie"""
+        obras=self.cli.getDocsFromSubSerie(self.coleccion,self.valor)
+        return obras
+    
+        
     def dameSeries(self):
         """Devuelve todas las series de una coleccion"""
         obras=self.cli.getSeries(self.valor)
         return obras
+    
+    
+    def dameCL1(self):
+        """Devuelve todas las series de una coleccion"""
+        docs=self.cli.getDescendats(self.coleccion)
 
     def dameMetadatos(self):
         """Devuelve todas las series de una coleccion"""
-        result={"serieMetadata":"","itemMetadata":""}
-        rutaItem=self.ruta
-        arTmp=rutaItem.split("/")
-        del arTmp[-2]        
-        rutaSerie="/".join(arTmp)
-        manageFS=FSManager()        
-        itemF=manageFS.openF(rutaItem,self.coleccion)
+        result={"serieMetadata":"","subserieMetadata":"","itemMetadata":""}             
         
-        if type(itemF) != type(True):
-            result["itemMetadata"]="error"        
+        if self.tienSub=="true":
+            subSerieOk=True
         else:
-            result["itemMetadata"]=manageFS.getMetadataForItem()
+            subSerieOk=False
             
-        serieF=manageFS.openF(rutaSerie,self.coleccion)
-        
-        if type(itemF) != type(True):
-            result["serieMetadata"]="error"        
+        if self.tienSub:
+            rutaItem=self.ruta
+            
+            arTmp = rutaItem.split("/")
+            del arTmp[-2]
+            del arTmp[-2]
+            rutaSerie = "/".join(arTmp)
+            
+            arTmp = rutaItem.split("/")         
+            del arTmp[-2]
+            rutaSubSerie = "/".join(arTmp)            
+            
         else:
-            result["serieMetadata"]=manageFS.getMetadataForSerie()
+            arTmp = rutaItem.split("/")            
+            del arTmp[-2]
+            rutaSerie = "/".join(arTmp)    
         
-        print result
+        print rutaSerie
+        print rutaSubSerie
+        print rutaItem
+        
+        manageFS  = FSManager()
+        obraF     = manageFS.openF(rutaItem,self.coleccion)
+        
+        if type(obraF) != type(True):
+            result["itemMetadata"]="error"
+        else:
+            result["itemMetadata"] = manageFS.getMetadataForItem()
+
+        #serieF=manageFS.openF(rutaSerie,self.coleccion)
+        serieF=manageFS.openF(rutaSubSerie,self.coleccion)
+        
+
+        if type(serieF) != type(True):
+            result["serieMetadata"] = "error"
+        else:
+            result["serieMetadata"] = manageFS.getMetadataForSerie()
+
+        if subSerieOk:            
+            #serieSubF = manageFS.openF(rutaSubSerie,self.coleccion)
+            serieSubF = manageFS.openF(rutaSerie,self.coleccion)
+            if type(serieSubF) != type(True):
+                result["subserieMetadata"] = "error"
+            else:        
+                result["subserieMetadata"] = manageFS.getMetadataForSubSerie()
+        
+
+        import pdb
+        pdb.set_trace()
+
         return result
 
 

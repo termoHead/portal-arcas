@@ -61,6 +61,7 @@ def onSetupColeccion(colectObj, event):
                     # does not have a "submit" transition)
                     logger.info("Could not publish:" + str(new_obj.getId()) + " already published?")
                     pass
+                    
                 new_obj.reindexObject()
                 flag=flag+1
             else:
@@ -74,11 +75,11 @@ def onModificaColeccion(colectObj,event):
     infoCoor = []
     infoInvest=[]
     groups_tool = getToolByName(colectObj, 'portal_groups')
-    acl_users = getToolByName(colectObj, 'acl_users')
+    acl_users   = getToolByName(colectObj, 'acl_users')
     userssource = UsersSource(colectObj)
+    
     if hasattr(colectObj, "coordinador"):
         coors=colectObj.coordinador
-
         for cor in coors:
             user=userssource.get(cor)
             user_id=cor
@@ -100,7 +101,6 @@ def onModificaColeccion(colectObj,event):
                              })
 
     #asigna el rol de owner al grupo Coordinador con id del id deesta carpeta
-
     gruposVocab = GroupsSource(colectObj)
     grupIdCooR=dameGroupNameFrom(colectObj).replace("_g",PREFIJO_COOR_GROUP)
     grupIdPot =dameGroupNameFrom(colectObj).replace("_g",PREFIJO_COOR_POTENCIAL)
@@ -123,19 +123,21 @@ def onModificaColeccion(colectObj,event):
     listUsers=grupoObj.getGroupMembers()
     listInvest=grupoObjInvest.getGroupMembers()
 
+    
     #elimino todos de los grupos grupo
     for userO in listUsers:
         groups_tool.removePrincipalFromGroup(userO, grupIdCooR)
     for userI in listInvest:
         groups_tool.removePrincipalFromGroup(userI, groupIdInves)
 
+        
     #Regenero los grupos con los usuarios actuales
     for userObj in infoCoor:
         groups_tool.addPrincipalToGroup(userObj["id"], grupIdCooR)
         
     for investObj in infoInvest:
         groups_tool.addPrincipalToGroup(investObj["id"], groupIdInves)
-        
+
 
 def onModificaExhibicion(exhiObj,event):
     """ajusta los roles de la carpeta a los usuarios determinados en Responsables"""

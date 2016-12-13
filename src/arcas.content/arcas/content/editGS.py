@@ -351,7 +351,6 @@ class EditGS(form.SchemaForm):
         # Do something with valid data here
         # Set status on this form page
         # (this status message is not bind to the session and does not go thru redirects)
-        
         self.editOk=True
         self.fsmanager=FSManager()
         archivo=self.fsmanager.openF(ruta,self.widgets["coleccion"].value[0])
@@ -480,7 +479,6 @@ class FSManager:
         return True
         
     def dameMetadata(self,strMeta):
-        
         try:
             root = self.miXml.getroot()
         except e:

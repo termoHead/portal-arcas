@@ -64,6 +64,10 @@ class GroupPotenciales(object):
 
         terms = []
         listIds=[]
+        
+        print grupoPot
+        
+        
         if grupoPot is not None:
             for member_id in grupoPot.getMemberIds()+grupoAsignado.getMemberIds():
                 if member_id not in listIds:
@@ -74,9 +78,12 @@ class GroupPotenciales(object):
                         terms.append(SimpleVocabulary.createTerm(member_id, str(member_id), member_name))
 
             return SimpleVocabulary(terms)
-            
+        
+
+        
         #devulve un registro vacio
         return SimpleVocabulary([SimpleVocabulary.createTerm("", str(""), "")])
+
 class GroupPotencialesExhi(object):
     """Genera un vocabulario con los potenciales investigadores para esa carpeta"""
     implements(IVocabularyFactory)
@@ -112,6 +119,6 @@ class GroupPotencialesExhi(object):
 
 
 
-GroupMembersVocabFactory = GroupMembers("Coordinadores")
+GroupMembersVocabFactory = GroupMembers("listaCords")
 InvestigadoresVocabFactory = GroupPotenciales()
 CuradoresVocabFactory = GroupPotencialesExhi()

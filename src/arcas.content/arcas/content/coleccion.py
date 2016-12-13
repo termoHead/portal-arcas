@@ -49,10 +49,6 @@ class IColeccion(form.Schema):
         required=False,
     )
     
-    
-    
-    
-
     directives.read_permission(coordinador='arcas.defineCurador')
     directives.write_permission(coordinador='arcas.defineCurador')
     coordinador=schema.List(
@@ -119,6 +115,7 @@ class View(DisplayForm):
 
     def getCoordinadores(self):
         """Devuelve los curadores de la coleción"""
+        
         coords=self.context.coordinador
         homer=self.context.portal_url().split("/")[-1]
 
@@ -140,11 +137,6 @@ class View(DisplayForm):
                                  'img'  : tt.getPersonalPortrait(id=coordina.id),
                                  'cv':self.getCv(ur)
                                  })
-        
-
-
-        
-        
         
         #colec=ColeccionUtils(self.context)
         #infoCoor=colec.getCoordinadores()        
@@ -268,11 +260,6 @@ class View(DisplayForm):
         for elem in capetaU:
             if elem.Title=="cv" or elem.Title=="CV":
                 cvr=elem.getPath()
-
-
-  
-		import pdb
-		pdb.set_trace()
 
         return cvr
         

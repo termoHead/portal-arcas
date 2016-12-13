@@ -53,21 +53,21 @@ class ColeccionesPorCategoria(object):
                 pp="Autor"
                 
             colLista.append({'titulo':brain.Title,'url':brain.getURL(),'tipoColeccion':pp,'id':col.id,"urlGS":col.GS_ID})
-
-
+            
+        
         catQes=catalogo(queryCategorias)
         for elem in catQes:
             cat=contexto.unrestrictedTraverse(elem.getPath())
             tmpR=filter(lambda col: col['tipoColeccion'] == self.elimina_tildes(elem.Title.decode('utf8')), colLista)
-            if(len(tmpR)>0):      
+            if(len(tmpR)>0):                
                 try:
                     imagen=cat.ilustra
                 except:
-                    imagen="catGenerica.jpg"
+                    imagen="catGenerica.jpg"                    
                 results.append({"categoria":elem.Title,"color":cat.color,"ilustra":imagen,"url":elem.getPath(),"colecciones":tmpR})
-
+        
         return results
-
+    
     def elimina_tildes(self,s):
         return ''.join((c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn'))
 
@@ -75,6 +75,7 @@ class CatColecVocabulary(object):
     implements(IVocabularyFactory)
     def __call__(self,context):
         items = []
+
         site = context
         return self._data(site)
 
@@ -84,9 +85,9 @@ class CatColecVocabulary(object):
         catalogo = getToolByName(contexto, 'portal_catalog', None)
         query = dict(object_provides=ICategoria.__identifier__)
         result=[]
-        for cate in catalogo(query):
-            cat=contexto.unrestrictedTraverse(cate.getPath())        
-            tituC=self.elimina_tildes(cate.Title.decode('utf8'))         
+        for cate in catalogo(query):                 
+            cat=contexto.unrestrictedTraverse(cate.getPath())           
+            tituC=self.elimina_tildes(cate.Title.decode('utf8'))            
             result.append(SimpleTerm(tituC,tituC))
         return SimpleVocabulary(result)
     
@@ -179,6 +180,26 @@ class ColeccionUtils(object):
         """Devuelve los curadores de la coleción"""
 
         coleccion=self.coleccion
+       
+        idsCoords=coleccion.coordinador
+        mt = getToolByName(self.coleccion, 'portal_membership')
+        mtool = getToolByName(self.coleccion, 'portal_membership')
+        infoCoor = []
+        for idm in idsCoords:
+            coordina = mt.getMemberById(idm)
+            infoCoor.append({'type' : 'user',
+                             'id'   : coordina.id,
+                             'title': coordina.getProperty('fullname', None) or coordina.id,
+                             'email': coordina.getProperty('email'),
+                             'img'  : mtool.getPersonalPortrait(id=coordina.id),
+                             })
+        return infoCoor
+        
+        
+        
+        
+        
+        """
         idG=self.dameGrupo(coleccion).replace("_g",PREFIJO_COOR_GROUP)
 
         groups_tool = getToolByName(self.coleccion, 'portal_groups')
@@ -201,7 +222,8 @@ class ColeccionUtils(object):
                              'img'  : mtool.getPersonalPortrait(id=coordina.id),
                              })
         return infoCoor
-
+        """
+        
     def dameGrupo(self,colec):
         colec=self.coleccion
         ppa=IColecGroupName(colec)

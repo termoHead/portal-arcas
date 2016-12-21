@@ -92,17 +92,27 @@ class View(DisplayForm):
         ##recupera las categorias y las colecciones de cada una
         resuList=[]
         listado=ColeccionesPorCategoria(self.context)
+        
         for elem in listado(self.context):            
             miCat={"titulo":elem["categoria"],"color":elem["color"],"colecciones":[],"ilustra":elem["ilustra"],"url":elem["url"]}
             for elC in elem["colecciones"]:
                 extraFUrl="%s/%s_estudios" %(elC["url"],elC["id"])
                 extraFT="Estudios"
                 extraFUrlF="%s%s/browse/CL1" %(URL_GREENSTON_DOC,elC["urlGS"])
-                elC["extraFolderUrl"]   =extraFUrl
-                elC["extraFolderTitulo"]=extraFT
+                elC["extraFolderUrl"]       =extraFUrl
+                elC["extraFolderTitulo"]    =extraFT
                 elC["extraFolderFuenteUrl"] =extraFUrlF                
+                desc=elC["descri"] 
+                if desc.find(".") > 120:
+                    elC["descri"]=desc[:desc[:120].rfind(" ")]+"..."
+                else:
+                    elC["descri"]=desc[:desc.find(".")+1]
+                    
+                    
                 miCat["colecciones"].append(elC)
             resuList.append(miCat)
+        
+        
         return resuList
         
         

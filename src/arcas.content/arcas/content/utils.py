@@ -52,7 +52,7 @@ class ColeccionesPorCategoria(object):
             except:
                 pp="Autor"
                 
-            colLista.append({'titulo':brain.Title,'url':brain.getURL(),'tipoColeccion':pp,'id':col.id,"urlGS":col.GS_ID})
+            colLista.append({'titulo':brain.Title,'descri':brain.Description,'url':brain.getURL(),'tipoColeccion':pp,'id':col.id,"urlGS":col.GS_ID})
             
         
         catQes=catalogo(queryCategorias)
@@ -87,7 +87,8 @@ class CatColecVocabulary(object):
         result=[]
         for cate in catalogo(query):                 
             cat=contexto.unrestrictedTraverse(cate.getPath())           
-            tituC=self.elimina_tildes(cate.Title.decode('utf8'))            
+            tituC=self.elimina_tildes(cate.Title.decode('utf8'))     
+            
             result.append(SimpleTerm(tituC,tituC))
         return SimpleVocabulary(result)
     

@@ -114,19 +114,17 @@ class View(DisplayForm):
         return self.context.tipoSecc1
 
     def getCoordinadores(self):
-        """Devuelve los curadores de la coleción"""
-        
+        """Devuelve los curadores de la coleción"""        
         coords=self.context.coordinador
         homer=self.context.portal_url().split("/")[-1]
 
         if(len(coords)==0):
-            return []
-          
+            return []          
         
         infoCoor=[]
         tt=getToolByName(self.context,"portal_membership")
-        for idusr in coords:
-            
+        
+        for idusr in coords:            
             coordina=tt.getMemberById(idusr)
             ur='/%s/Members/%s' %(homer,idusr)
             
@@ -135,7 +133,7 @@ class View(DisplayForm):
                                  'title': coordina.getProperty('fullname', None) or coordina.id,
                                  'email': coordina.getProperty('email'),
                                  'img'  : tt.getPersonalPortrait(id=coordina.id),
-                                 'cv':self.getCv(ur)
+                                 'cv':coordina.getProperty('home_page')
                                  })
         
         #colec=ColeccionUtils(self.context)
@@ -254,9 +252,7 @@ class View(DisplayForm):
         """busca un tipo de document File en la carpeta personal del coordinador"""
         cvr=False
         catalog = getToolByName(self.context, 'portal_catalog')
-        capetaU=catalog(path=dict(query=ruta, depth=1))
-
-		        
+        capetaU=catalog(path=dict(query=ruta, depth=1))		        
         for elem in capetaU:
             if elem.Title=="cv" or elem.Title=="CV":
                 cvr=elem.getPath()

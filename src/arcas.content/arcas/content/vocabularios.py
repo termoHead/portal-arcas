@@ -20,9 +20,9 @@ from arcas.content.behaviors import IColecGroupName
 
 
 class GroupMembers(object):
-    """Context source binder to provide a vocabulary of users in a given
-    group.
+    """Context source binder to provide a vocabulary of users in a given group.
     """
+    
     implements(IVocabularyFactory)
     def __init__(self, group_name):
         self.group_name = group_name
@@ -78,9 +78,6 @@ class GroupPotenciales(object):
                         terms.append(SimpleVocabulary.createTerm(member_id, str(member_id), member_name))
 
             return SimpleVocabulary(terms)
-        
-
-        
         #devulve un registro vacio
         return SimpleVocabulary([SimpleVocabulary.createTerm("", str(""), "")])
 

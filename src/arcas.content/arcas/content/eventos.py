@@ -77,7 +77,6 @@ def onModificaColeccion(colectObj,event):
     groups_tool = getToolByName(colectObj, 'portal_groups')
     acl_users   = getToolByName(colectObj, 'acl_users')
     userssource = UsersSource(colectObj)
-
     
     if hasattr(colectObj, "coordinador"):
         coors=colectObj.coordinador
@@ -90,7 +89,6 @@ def onModificaColeccion(colectObj,event):
                          'roles': ["Contributor"],
                          })
 
-    
     if hasattr(colectObj, "integrantes"):
         integrantes=colectObj.integrantes
         for integrante in integrantes:

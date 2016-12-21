@@ -67,13 +67,17 @@
                                 
                             
                                 <tal:odd tal:define="oddrow repeat/artDestacado/start">                                
-                                    <div class="bloqueColeccion "             
+                                    <div class="bloqueColeccion "                                         
                                         tal:define="imgCategoria artDestacado/url"
-                                        tal:attributes="style string:background:url('${imgCategoria}/@@images/ilustra') no-repeat;
-                                                        class python: oddrow and 'bloqueColeccion' or 'bloqueColeccion'">
+                                        
+                                        
+                                        
+                                        tal:attributes="style string:background:url('/++resource++arcas.content/topFichaHome.png') no-repeat #${artDestacado/color};
+                                        class  string:bloqueColeccion ${artDestacado/color}">
                                         <a href="#" class="mascaraImg"
+                                            tal:content="artDestacado/titulo"
                                             tal:attributes="href artDestacado/url">
-                                            <img src="/++theme++arcas.theme/img/empty.gif" alt="" class="imgDummy"/>
+                                            Titulo Categoria
                                         </a>
                                     <div class="textoInterno">                        
                                         <div class="parrafo" >
@@ -81,9 +85,14 @@
                                             <tal:def tal:define="coleccionURL cco/url"
                                                 >
                                                 <div class="col1Linea"
-                                                tal:attributes="style string:background:url('${coleccionURL}/@@images/imagenHome')">
+                                                tal:attributes="style string:background:url('${coleccionURL}/@@images/imagenHome');
+                                                                class string:col1Linea pos${repeat/cco/number}">
                                                     <div class="tituColect">
                                                     <a tal:attributes="href coleccionURL" href="#" alt="" tal:content="cco/titulo">titulo de la coleccion</a>
+                                                    </div>
+                                                    <div class="descrip"
+                                                        tal:condition="repeat/cco/start"
+                                                        tal:content="python:cco['descri'][:250]">laskjd alskdj alskjd lkasjd laksjd lkaj dlkajs lskdj 
                                                     </div>
                                                     <div class="links"> 
                                                         <a tal:attributes="href cco/extraFolderFuenteUrl" href="#" class="enlaceComp" alt="">Fuentes</a> | <a tal:attributes="href cco/extraFolderUrl" href="#" class="enlaceComp" alt="">Estudios</a>
@@ -115,9 +124,7 @@
                     </div>
                    
                     </div>
-                      <div class="controlC">
-                                <a href="#" class="carrI">mas</a> | <a href="#" class="carrD">menos</a>
-                            </div>
+                     
                     <div class="buscadorColecciones">
                         <form>
                             <input type="text" value="Buscar en las colecciones" disabled/><img class="lupa" src="++theme++arcas.theme/img/lupa-negra.jpg"/>
@@ -128,7 +135,12 @@
 
             </div>
         </div>
-
+        
+        <div class="controlC">
+            <a href="#" class="carrI"><img src="++resource++arcas.content/flechaSlideIzq.png" alt="Mover imágenes a la izquierda"></a>  
+            <a href="#" class="carrD"><img src="++resource++arcas.content/flechaSlideDer.png" alt="Mover imágenes a la derecha"></a>
+        </div>
+        
         <div id="contenido">
             <div class="novedades" tal:define="noticias view/dameNoticias | nothing">
                 <div class="top">

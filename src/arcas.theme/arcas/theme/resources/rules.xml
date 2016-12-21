@@ -19,6 +19,8 @@
                 css:theme-children="div#vi"
                 css:content-children="div#boxColecciones"
                 />
+        <replace css:theme-children=".controlC" css:content-children=".controlC"></replace>
+        
         <replace css:theme-children="#contenido .novedades" css:content-children="#contenido .novedades"/>
         <replace css:theme-children="#contenido .presentacion .centro" css:content-children="div#contenido div.presentacion .centro  " />
         <replace css:theme-children="#contenido .presentacion .pie" css:content-children="div#contenido div.presentacion .pie" />
@@ -39,7 +41,7 @@
                 <theme href="listadoColecciones.html" />
                 <replace css:content-children=".cabezalInterno" css:theme-children=".cabezalInterno"/>
                 <replace css:content-children=".texto" css:theme-children=".texto"/>
-                <replace css:content-children=".lista" css:theme-children=".lista"/>
+                <replace css:content-children=".cuerpoListado" css:theme-children=".lista"/>
             </rules>
             <rules if-not-path="@@overview-controlpanel and edit
                     and @@syndication-settings and plone_control_panel and

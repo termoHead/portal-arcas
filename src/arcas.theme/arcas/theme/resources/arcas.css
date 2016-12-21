@@ -153,7 +153,8 @@ div.col1Linea {
     background-repeat: no-repeat !important;
     height: 87px;
     position: relative;
+    padding-left:15px;
 }
-.tituColect a{ font-family: 'Attic', serif;font-size:18px; padding-top:12px}
+.tituColect a{ font-family: 'Attic', serif;font-size:22px; padding-top:12px}
 .tituColect{ letter-spacing: 1px;
     padding: 20px 8px 0 10px;}

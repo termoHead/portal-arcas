@@ -41,6 +41,7 @@ line-height:0;
 font-size:0;
 height:0;
 }
+#form-widgets-anotacion{width:50%}
 #content ul.formTabs {background-color: #4E4E4E;
 border: 0.3em solid #4E4E4E;}
 .formHelp{color: #C9C9C9  !important;margin: 0px 0px 0.2em;display: block;font-weight: normal;}
@@ -198,16 +199,7 @@ font-size:41px;color:#fff;font-weight:normal;line-height: 41px;width: 170px;disp
 
 .datosExcibicion p.descri{line-height: 20px; font-size:14px}
 .datosExcibicion  div.responsables p{font-size:12px}
-.masExhibiciones{
-	/*width:100%;
-	background:url(/++theme++arcas.theme/img/pie_exhi_home.gif) left top no-repeat;
-    color: #FFFFFF;
-    font-family: "Arial",sans-serif;
-    font-size: 11px;
-
-    right: 30px;
-    text-decoration: none;
-    top: 396px;*/
+.masExhibiciones{	
     clear: both;
     color: #FFFFFF;
     font-family: "Arial",sans-serif;
@@ -239,9 +231,22 @@ padding-top:7px;
 margin-bottom: 7px;
 }
 #vi{position:relative;clear:both;overflow: hidden;width:898px; margin-left:62px;}
-.controlC{clear:both;}
+.controlC{position: absolute;top: 470px;width: 1020px;}    
+.controlC .carrI{float:left; width:11px;display:block; margin-left:20px}
+.controlC .carrD{float:right;width:11px; display:block; margin-right: 45px;}
+
 .imgDummy{border:0; width:180px;height:263px; }
-.mascaraImg{display:block; width:120px; height:263px; float:left;}
+.mascaraImg{  float: left;
+    font-size: 18px;
+    padding-left: 20px;
+    padding-top: 10px;
+    text-align: left;
+    width: 220px;
+}
+
+
+.textoInterno .parrafo .pos1{height:126px}
+.textoInterno .parrafo .pos2{height:103px}
 #carrusel{
  width:2000px;
  margin-left:0; 
@@ -263,13 +268,12 @@ height:263px;
 	height:263px;
 	border:1px solid #999999;
 }
-
+.parrafo {
+    padding-top: 32px;
+}
 .bloqueColeccion .textoInterno{
-float:right;
-width:259px;
 height:263px;
 text-align:left;
-background-color:#6f6c5c;
 } 
 .bloqueColeccion .textoInterno h4{
 font-family:"Attic","Arial",sans-serif;
@@ -283,36 +287,57 @@ font-size:14px;
 line-height:24px;
 text-indent:11px;
 } 
+
 .bloqueColeccion .textoInterno .parrafo{
 margin:0px !important;
 height:90px !important;
 } 
 .bloqueColeccion .textoInterno .parrafo p{
-font-size:11px;
+font-size:11px;<span tal:></span>
 color:#ffffff;
 line-height:17px;
 
 } 
-.bloqueColeccion .textoInterno .links{
-     border-bottom: 1px solid #a68762;
+.col1Linea{
+    border-bottom: 2px dotted #333;
+}
+
+
+.bloqueColeccion .textoInterno .links{     
     color: #fff;
     font-size: 11px;
     margin-left: 0;
-    padding: 9px 0 7px 35px;
+    padding: 0 0 7px 23px;
     position: absolute;
     text-transform: uppercase;
     top: 56px;
     width: 223px;
+    background: rgba(0, 0, 0, 0) url("/++resource++arcas.content/flechaHome.png") no-repeat scroll 10px 2px;
 } 
+.bloqueColeccion .textoInterno .pos1 .links{top: 102px;}
 .bloqueColeccion .textoInterno .links a{
 color:#ffcc66;
 text-decoration:none;
 } 
+
+.pos1 .tituColect {
+    letter-spacing: 1px;
+    padding: 10px 8px 0 10px;
+}
+.dca167 .tituColect a:link, 
+.dca167 .tituColect a:visited {
+    color: #222;
+}
+.dca167 .textoInterno .links a:link, 
+.dca167 .textoInterno .links a:visited{
+color:#333;    
+}
+
 .bloqueColeccion .textoInterno .links a:hover{
 text-decoration:underline;
 } 
 .bloqueColeccion .textoInterno .links a.izq{
-float:left;
+float:left;<span tal:></span>
 } 
 .bloqueColeccion .textoInterno .links a.der{
 float:right;
@@ -632,6 +657,13 @@ margin-top:20px;
 .acerca h4{
 margin-bottom:10px;
 }
+.contacto > span {
+    left: 20px;
+    position: relative;
+    top: -12px;
+    font-size:12px !important;
+    
+}
 .acerca p{
 margin-bottom:15px;
 }
@@ -647,17 +679,20 @@ float:left;
 border:none;
 float:none;
 }
+
 .coordinador .datos{
 float: left;
 margin-left: 7px;
 margin-top: 5px;
 font-family:"Florencesans",sans-serif;
+width: 180px;
 }
+.coleccion .coordinador .datos{   width: 290px !important;}
 .coordinador .datos span{
 font-size:14px;
 color:#ffcc66;
 display:block;
-margin-top: 9px;
+margin-top: 0px;
 }
 .coordinador .datos h4{
 font-size:24px;
@@ -1116,12 +1151,17 @@ line-height: 14px;
     border-bottom: 0.1em solid #CCCCCC;
     color: #FFCC66;
 }
-a:link, a:visited {
-    color: #FFCC66;
-}
-* *:link, *:visited {
-    text-decoration: none;
-}
+
+.dca167 a.mascaraImg{color:#000}
+.586d57 a:link{color: #fff !important}
+.586d57 a:visited{color: #fff !important}
+.586d57 .descrip{color: #fff !important}
+
+
+
+a:link, a:visited {color: #FFCC66;}
+* *:link, *:visited {text-decoration: none;}
+
 #carrusel .textoInterno h4 a,
 #carrusel .textoInterno h4 a:visited{color:#c46053 !important}
 #carrusel .textoInterno h4 a:hover{color:#ffcc66 !important}
@@ -1397,9 +1437,9 @@ float:right;
 width:661px;
 }
 body.listadoColecciones .lista .bloque {
-    height: 137px;
-	margin:0 0 23px 68px;
-    width: 892px;
+    height: 127px;
+	margin:0 0 23px 0px;
+    width: 100%;
 	border:1px solid #999999;
 	background-color:#6f6c5c;
 }
@@ -1434,7 +1474,7 @@ font-size:14px;
 line-height:14px;
 }
 body.listadoColecciones .lista .bloque .acercaColeccion{
-width:310px;
+width:390px;
 float:left;
 height: 127px;
 margin-top: 7px;
@@ -1443,11 +1483,9 @@ body.listadoColecciones .lista .bloque .coordinador{
 width:238px;
 float:left;
 height: 53px;
-margin:5px 0 0 100px;
+margin:5px 0 0 30px;
 }
-body.listadoColecciones .lista .bloque .coordinador .datos{
-margin-top:12px;
-}
+
 body.listadoColecciones .lista .bloque .coordinador img{
 width:43px;
 height:43px;
@@ -1471,12 +1509,12 @@ body.listadoColecciones .lista .bloque .acercaColeccion h3{
 body.listadoColecciones .lista .bloque .acercaColeccion p{
 color:#ffffff;
 font-size:11px;
-line-height:16px;
-width:304px;
+line-height:13px;
+width:100%;
 text-align:justify;
 }
 body.listadoColecciones .lista .bloque .busquedaColeccion {
-margin: 7px 0 0 100px;
+margin: 7px 0 0 30px;
 clear:none;
 }
 body.listadoColecciones .lista .bloque .busquedaColeccion input{
@@ -1500,7 +1538,7 @@ input.searchButton{width: 25px;
 #contenido .texto a:link,.texto .state-published{color:#b7b0a9 !important}
 #contenido .texto a:hover{color:#fff !important}
 #contenido .texto a:visited{color:#fff !important}
-.estandar .texto {padding-bottom:20px; color:white;}
+.estandar .texto {padding-bottom:20px; color:white; line-height:18px}
 #bioTemplate .label{font-size: 18px; text-transform:uppercase}
 #bioTemplate .columnas{margin-top: 25px;}
 #bioTemplate .columnas h3,
@@ -1581,3 +1619,35 @@ a.linkFuentes img{ margin:0 8px 0 8px; float:left;padding-top:5px}
     margin-bottom: 30px;
     margin-top: 30px;
 }
+#form-widgets-f_anotacion{width:50%; height:300px;}
+.pos1 .descrip{margin-top:5px;}
+.descrip {
+    clear: both;
+    display: block;
+    font-size: 12px;
+    height: 20px;
+    padding-left: 10px;
+    width: 60%;
+}
+
+.categoria {
+    margin-bottom:15px;
+    margin-left: 68px;
+    width: 892px;
+    padding: 8px
+}
+.categoria.color586d57{
+    background-color:#22231e
+}
+.categoria.colordca167{
+    background-color:#22231e
+}
+.colordca167 h2{
+    color: #dca167;
+}
+.color586d57 h2{
+    color: #586d57;
+}
+.color586d57 > .descriCate, .colordca167 > .descriCate{color: #bbb;   font-size: 14px;
+    margin-bottom: -20px;}
+

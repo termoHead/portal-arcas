@@ -53,9 +53,9 @@
 
             </div>
         </div>
-        
+        <tal:def tal:define="colecciones view/getCategoriasColec | nothing">
         <div class="boxColec">
-            <div tal:define="colecciones view/getCategoriasColec | nothing"
+            <div 
                     id="coleccionesHome">
                 <h3><a href="#" tal:attributes="href string:${view/listColeccUrl}" title="Listado completo de colecciones">COLECCIONES EN ARCAS</a></h3>
                 
@@ -73,7 +73,7 @@
                                         
                                         
                                         tal:attributes="style string:background:url('/++resource++arcas.content/topFichaHome.png') no-repeat #${artDestacado/color};
-                                        class  string:bloqueColeccion ${artDestacado/color}">
+                                        class  string:bloqueColeccion color${artDestacado/color}">
                                         <a href="#" class="mascaraImg"
                                             tal:content="artDestacado/titulo"
                                             tal:attributes="href artDestacado/url">
@@ -136,11 +136,11 @@
             </div>
         </div>
         
-        <div class="controlC">
+        <div class="controlC" tal:condition="python:len(colecciones)>2">
             <a href="#" class="carrI"><img src="++resource++arcas.content/flechaSlideIzq.png" alt="Mover imágenes a la izquierda"></a>  
             <a href="#" class="carrD"><img src="++resource++arcas.content/flechaSlideDer.png" alt="Mover imágenes a la derecha"></a>
         </div>
-        
+        </tal:def>
         <div id="contenido">
             <div class="novedades" tal:define="noticias view/dameNoticias | nothing">
                 <div class="top">

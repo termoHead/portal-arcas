@@ -215,6 +215,7 @@ background:url(images/bgColeccionesHomeTop.png) left top repeat-x #23231f;
 text-align:center;
 border-bottom:1px solid #bfb5a4;
 margin-bottom:33px;
+position: relative;
 }
 #coleccionesHome h3{
 background:url(images/tabColeccionesHome.png) center top no-repeat transparent;
@@ -230,8 +231,8 @@ margin-top:24px;
 padding-top:7px;
 margin-bottom: 7px;
 }
-#vi{position:relative;clear:both;overflow: hidden;width:898px; margin-left:62px;}
-.controlC{position: absolute;top: 470px;width: 1020px;}    
+#vi{position:relative;clear:both;z-index:1;overflow: hidden;width:898px; margin-left:62px;}
+.controlC{position:absolute; top:60px;width: 1020px;}    
 .controlC .carrI{float:left; width:11px;display:block; margin-left:20px}
 .controlC .carrD{float:right;width:11px; display:block; margin-right: 45px;}
 
@@ -324,12 +325,12 @@ text-decoration:none;
     letter-spacing: 1px;
     padding: 10px 8px 0 10px;
 }
-.dca167 .tituColect a:link, 
-.dca167 .tituColect a:visited {
+.colordca167 .tituColect a:link, 
+.colordca167 .tituColect a:visited {
     color: #222;
 }
-.dca167 .textoInterno .links a:link, 
-.dca167 .textoInterno .links a:visited{
+.colordca167 .textoInterno .links a:link, 
+.colordca167 .textoInterno .links a:visited{
 color:#333;    
 }
 
@@ -1152,10 +1153,8 @@ line-height: 14px;
     color: #FFCC66;
 }
 
-.dca167 a.mascaraImg{color:#000}
-.586d57 a:link{color: #fff !important}
-.586d57 a:visited{color: #fff !important}
-.586d57 .descrip{color: #fff !important}
+.colordca167 a.mascaraImg, .colordca167 .links{color:#000}
+.color586d57 a:link,.color586d57 a:visited,.color586d57 .descrip{color: #fff !important}
 
 
 

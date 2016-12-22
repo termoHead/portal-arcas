@@ -13,6 +13,11 @@
             component=".vocabulario.ColeccionesVocabFactory"
             name="ColeccionesVocab"
             />
+  <utility
+            provides="zope.schema.interfaces.IVocabularyFactory"
+            component=".vocabulario.ColecAsignadaVocabFactory"
+            name="ColecAsignadasVocab"
+            />
   <five:registerPackage package="." initialize=".initialize" />
   <include file="permissions.zcml" />
   <genericsetup:registerProfile

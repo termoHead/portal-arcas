@@ -13,6 +13,29 @@ class IListaColecciones(Interface):
     """Marca para la utilidad """
 
 
+
+class ColecAsignadasVocab(object):
+    implements(IVocabularyFactory)
+    def __init__(self):
+        pass
+
+    def __call__(self,context):
+        contexto=getSite()
+        catalogo= getToolByName(contexto, 'portal_catalog')
+        results=catalogo.unrestrictedSearchResults({'object_provides': IColeccion.__identifier__,'review_state':('SetUp','Publicado')})
+        terms = []
+        autenti=getSite().portal_membership.getAuthenticatedMember().id
+        
+        if len(results)>0:
+            for colec in results:
+                #if autenti in colec.getObject().integrantes:                    
+                terms.append(SimpleVocabulary.createTerm(colec.id, str(colec.id), colec.Title))
+
+        if len(terms)==0:
+            terms.append(SimpleVocabulary.createTerm("", "", ""))
+            
+        return SimpleVocabulary(terms)
+        
 class ListaColecciones(object):
     """
     Devuelve un listado con las colecciones activas
@@ -26,12 +49,15 @@ class ListaColecciones(object):
         catalogo= getToolByName(contexto, 'portal_catalog')
         results=catalogo.unrestrictedSearchResults({'object_provides': IColeccion.__identifier__,'review_state':('SetUp','Publicado')})
         terms = []
+        autenti=getSite().portal_membership.getAuthenticatedMember().id
+
         if len(results)>0:
-            for colec in results:
+            for colec in results:                            
                 terms.append(SimpleVocabulary.createTerm(colec.id, str(colec.id), colec.Title))
         else:
             terms.append(SimpleVocabulary.createTerm("", "", ""))
-
+            
         return SimpleVocabulary(terms)
-
+        
+ColecAsignadaVocabFactory=ColecAsignadasVocab()
 ColeccionesVocabFactory = ListaColecciones()

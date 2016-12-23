@@ -65,8 +65,6 @@ class GroupPotenciales(object):
         terms = []
         listIds=[]
         
-        print grupoPot
-        
         
         if grupoPot is not None:
             for member_id in grupoPot.getMemberIds()+grupoAsignado.getMemberIds():

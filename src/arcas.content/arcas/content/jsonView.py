@@ -44,6 +44,7 @@ class JSONGS_WS(View):
             self.metodo     ="getDocs"
             self.coleccion  =self.request.form["coleccion"]
             self.valor      =self.request.form["docs"]
+
             
         if "ruta" in self.request.form:
             self.metodo     ="getMetadata"
@@ -109,12 +110,12 @@ class JSONGS_WS(View):
         """Devuelve todas las series de una coleccion"""
         result={"serieMetadata":"","subserieMetadata":"","itemMetadata":""}             
         
-        if self.tienSub=="true":
+        if self.tienSub:        
             subSerieOk=True
         else:
             subSerieOk=False
             
-        if self.tienSub:
+        if subSerieOk:
             rutaItem=self.ruta
             
             arTmp = rutaItem.split("/")
@@ -130,11 +131,7 @@ class JSONGS_WS(View):
             arTmp = rutaItem.split("/")            
             del arTmp[-2]
             rutaSerie = "/".join(arTmp)    
-        
-        print rutaSerie
-        print rutaSubSerie
-        print rutaItem
-        
+
         manageFS  = FSManager()
         obraF     = manageFS.openF(rutaItem,self.coleccion)
         
@@ -143,8 +140,15 @@ class JSONGS_WS(View):
         else:
             result["itemMetadata"] = manageFS.getMetadataForItem()
 
-        #serieF=manageFS.openF(rutaSerie,self.coleccion)
-        serieF=manageFS.openF(rutaSubSerie,self.coleccion)
+            
+            
+            
+            
+            
+            
+            
+            
+        serieF=manageFS.openF(rutaSerie,self.coleccion)        
         
 
         if type(serieF) != type(True):
@@ -152,17 +156,15 @@ class JSONGS_WS(View):
         else:
             result["serieMetadata"] = manageFS.getMetadataForSerie()
 
-        if subSerieOk:            
-            #serieSubF = manageFS.openF(rutaSubSerie,self.coleccion)
-            serieSubF = manageFS.openF(rutaSerie,self.coleccion)
+        if subSerieOk:                        
+            serieSubF = manageFS.openF(rutaSubSerie,self.coleccion)
             if type(serieSubF) != type(True):
                 result["subserieMetadata"] = "error"
             else:        
                 result["subserieMetadata"] = manageFS.getMetadataForSubSerie()
         
 
-        import pdb
-        pdb.set_trace()
+
 
         return result
 

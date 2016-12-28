@@ -36,11 +36,62 @@ from zope.interface import directlyProvides
 from plone.supermodel import model
 import xml.etree.ElementTree as ET
 
+
+
+
+
     
+COLECCION=""
+SERIE=""
+SUBSERIE=""
 
-ppo_vocab=SimpleVocabulary([])
+def serie_vocab(self):
+    global COLECCION
+    if COLECCION=="":
+        return  SimpleVocabulary([])
+    terms=[]
+    cl=ClienteGS()
+    lista=cl.getSeries(COLECCION)
+    for pair in lista:
+        if pair["value"]!=False: 
+            terms.append(SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]))
+    return SimpleVocabulary(terms)
 
-
+def subserie_vocab(self):
+    global SERIE
+    global COLECCION        
+    
+    if COLECCION!="" and SERIE!="":
+        cl=ClienteGS()        
+        tieneSub=cl.tieneSubSerie(COLECCION)
+        terms=[]
+        if tieneSub:
+            lista=cl.getDocsFromSerie(COLECCION,SERIE)            
+            for pair in lista:                
+                terms.append(SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]))
+            return SimpleVocabulary(terms)
+   
+    return  SimpleVocabulary([])
+    
+def item_vocab(self):
+    global SERIE
+    global SUBSERIE
+    global COLECCION        
+    if COLECCION!="" and SUBSERIE!="":    
+        cl=ClienteGS()        
+        tieneSub=cl.tieneSubSerie(COLECCION)
+        terms=[]
+        if tieneSub:
+            lista=cl.getDocsFromSubSerie(COLECCION,SUBSERIE)            
+            for pair in lista:                
+                terms.append(SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]))
+            return SimpleVocabulary(terms)
+        else:            
+            lista=cl.getDocsFromSerie(COLECCION,SERIE)
+            for pair in lista:                
+                terms.append(SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]))
+            return SimpleVocabulary(terms)
+    return  SimpleVocabulary([])
 
 iso_idiomas=SimpleVocabulary([
     SimpleTerm(value=u'ay', title=(u'aimara')),
@@ -65,6 +116,10 @@ def coleccionesVocab(context):
 
 
 directlyProvides(coleccionesVocab, IContextSourceBinder)
+directlyProvides(serie_vocab, IContextSourceBinder)
+directlyProvides(subserie_vocab, IContextSourceBinder)
+directlyProvides(item_vocab, IContextSourceBinder)
+
 
 
 class IGsMetaItem(form.Schema):
@@ -72,6 +127,7 @@ class IGsMetaItem(form.Schema):
         label=(u"Metadatos del Item"),
         fields=["f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones","f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta"]
     )
+    
     f_fechaCreacion= schema.TextLine(
         title=u"Fecha",
         description=u"Fecha de creacion del documento",
@@ -113,8 +169,13 @@ class IGsMetaItem(form.Schema):
         required=False,
     ) 
     form.widget('f_anotacion', klass='recargaForm',size=5)
-    f_anotacion = schema.Text(title=u"Editar Metadato",required=False,)
+    f_anotacion = schema.Text(title=u"Anotación",required=False,)
 
+
+
+
+    
+    
 class IGsSubSerie(form.Schema):
     model.fieldset('Subserie',
         label=(u"Metadatos de la Sub Serie"),
@@ -124,8 +185,7 @@ class IGsSubSerie(form.Schema):
         title=u"Título",
         description=u"titulo de la sub serie",
         required=False,
-    ) 
-  
+    )  
     sub_alcance= schema.TextLine(
         title=u"Alcance",
         description=u"Alcance de la subserie",
@@ -141,20 +201,17 @@ class IGsSubSerie(form.Schema):
 
 class IGsMetaSerie(form.Schema):
     model.fieldset('Item',label=(u"Metadatos de la serie"),
-        fields=["s_titulo","s_temporal","s_extension","s_dimension","s_creador","s_colaborador","s_caracteristicas","s_alcance","s_lenguaiso","s_ediciones"]
+        fields=["s_titulo","s_temporal","s_autor","s_extension","s_caracteristicas","s_alcance","s_lenguaiso"]
     )
     s_titulo= schema.TextLine(title=u"Titulo",
         description=u"no se que es... sera el título del documento",required=False,) 
     s_temporal= schema.TextLine(title=u"Extensión Temporal",
         description=u"no se que es... sera el título del documento",required=False,) 
+    s_autor= schema.TextLine(title=u"Autor",
+        description=u"no se que es... sera el título del documento",required=False,) 
     s_extension= schema.TextLine(title=u"Extensión",
         description=u"no se que es... sera el título del documento",required=False,) 
-    s_dimension= schema.TextLine(title=u"Dimensiones",
-        description=u"no se que es... sera el título del documento",required=False,)             
-    s_creador= schema.TextLine(title=u"Creador",
-        description=u"no se que es... sera el título del documento",required=False,)
-    s_colaborador= schema.TextLine(title=u"Colaborador",
-        description=u"no se que es... sera el título del documento",required=False,)
+   
     s_caracteristicas= schema.TextLine(title=u"Caracteristicas",
         description=u"no se que es... sera el título del documento",required=False,)
     s_alcance= schema.TextLine(title=u"Alcance",
@@ -164,38 +221,6 @@ class IGsMetaSerie(form.Schema):
         vocabulary=iso_idiomas,
         required=False,
     )
-
-    s_ediciones= schema.TextLine(title=u"Ediciones",
-        description=u"no se que es... sera el título del documento",required=False,)            
-                
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class IEditGS(form.Schema, IGsMetaItem, IGsSubSerie,IGsMetaSerie ):
     """Campos del formulario de edición de un documento Greenston3 en el import!"""    
@@ -214,19 +239,19 @@ class IEditGS(form.Schema, IGsMetaItem, IGsSubSerie,IGsMetaSerie ):
     serie = schema.Choice(
         title=u"Serie",
         description=u"Elija una obra para editar",        
-        vocabulary=ppo_vocab,
+        source=serie_vocab,
         required=False,
     )
     subserie= schema.Choice(
         title=u"Sub Serie",
         description=u"Elija una sub serie para editar",        
-        vocabulary=ppo_vocab,
+        source=subserie_vocab,
         required=False,
     )
     obra = schema.Choice(
         title=u"Obra",
         description=u"Elija una obra para editar",        
-        vocabulary=ppo_vocab,
+        source=item_vocab,
         required=False,
     )
     directives.mode(obraTmp='hidden')
@@ -263,21 +288,19 @@ class EditGS(form.SchemaForm):
     
     lsw=["f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones","f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta"]
     
-    infoMetadatosSerie={'s_titulo':'ae.filetitulo',
-                's_temporal':'ae.fileCoberturatemporal',
+    infoMetadatosSerie={'s_titulo':'ae.serietitulo',
+                's_temporal':'ae.seriecoberturatemporal',
                 's_extension':'ae.fileextension',
-                's_dimension':'ae.filedimension',
-                's_creador':'ae.filecreator',
-                's_colaborador':'ae.filecolaborator',
-                's_caracteristicas':'ae.filecaracteristicastecnicas',
-                's_alcance':'ae.filealcance',
-                's_lenguaiso':'ae.filelenguaiso',
-                's_ediciones':'ae.fileediciones'
+                's_caracteristicas':'ae.seriedescripcionfisica',
+                's_autor':'ae.serieautor',
+                's_alcance':'ae.seriealcance',
+                's_lenguaiso':'ae.serielenguaiso',
+ 
     }
     
     infoMetadatoSubSerie={'sub_titulo':'ae.subserietitulo',    
-                        'sub_alcance'   :'ae.subseriealcance',
-                        'sub_anotacion':'ae.anotacionsubserie'
+                        'sub_alcance' :'ae.subserieautor',
+                        'sub_anotacion':'ae.subserielenguaiso'
     }
     
     infoMetaItem={ 'f_fechaCreacion':'ae.itemcoberturatemporal', 
@@ -290,33 +313,39 @@ class EditGS(form.SchemaForm):
                     'f_anotacion':'bi.anotacionitem',
                     'f_ruta':'bi.ruta'}
 
+                    
+    
+            
+    
+
+
+
     
     editOk=False    
-    step1=["serie"]
-    step2=["obra"]    
-    
-    
-    
-    @property
-    def mmi_vocab(self):
-        cl=ClienteGS()
-        lista=cl.getSeries(self.coleccion)
-        terms=[SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]) for pair in lista ]        
-        return SimpleVocabulary(terms)
-    
-    @property
-    def mmo_vocab(self):
-        cl=ClienteGS()
-        lista=cl.getDocsFromSerie(self.coleccion,self.serie)
-        terms=[SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]) for pair in lista ]
-        return SimpleVocabulary(terms)
-    
+
     
     def update(self):        
+        global COLECCION
+        global SERIE
+        global SUBSERIE
+        
         super(EditGS, self).update()
+        if(len(self.groups[3].widgets["coleccion"].value)>0):
+            COLECCION=self.groups[3].widgets["coleccion"].value[0]
+            
+        if(len(self.groups[3].widgets["serie"].value)>0):
+            if self.groups[3].widgets["serie"].value[0] != "--NOVALUE--":
+                SERIE=self.groups[3].widgets["serie"].value[0]
+                
+        if(len(self.groups[3].widgets["subserie"].value)>0):
+            if self.groups[3].widgets["subserie"].value[0] != "--NOVALUE--":
+                SUBSERIE=self.groups[3].widgets["subserie"].value[0]
+        super(EditGS, self).update()
+            
+        
     
     
-    def updateWidgets(self):                
+    def updateWidgets(self):        
         super(EditGS, self).updateWidgets()        
 
 
@@ -366,22 +395,97 @@ class EditGS(form.SchemaForm):
 
     @button.buttonAndHandler(u'Guardar',condition=showObras)
     def saveHandler(self, action):  
-        infoMetadatos=self.infoMetadatosSerie
+        msj=rutaItem=rutaSubSerie=rutaSerie=""
+        subSerieOk=False
+        
+        infoMetadatos=self.infoMetaItem
+        infoMetadatosSerie=self.infoMetadatosSerie
+       
+        
+        
         data, errors = self.extractData()
+        
+        if len(self.groups[3].widgets["subserie"].value)>0:
+            subSerieOk=True
+            infoMetadatosSuBerie=self.infoMetadatoSubSerie       
+        
         if errors:
             self.status = self.formErrorsMessage
             return
-        dicDatos={
-            "version":"1",
-            "idColec":self.widgets["coleccion"].value[0],
-            "ruta":self.widgets["ruta"].value,            
-            "metadatos":[(x,self.widgets[infoMetadatos[x]].value) for x in infoMetadatos]}
         
-        self.fsmanager=FSManager()
-        if self.fsmanager.saveFile(dicDatos):
-            self.status =u"CambiosDefine Form handling guardados... mail to M. Pichinini!"
+       
+        #rutaArchivos        
+            
+        if subSerieOk:
+            rutaItem= self.groups[2].widgets["f_ruta"].value
+            arTmp = rutaItem.split("/")
+            del arTmp[-2]
+            del arTmp[-2]
+            rutaSerie = "/".join(arTmp)
+            
+            arTmp = rutaItem.split("/")         
+            del arTmp[-2]
+            rutaSubSerie = "/".join(arTmp)
         else:
-            self.status =u"No se pueden guardar los cambios... generando reporte"
+            arTmp = rutaItem.split("/")            
+            del arTmp[-2]
+            rutaSerie = "/".join(arTmp)    
+    
+
+        dicDatosItem={
+            "version":"1",
+            "idColec":self.groups[3].widgets["coleccion"].value[0],
+            "ruta":rutaItem,
+            "metadatos":[(x,self.groups[2].widgets[x].value) for x in infoMetadatos]
+            }
+        dicDatosSerie={
+            "version":"1",
+            "idColec":self.groups[3].widgets["coleccion"].value[0],
+            "ruta":rutaSerie,
+            "metadatos":[(x,self.groups[0].widgets[x].value) for x in infoMetadatosSerie]
+            }
+        
+        if subSerieOk:
+            dicDatosSubSerie={
+                "version":"1",
+                "idColec":self.groups[3].widgets["coleccion"].value[0],
+                "ruta":rutaSubSerie,
+                "metadatos":[(x,self.groups[1].widgets[x].value) for x in infoMetadatosSuBerie]
+                }
+        self.fsmanager=FSManager()
+        
+        flagm=0        
+
+    
+        itemsaved=self.fsmanager.saveFile(dicDatosItem)
+        seriesaved=self.fsmanager.saveFile(dicDatosSerie)
+        
+        if itemsaved==False:
+                msj="> No se pudo guardar el item en %s"%rutaItem
+                print msj
+                flagm+=1
+        if seriesaved==False:
+                msj="> No se pudo guardar la serie en %s"%rutaSerie             
+                print msj
+                flagm+=1                
+                
+        if subSerieOk:            
+            subSeriesaved=self.fsmanager.saveFile(dicDatosSubSerie)
+            
+            if subSeriesaved==False:
+                msj="> No se pudo guardar la sub serie en %s"%rutaSubSerie             
+                print msj
+                flagm+=1
+            
+        if flagm==0:
+            self.status =u"Los archivos fueron modificados correctamente.Form handling guardados... mail to M. Pichinini!"
+        else:
+            self.status =u"No se pueden guardar los cambios... generando reporte"               
+
+
+
+
+
 
     @button.buttonAndHandler(u"Cancel",condition=showObras)
     def handleCancel(self, action):
@@ -391,8 +495,7 @@ class EditGS(form.SchemaForm):
         self.editOk=False
 
 
-class FSManager:
-    
+class FSManager:    
     """
         Abre el archivo y lo guarda en miXml
         gsx=FSManager()
@@ -400,10 +503,8 @@ class FSManager:
         if fileOk==False:
             print "error:%s"%gsx.erromMsj
             return            
-            
         fileXml=gsx.miXml
-        
-        
+
     """
     erromMsj=""
     xmlFileBase  ='/usr/local/Greenstone3/web/sites/localsite/collect/'
@@ -423,7 +524,7 @@ class FSManager:
         try:
             xmlFile = ET.parse(ruta)
             self.miXml=xmlFile
-            print "ok"
+            print "abriendo el archivos %s" %ruta
             return True
         
         except ET.ParseError:
@@ -461,17 +562,25 @@ class FSManager:
         """guarda los datos en el xml"""
         pathFolder      =self.xmlFileBase+obModificado["idColec"]+self.xmlFileResto
         version         =self.dameSigVerison(pathFolder)
-        newfilename     =self.xmlFileBase+obModificado["idColec"]+self.xmlFileResto+"metadataV"+version+".xml"
+        newfilename     =obModificado["ruta"].replace("metadata.xml",self.xmlFileResto+"metadataV"+version+".xml")
         rm              =self.openF(obModificado["ruta"],obModificado["idColec"])
         
         if rm["error"]!="":
             return False
 
-        for met in obModificado["metadatos"]:
+
+        
+        for met in obModificado["metadatos"]: 
             try:
                 self.miXml.findall('.//Metadata[@name="'+met[0]+'"]')[0].text=met[1]
             except:
                 print "no pude guardar el metadato %s > %s" %(met[0],met[1])
+                
+        import pdb
+        pdb.se_trace()
+                
+        return 
+
         try:
             self.miXml.write(newfilename,encoding="UTF-8", xml_declaration=True)
         except:
@@ -486,6 +595,12 @@ class FSManager:
             return []
         
         metadato=""
+        
+        
+
+        
+
+        
         if len(self.miXml.findall(u'.//Metadata[@name="'+strMeta+'"]'))>0:
             meta=self.miXml.findall(u'.//Metadata[@name="'+strMeta+'"]')[0].text
             metadato=meta
@@ -497,8 +612,8 @@ class FSManager:
     
     
     def getMetadataForItem(self):
-        """Metodo que devuelve un diccionario de METADATOS ITEMS para json"""        
-        res=self.getMetadataFor(EditGS.infoMetaItem)        
+        """Metodo que devuelve un diccionario de METADATOS ITEMS para json"""                
+        res=self.getMetadataFor(EditGS.infoMetaItem)                
         return res
     
     def getMetadataForSubSerie(self):
@@ -509,12 +624,13 @@ class FSManager:
     def getMetadataForSerie(self):
         """Metodo que devuelve un diccionario de METADATOS SERIE para json"""
         res=self.getMetadataFor(EditGS.infoMetadatosSerie)        
+        
         return res
     
     def getMetadataFor(self,infoMetadatos):
         """METODO AUXILIAR PARA DEVOLVER METADATOS EN EL DICIONARIO infoMetadatos,infoMetadatoSubSerie,infoMetaItem de EditGS"""
-        res=[]
-        for ke,val in infoMetadatos.items():
+        res=[]        
+        for ke,val in infoMetadatos.items():            
             res.append({val:self.dameMetadata(val)})
         return res
     
@@ -603,8 +719,7 @@ class ClienteGS:
     def dameDocumentos(self,coleccion,docsIds):
         """Dado un listado de ids, devuelve un listado de objetos con titulo,ruta,idoc"""
         client=self.client
-        metadatos=[u"ae.itemtitulo",u"ae.filetitulo",u"bi.ruta"]
-        
+        metadatos=[u"ae.itemtitulo",u"ae.filetitulo",u"bi.ruta"]        
         
         
         if self.coleccion=="":
@@ -704,11 +819,9 @@ class ClienteGS:
             if "childType" in clN.attrib.keys():
                 longNanme=len(clN.attrib['nodeID'])
                 
-                if longNanme==5:
-                    print "llegue a una serie"
+                if longNanme==5:                    
                     seriOb={'serieId':clN.attrib['nodeID'],'listSubs':[]}
-                    subtmp=0
-                    
+                    subtmp=0                    
                     for ltmp in clN.iter("classifierNode"):    
                         subtmp+=1
                     
@@ -763,11 +876,30 @@ class ClienteGS:
     def getDocsFromSubSerie(self,colecName,subSerie):
         """devuelve una lista para armar el select"""
         ls=[]
-        cco=self.client.service.retrieveDocumentMetadata(colecName,self.idioma,[subSerie],["contains"])
-        etMeta= ET.fromstring(cco.encode('utf-8'))
-        ddis=etMeta.find('.//metadata[@name="contains"]').text        
         
-        docs=self.dameDocumentos(colecName,ddis.split(";"))
+        
+        try:
+            cco=self.client.service.retrieveDocumentMetadata(colecName,self.idioma,[subSerie],["contains"])
+        except suds.WebFault, e:
+            print "-------------------------"
+            print e
+            print "-------------------------"
+            self.error=e
+            return []
+        
+        
+        etMeta= ET.fromstring(cco.encode('utf-8'))
+        ddis=etMeta.find('.//metadata[@name="contains"]').text
+        
+        if ddis.find('"')>=0:
+            ddis=ddis.replace('"','')        
+            idsx=[]
+            for elemy in ddis.split(";"):
+                idsx.append(subSerie+elemy)            
+            docs=self.dameDocumentos(colecName,idsx)
+        else:
+            docs=self.dameDocumentos(colecName,ddis.split(";"))
+           
         for elem in docs:
             ls.append({"value":elem["ruta"],"title":elem["it"]})
         
@@ -805,11 +937,13 @@ class ClienteGS:
         
    
     def getSeries(self,colecName):
-        """devuelve una lista para armar el select"""
-        obras=self.dameSeriesDeColeccion(colecName)
+        """devuelve una lista para armar el select"""        
         subSerieOk=self.tieneSubSerie(colecName)
+        
+        obras=self.dameSeriesDeColeccion(colecName)
         ls=[]
-        ls.append({"conSub":subSerieOk,"subserie":subSerieOk})
+        ls.append({"value":subSerieOk,"title":subSerieOk})
+        
         for elem in obras:
             ls.append({"value":elem["id"],"title":elem["titulo"]})
             
@@ -818,14 +952,15 @@ class ClienteGS:
     
     def tieneSubSerie(self,colecName):
         client=self.client
+        
         try:
-            query = client.service.browse(self.coleccion,"",self.idioma,["CL1.1",],["children"])
+            query = client.service.browse(colecName,"",self.idioma,["CL1.1"],["children"])
         except:
             print "error buscando subSerie"
             return False
         
         mquery=ET.fromstring(query.encode('utf-8'))
-        
+
         if len(mquery.findall(".//classifierNode/classifierNode"))>0:
             return True
         else:

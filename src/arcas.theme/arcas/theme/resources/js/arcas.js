@@ -134,7 +134,7 @@ var MOD_GSEDIT = (function () {
 			url : "/json_gs",
 			data : {
 				"coleccion" : colec,
-				"subserie" : subserie
+				"subserie" : subserie,
 			},
 		}).done(function (data) {
 			$("#form-widgets-obra option").remove()
@@ -169,7 +169,8 @@ var MOD_GSEDIT = (function () {
 			total = $(data).length;
 
 			$.each(data, function (key, val) {
-				if (val.value) {
+                console.log(val.value==true)
+				if (val.value!=true) {
 					op = $('<option value="' + val.value + '">' + val.title + '</option>')
 						fa++
 						$("#form-widgets-serie").append(op);

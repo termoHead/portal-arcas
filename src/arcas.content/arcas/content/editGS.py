@@ -53,7 +53,7 @@ def serie_vocab(self):
     cl=ClienteGS()
     lista=cl.getSeries(COLECCION)
     for pair in lista:
-        if pair["value"]!=False: 
+        if pair["value"]!=False or  pair["value"]!=True or   pair["value"]!="true" or  pair["value"]!="false": 
             terms.append(SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]))
     return SimpleVocabulary(terms)
 
@@ -67,8 +67,9 @@ def subserie_vocab(self):
         terms=[]
         if tieneSub:
             lista=cl.getDocsFromSerie(COLECCION,SERIE)            
-            for pair in lista:                
-                terms.append(SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]))
+            for pair in lista:   
+                if pair["value"]!=False or pair["value"]!=True or   pair["value"]!="true" or  pair["value"]!="false":
+                    terms.append(SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]))
             return SimpleVocabulary(terms)
    
     return  SimpleVocabulary([])
@@ -111,7 +112,7 @@ iso_idiomas=SimpleVocabulary([
 def coleccionesVocab(context):
     "colecciones en "
     cl=ClienteGS()    
-    terms = []      
+    terms = []    
     return SimpleVocabulary.fromValues(cl.dameListadoColecciones())
 
 
@@ -170,11 +171,6 @@ class IGsMetaItem(form.Schema):
     ) 
     form.widget('f_anotacion', klass='recargaForm',size=5)
     f_anotacion = schema.Text(title=u"Anotación",required=False,)
-
-
-
-
-    
     
 class IGsSubSerie(form.Schema):
     model.fieldset('Subserie',
@@ -196,9 +192,6 @@ class IGsSubSerie(form.Schema):
         required=False,
     ) 
     
-    
-
-
 class IGsMetaSerie(form.Schema):
     model.fieldset('Item',label=(u"Metadatos de la serie"),
         fields=["s_titulo","s_temporal","s_autor","s_extension","s_caracteristicas","s_alcance","s_lenguaiso"]
@@ -284,8 +277,7 @@ class EditGS(form.SchemaForm):
     coleccion="cordemia"
     serie=""
     obra=""
-    
-    
+        
     lsw=["f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones","f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta"]
     
     infoMetadatosSerie={'s_titulo':'ae.serietitulo',
@@ -314,13 +306,6 @@ class EditGS(form.SchemaForm):
                     'f_ruta':'bi.ruta'}
 
                     
-    
-            
-    
-
-
-
-    
     editOk=False    
 
     
@@ -340,6 +325,7 @@ class EditGS(form.SchemaForm):
         if(len(self.groups[3].widgets["subserie"].value)>0):
             if self.groups[3].widgets["subserie"].value[0] != "--NOVALUE--":
                 SUBSERIE=self.groups[3].widgets["subserie"].value[0]
+                
         super(EditGS, self).update()
             
         
@@ -400,22 +386,18 @@ class EditGS(form.SchemaForm):
         
         infoMetadatos=self.infoMetaItem
         infoMetadatosSerie=self.infoMetadatosSerie
-       
-        
         
         data, errors = self.extractData()
         
         if len(self.groups[3].widgets["subserie"].value)>0:
             subSerieOk=True
-            infoMetadatosSuBerie=self.infoMetadatoSubSerie       
+            infoMetadatosSuBerie=self.infoMetadatoSubSerie
         
         if errors:
             self.status = self.formErrorsMessage
             return
-        
-       
-        #rutaArchivos        
             
+        #rutaArchivos            
         if subSerieOk:
             rutaItem= self.groups[2].widgets["f_ruta"].value
             arTmp = rutaItem.split("/")
@@ -423,33 +405,35 @@ class EditGS(form.SchemaForm):
             del arTmp[-2]
             rutaSerie = "/".join(arTmp)
             
-            arTmp = rutaItem.split("/")         
+            arTmp = rutaItem.split("/")
             del arTmp[-2]
             rutaSubSerie = "/".join(arTmp)
         else:
-            arTmp = rutaItem.split("/")            
+            arTmp = rutaItem.split("/")
             del arTmp[-2]
-            rutaSerie = "/".join(arTmp)    
+            rutaSerie = "/".join(arTmp)
     
 
         dicDatosItem={
             "version":"1",
             "idColec":self.groups[3].widgets["coleccion"].value[0],
             "ruta":rutaItem,
+            "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaItem.replace("/metadata.xml",""),
             "metadatos":[(x,self.groups[2].widgets[x].value) for x in infoMetadatos]
             }
         dicDatosSerie={
             "version":"1",
             "idColec":self.groups[3].widgets["coleccion"].value[0],
             "ruta":rutaSerie,
+            "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaSerie.replace("/metadata.xml",""),
             "metadatos":[(x,self.groups[0].widgets[x].value) for x in infoMetadatosSerie]
             }
-        
         if subSerieOk:
             dicDatosSubSerie={
                 "version":"1",
                 "idColec":self.groups[3].widgets["coleccion"].value[0],
                 "ruta":rutaSubSerie,
+                "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaSubSerie.replace("/metadata.xml",""),
                 "metadatos":[(x,self.groups[1].widgets[x].value) for x in infoMetadatosSuBerie]
                 }
         self.fsmanager=FSManager()
@@ -540,7 +524,8 @@ class FSManager:
 
 
     def dameSigVerison(self,carpeta):
-        listado =os.listdir(carpeta)
+        rut=self.xmlFileBase+carpeta
+        listado =os.listdir(rut)
         tmp     =["1"]
         listR=[]
         for elem in listado:   
@@ -552,6 +537,12 @@ class FSManager:
 
         if len(listR)==0:
             return "1"
+            
+        if len(listR)==1:
+            if len(listR[0])==0:
+                return "1"
+                
+            
         
         listR.sort()
         nex=listR[-1]
@@ -560,16 +551,16 @@ class FSManager:
         
     def saveFile(self,obModificado):
         """guarda los datos en el xml"""
-        pathFolder      =self.xmlFileBase+obModificado["idColec"]+self.xmlFileResto
+        pathFolder      =obModificado["idColec"]+"/"+obModificado["ruta"]
+        pathFolder      =obModificado["folder"]
         version         =self.dameSigVerison(pathFolder)
+        
         newfilename     =obModificado["ruta"].replace("metadata.xml",self.xmlFileResto+"metadataV"+version+".xml")
         rm              =self.openF(obModificado["ruta"],obModificado["idColec"])
         
-        if rm["error"]!="":
+        if rm == False:
             return False
-
-
-        
+       
         for met in obModificado["metadatos"]: 
             try:
                 self.miXml.findall('.//Metadata[@name="'+met[0]+'"]')[0].text=met[1]
@@ -590,7 +581,7 @@ class FSManager:
     def dameMetadata(self,strMeta):
         try:
             root = self.miXml.getroot()
-        except e:
+        except:
             print "no se puede parsear el xml"
             return []
         
@@ -657,12 +648,21 @@ class ClienteGS:
 
     
     def dameListadoColecciones(self):
-        ###Devuelve un listado de strings colecciones###
-        query = self.client.service.describe("","collectionList")
-        query=ET.fromstring(query)
+        ###Devuelve un listado de strings colecciones###        
+        try:
+            query = self.client.service.describe("","collectionList")
+            query=ET.fromstring(query)
+        except urllib2.URLError, e:
+            self.error="urlError"
+            print "error en las colecciones"
+            return []        
+        
+        
         result=[]
+        result.append("sin valor")
         for e in query.findall('.//collection'):
             result.append(e.get('name'))
+            
         return result    
     
     def dameRutaXMLDeId(self,coleccion,idDoc):
@@ -681,6 +681,8 @@ class ClienteGS:
         """Devuleve un objeto con el titulo, clsificador y los lista de ids documentos hijos"""
         if self.coleccion=="":
             self.coleccion=coleccion            
+        if coleccion=="sin valor":
+            return []
         client=self.client
         try:
             #query =client.service.browse(self.coleccion,"",self.idioma,["CL1"],["children"])

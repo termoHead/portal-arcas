@@ -45,7 +45,6 @@ class JSONGS_WS(View):
             self.coleccion  =self.request.form["coleccion"]
             self.valor      =self.request.form["docs"]
 
-            
         if "ruta" in self.request.form:
             self.metodo     ="getMetadata"
             self.ruta       =self.request.form["ruta"]
@@ -57,7 +56,6 @@ class JSONGS_WS(View):
             self.metodo     ="getSubSeries"
             self.coleccion  =self.request.form["coleccion"]            
             self.valor      =self.request.form["subserie"]
-        
 
     def render(self):
         #re=self.dameCL1()
@@ -70,9 +68,9 @@ class JSONGS_WS(View):
             listing=self.dameSubSeries()
         else:
             listing=self.dameMetadatos()
-
-        return self.empaqueta(listing)
         
+        return self.empaqueta(listing)
+
 
     def empaqueta(self,listing):
         """empaqueta para relegar"""
@@ -97,8 +95,8 @@ class JSONGS_WS(View):
     
         
     def dameSeries(self):
-        """Devuelve todas las series de una coleccion"""
-        obras=self.cli.getSeries(self.valor)
+        """Devuelve todas las series de una coleccion"""        
+        obras=self.cli.getSeries(self.valor)        
         return obras
     
     
@@ -232,19 +230,17 @@ class JSONExportMenu(View):
     grok.name("json_menu")
 
     def update(self):
-        self.contexto= aq_inner(self.context)
+        self.contexto = aq_inner(self.context)
 
         if self.request.form.has_key("idC"):
             idColeportadaccion=self.request.form["idC"]
 
-
-
     def render(self):
-        listing = self.datos_contexto()
-        pretty = json.dumps(listing)
-        self.request.response.setHeader("Content-type", "application/json")
-        self.request.response.setHeader('Access-Control-Allow-Origin', '*')
-        return pretty
+        listing = self.datos_contexto();
+        pretty  = json.dumps(listing);
+        self.request.response.setHeader("Content-type", "application/json");
+        self.request.response.setHeader('Access-Control-Allow-Origin', '*');
+        return pretty;
 
     def datos_contexto(self):
         catalogo=getToolByName(self.contexto,"portal_catalog")
@@ -255,9 +251,8 @@ class JSONExportMenu(View):
 
         for exhi in colecFolder:
             if not exhi.exclude_from_nav:
-                data={'url':exhi.getURL(),'titulo':exhi.Title}
-                result.append(data)
-
+                data={'url':exhi.getURL(),'titulo':exhi.Title};
+                result.append(data);
         return result
 
     def emptyData(self):

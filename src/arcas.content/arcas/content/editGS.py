@@ -419,14 +419,14 @@ class EditGS(form.SchemaForm):
             "idColec":self.groups[3].widgets["coleccion"].value[0],
             "ruta":rutaItem,
             "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaItem.replace("/metadata.xml",""),
-            "metadatos":[(x,self.groups[2].widgets[x].value) for x in infoMetadatos]
+            "metadatos":[(EditGS.infoMetaItem[x],self.groups[2].widgets[x].value) for x in infoMetadatos]
             }
         dicDatosSerie={
             "version":"1",
             "idColec":self.groups[3].widgets["coleccion"].value[0],
             "ruta":rutaSerie,
             "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaSerie.replace("/metadata.xml",""),
-            "metadatos":[(x,self.groups[0].widgets[x].value) for x in infoMetadatosSerie]
+            "metadatos":[(EditGS.infoMetadatosSerie[x],self.groups[0].widgets[x].value) for x in infoMetadatosSerie]
             }
         if subSerieOk:
             dicDatosSubSerie={
@@ -434,8 +434,10 @@ class EditGS(form.SchemaForm):
                 "idColec":self.groups[3].widgets["coleccion"].value[0],
                 "ruta":rutaSubSerie,
                 "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaSubSerie.replace("/metadata.xml",""),
-                "metadatos":[(x,self.groups[1].widgets[x].value) for x in infoMetadatosSuBerie]
+                "metadatos":[(EditGS.infoMetadatoSubSerie[x],self.groups[1].widgets[x].value) for x in infoMetadatosSuBerie]
                 }
+                
+
         self.fsmanager=FSManager()
         
         flagm=0        
@@ -454,8 +456,7 @@ class EditGS(form.SchemaForm):
                 flagm+=1                
                 
         if subSerieOk:            
-            subSeriesaved=self.fsmanager.saveFile(dicDatosSubSerie)
-            
+            subSeriesaved=self.fsmanager.saveFile(dicDatosSubSerie)            
             if subSeriesaved==False:
                 msj="> No se pudo guardar la sub serie en %s"%rutaSubSerie             
                 print msj
@@ -495,6 +496,7 @@ class FSManager:
     xmlFileResto ='/import/co.1/se.1/su.1/ar.1/it.1/'
     xmlFileName='metadata.xml'    
     miXml=""
+
     
     def openF(self,ruta,coll):
         #if ruta.find("web")==-1:
@@ -549,26 +551,43 @@ class FSManager:
         resultado = str(int(nex[1:])+1)
         return resultado
         
+    def creatNewXmlMetadata(self,name,dato):
+        nodo=ET.Element('Metadata',{'mode':'accumulate','name':name})
+        nodo.text=dato
+        return nodo
+    
     def saveFile(self,obModificado):
-        """guarda los datos en el xml"""
+        """
+        guarda los datos en el xml
+        """
+        
         pathFolder      =obModificado["idColec"]+"/"+obModificado["ruta"]
         pathFolder      =obModificado["folder"]
-        version         =self.dameSigVerison(pathFolder)
-        
+        version         =self.dameSigVerison(pathFolder)        
         newfilename     =obModificado["ruta"].replace("metadata.xml",self.xmlFileResto+"metadataV"+version+".xml")
         rm              =self.openF(obModificado["ruta"],obModificado["idColec"])
-        
+       
         if rm == False:
             return False
-       
-        for met in obModificado["metadatos"]: 
+        
+        #elemino todos los metadatos del xml cargado
+        describeParent=self.miXml.getroot().find(".//FileSet")
+        describeParent.remove(self.miXml.getroot().find(".//FileSet/Description"))
+        
+        #genero un contenedor para los metadatos
+        newDescribe=ET.Element("Description")
+        
+        #agrego al nuevo  contenedor, los metadatos cargados del formulario
+        for met in obModificado["metadatos"]:
             try:
-                self.miXml.findall('.//Metadata[@name="'+met[0]+'"]')[0].text=met[1]
+                if len(met[1])>0:
+                    newDescribe.append(self.creatNewXmlMetadata(met[0],met[1]))
+                    #self.miXml.findall('.//Metadata[@name="'+met[0]+'"]')[0].text=met[1]
             except:
                 print "no pude guardar el metadato %s > %s" %(met[0],met[1])
-                
+        
         import pdb
-        pdb.se_trace()
+        pdb.set_trace()
                 
         return 
 

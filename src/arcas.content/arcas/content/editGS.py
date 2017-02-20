@@ -472,13 +472,13 @@ class EditGS(form.SchemaForm):
             itemsaved=self.fsmanager.saveFile(dicDatosItem)
             seriesaved=self.fsmanager.saveFile(dicDatosSerie)
  
-            if itemsaved==False:
+            if itemsaved=="error":
                 msj="> No se pudo guardar el item en %s"%rutaItem
                 print msj
                 flagm+=1
             else:
                 print "paso item"
-            if seriesaved==False:
+            if seriesaved=="error":
                 msj="> No se pudo guardar la serie en %s"%rutaSerie             
                 print msj
                 flagm+=1                
@@ -487,13 +487,15 @@ class EditGS(form.SchemaForm):
                     
             if subSerieOk:            
                 subSeriesaved=self.fsmanager.saveFile(dicDatosSubSerie)
-                if subSeriesaved==False:
+                if subSeriesaved=="error":
                     msj="> No se pudo guardar la sub serie en %s" %rutaSubSerie
                     print msj
                     flagm+=1
+            else:
+                subSeriesaved='sin sub serie'
             
             if flagm==0:
-                mandoCorreo=self.emails({'ritem':rutaItem,'rsubserie':rutaSubSerie,'rserie':rutaSerie})                
+                mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved})                
                 if mandoCorreo:                   
                     self.msjForm =u"Los archivos fueron modificados correctamente.Form handling guardados... mail to M. Pichinini!"
                 else:
@@ -515,10 +517,14 @@ class EditGS(form.SchemaForm):
         sender="admin@arcas.unlp.edu.ar"
         mt=getToolByName(self.context,"portal_membership")   
         
-        operarioMail    = mt.getAuthenticatedMember().getProperty('email',None)        
-        coordinadorMail = "pablomusa@gmail.com"        
+        operarioMail    = mt.getAuthenticatedMember().getProperty('email',None)
+
+        if operarioMail=='':
+            operarioMail="pablomusa@gmail.com"
+
+        coordinadorMail = "pablomusa@gmail.com"
         reciver=[operarioMail,coordinadorMail]
-        
+
         rutasItem =  datos["ritem"]
         rutasSerie =  datos["rserie"]
         rutasSubSerie =  datos["rsubserie"]
@@ -529,34 +535,22 @@ class EditGS(form.SchemaForm):
         msg['Subject'] = "[ARCAS] Cambios en los metadatos de un registro"
         msg['From'] = sender
         msg['To'] = reciver[0]+','+reciver[1]
-
+ 
         # Create the body of the message (a plain-text and an HTML version).
         text = "Hola!\nSe modificaron metadatos en el Greenston de ARCAS.\n Los Archivos son: %s\n %s \n%s" %(rutasSerie,rutasSubSerie,rutasItem)
-        html = """\
-        <html>
-          <head></head>
-          <body>
-            <h2>Hola<h2>
-               Se modificaron los siguientes archivos de metadatos en el Greenstone de ARCAS.</br>
-               Por favor, revisar:</br>
-               <ul>
-               <li>Serie:%s</li>
-               <li>SubSerie:%s</li>
-               <li>Item:%s</li>
-               </ul>
-               <p>
-              Este es un mail automático, por favor no responder. En caso de errores
-              comunicarse con mpichinini@fahce.unlp.edu.ar
-              </p>
-              Gracias.
-            </p>
-          </body>
-        </html>
-        """ %(rutasSerie,rutasSubSerie,rutasItem)
+       
+        hhtml = u"<html><head></head><body><h2>Hola</h2>"
+        hhtml += u"<p>Se modificaron los siguientes archivos de metadatos en el Greenstone de ARCAS.</br>"
+        hhtml += u"Por favor, revisar:</p><ul>"
 
+        hhtml += u"<li>Serie:%s</li>"       %rutasSerie
+        hhtml += u"<li>SubSerie:%s</li>"    %rutasSubSerie       
+        hhtml += u"<li>Item:%s</li>"        %rutasItem               
+        hhtml += u"</ul><p>Este es un mail automático, por favor no responder. En caso de errores"
+        hhtml += u"comunicarse con mpichinini@fahce.unlp.edu.ar</p>Gracias.</p></body></html>"
         # Record the MIME types of both parts - text/plain and text/html.        
         part1 = MIMEText(text, 'plain')
-        part2 = MIMEText(html, 'html')
+        part2 = MIMEText(hhtml.encode('utf8'), 'html')
         msg.attach(part1)
         msg.attach(part2)
         try:
@@ -715,40 +709,8 @@ class FSManager:
                 print "texto que no estaba: %s " %itFtext
                 if itFtext!="":
                     no=self.creatNewXmlMetadata(itFnom,itFtext)
-                    copiXml.find(".//FileSet/Description").append(no)
-                
-        """          
+                    copiXml.find(".//FileSet/Description").append(no)                
         
-        copiXml.find(".//FileSet").remove(copiXml.find(".//FileSet/Description"))
-        
-        #describeParent=copiXml.getroot().find(".//FileSet")
-        #copiXml.remove(describeParent.find(".//Description"))
-        
-        #genero un contenedor para los metadatos
-        newDescribe=ET.Element("Description")
-         
-        #agrego al nuevo  contenedor, los metadatos cargados del formulario
-        for met in obModificado["metadatos"]:
-            try:
-                if len(met[1])>0:
-                    if type(met[1])==type([]):
-                        newDescribe.append(self.creatNewXmlMetadata(met[0],met[1][0]))
-                    else:
-                        newDescribe.append(self.creatNewXmlMetadata(met[0],met[1]))
-                    
-                    #self.miXml.findall('.//Metadata[@name="'+met[0]+'"]')[0].text=met[1]
-                else:
-                    print "no tiene texto"
-                    
-            except:
-                print "no pude guardar el metadato %s > %s" %(met[0],met[1])
-             
-        copiXml.find(".//FileSet").append(newDescribe)
-        
-        #ewC=ET.ElementTree(copiXml)      
-        #ewC.write(newfilename,encoding="UTF-8", xml_declaration=True)
-
-        """
         xmlstr=ET.tostring(copiXml)
         
         try:
@@ -757,12 +719,12 @@ class FSManager:
             f.write(newstr)
             f.close()
             print "guardando en %s" %newfilename
-            return True
+            return newfilename
         except:
             e = sys.exc_info()[0]            
             print "Problema: %s"% e
             
-        return False
+        return "error"
         
     def dameMetadata(self,strMeta):
         try:

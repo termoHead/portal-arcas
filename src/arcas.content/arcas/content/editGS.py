@@ -3,6 +3,7 @@ __author__ = 'Paul'
 #"lucene-jdbm-demo",
 
 import os
+import sys
 from zExceptions import Forbidden
 from suds.client import Client
 from suds.plugin import MessagePlugin
@@ -12,11 +13,6 @@ from plone.autoform import directives
 
 from Products.CMFPlone.utils import safe_unicode
 
-"""
-
-    Simple sample form
-
-"""
 from five import grok
 from plone.directives import form
 
@@ -36,7 +32,10 @@ from zope.interface import directlyProvides
 from plone.supermodel import model
 import xml.etree.ElementTree as ET
 
-
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from Products.CMFCore.utils import getToolByName
 
 
 
@@ -253,7 +252,6 @@ class IEditGS(form.Schema, IGsMetaItem, IGsSubSerie,IGsMetaSerie ):
         description=u"una pavada",
         required=False,
     ) 
-    
 
 class EditGS(form.SchemaForm):
     """
@@ -262,7 +260,6 @@ class EditGS(form.SchemaForm):
     xmlFileBase  ='/usr/local/Greenstone3/web/sites/localsite/collect/'
     xmlFileResto ='/import/co.1/se.1/su.1/ar.1/it.1/'
     xmlFileName='metadata.xml'
-    
 
     grok.name('editGs')
     #grok.require('zope2.View')
@@ -277,9 +274,10 @@ class EditGS(form.SchemaForm):
     coleccion="cordemia"
     serie=""
     obra=""
-        
+    saveFlag=0
+    msjForm=""
     lsw=["f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones","f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta"]
-    
+
     infoMetadatosSerie={'s_titulo':'ae.serietitulo',
                 's_temporal':'ae.seriecoberturatemporal',
                 's_extension':'ae.fileextension',
@@ -289,13 +287,13 @@ class EditGS(form.SchemaForm):
                 's_lenguaiso':'ae.serielenguaiso',
  
     }
-    
+
     infoMetadatoSubSerie={'sub_titulo':'ae.subserietitulo',    
                         'sub_alcance' :'ae.subserieautor',
                         'sub_anotacion':'ae.subserielenguaiso'
     }
-    
-    infoMetaItem={ 'f_fechaCreacion':'ae.itemcoberturatemporal', 
+
+    infoMetaItem={ 'f_fechaCreacion':'ae.itemcoberturatemporal',
                     'f_lugarCreacion':'bi.lugar',
                     'f_descFisica':'ae.itemdescripcionfisica',
                     'f_dimensiones':'ae.itemdimension',
@@ -308,7 +306,7 @@ class EditGS(form.SchemaForm):
                     
     editOk=False    
 
-    
+
     def update(self):        
         global COLECCION
         global SERIE
@@ -327,22 +325,17 @@ class EditGS(form.SchemaForm):
                 SUBSERIE=self.groups[3].widgets["subserie"].value[0]
                 
         super(EditGS, self).update()
-            
-        
-    
-    
-    def updateWidgets(self):        
-        super(EditGS, self).updateWidgets()        
 
+    #def updateWidgets(self):
+    #    super(EditGS, self).updateWidgets()        
 
     def showObras(self):
         # Set a custom widget for a field for this form instance only        
-        
+
         if self.groups[2].widgets["f_ruta"].value!=u"":
             return True
         else:
             return False
-
 
     def showSave(self):
         if "form.buttons.editar" in self.request.form:
@@ -350,7 +343,6 @@ class EditGS(form.SchemaForm):
         else:
             return False
 
-   
     @button.buttonAndHandler(u'Editar',condition=showObras)
     def editHandler(self, action):
         """Recupera el METADA XML y lo carga en la planilla"""
@@ -380,96 +372,136 @@ class EditGS(form.SchemaForm):
         self.status = "Articulo encontrado"
 
     @button.buttonAndHandler(u'Guardar',condition=showObras)
-    def saveHandler(self, action):  
-        msj=rutaItem=rutaSubSerie=rutaSerie=""
-        subSerieOk=False
-        
-        infoMetadatos=self.infoMetaItem
-        infoMetadatosSerie=self.infoMetadatosSerie
-        
-        data, errors = self.extractData()
-        
-        if len(self.groups[3].widgets["subserie"].value)>0:
-            subSerieOk=True
-            infoMetadatosSuBerie=self.infoMetadatoSubSerie
-        
-        if errors:
-            self.status = self.formErrorsMessage
-            return
-            
-        #rutaArchivos            
-        if subSerieOk:
-            rutaItem= self.groups[2].widgets["f_ruta"].value
-            arTmp = rutaItem.split("/")
-            del arTmp[-2]
-            del arTmp[-2]
-            rutaSerie = "/".join(arTmp)
-            
-            arTmp = rutaItem.split("/")
-            del arTmp[-2]
-            rutaSubSerie = "/".join(arTmp)
-        else:
-            arTmp = rutaItem.split("/")
-            del arTmp[-2]
-            rutaSerie = "/".join(arTmp)
-    
+    def saveHandler(self, action):
+        print "SALVANDO!!!!!!"
+        self.saveFlag=self.saveFlag+1
+   
+        if self.saveFlag<2:
+            msj=rutaItem=rutaSubSerie=rutaSerie=""
+            subSerieOk=False
 
-        dicDatosItem={
-            "version":"1",
-            "idColec":self.groups[3].widgets["coleccion"].value[0],
-            "ruta":rutaItem,
-            "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaItem.replace("/metadata.xml",""),
-            "metadatos":[(EditGS.infoMetaItem[x],self.groups[2].widgets[x].value) for x in infoMetadatos]
-            }
-        dicDatosSerie={
-            "version":"1",
-            "idColec":self.groups[3].widgets["coleccion"].value[0],
-            "ruta":rutaSerie,
-            "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaSerie.replace("/metadata.xml",""),
-            "metadatos":[(EditGS.infoMetadatosSerie[x],self.groups[0].widgets[x].value) for x in infoMetadatosSerie]
-            }
-        if subSerieOk:
-            dicDatosSubSerie={
+            infoMetadatos=self.infoMetaItem
+            infoMetadatosSerie=self.infoMetadatosSerie
+
+            data, errors = self.extractData()            
+
+            if len(self.groups[3].widgets["subserie"].value)>0:
+                subSerieOk=True
+                infoMetadatoSubSerie=self.infoMetadatoSubSerie
+
+            if errors:
+                self.status = self.formErrorsMessage
+                return
+                
+            #rutaArchivos
+            rutaItem= self.groups[2].widgets["f_ruta"].value        
+            
+            if subSerieOk:            
+                arTmp = rutaItem.split("/")
+                del arTmp[-2]
+                del arTmp[-2]
+                rutaSerie = "/".join(arTmp)
+                
+                arTmp = rutaItem.split("/")
+                del arTmp[-2]
+                rutaSubSerie = "/".join(arTmp)
+            else:
+                arTmp = rutaItem.split("/")
+                del arTmp[-2]
+                rutaSerie = "/".join(arTmp)
+                
+            print rutaItem
+            print rutaSerie
+            print rutaSubSerie
+            
+            
+            
+            #-------- cargo ITEM
+            tmpList=[]
+            for x in infoMetadatos:
+                itFtext=self.groups[2].widgets[x].value
+                if type(itFtext)==type([]):
+                    itFtext=itFtext[0]                
+                tmpList.append((EditGS.infoMetaItem[x],itFtext))
+                
+            dicDatosItem={
                 "version":"1",
                 "idColec":self.groups[3].widgets["coleccion"].value[0],
-                "ruta":rutaSubSerie,
-                "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaSubSerie.replace("/metadata.xml",""),
-                "metadatos":[(EditGS.infoMetadatoSubSerie[x],self.groups[1].widgets[x].value) for x in infoMetadatosSuBerie]
+                "ruta":rutaItem,
+                "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaItem.replace("/metadata.xml",""),
+                "metadatos":tmpList,
+                #"metadatos":[(EditGS.infoMetaItem[x],self.groups[2].widgets[x].value) for x in infoMetadatos]
                 }
                 
-
-        self.fsmanager=FSManager()
-        
-        flagm=0        
-
-    
-        itemsaved=self.fsmanager.saveFile(dicDatosItem)
-        seriesaved=self.fsmanager.saveFile(dicDatosSerie)
-        
-        if itemsaved==False:
+            #-------- cargo ITEM    
+            tmpList=[]
+            for x in infoMetadatosSerie:
+                itFtext=self.groups[0].widgets[x].value
+                if type(itFtext)==type([]):
+                    itFtext=itFtext[0]                
+                tmpList.append((EditGS.infoMetadatosSerie[x],itFtext))
+            
+            dicDatosSerie={
+                "version":"1",
+                "idColec":self.groups[3].widgets["coleccion"].value[0],
+                "ruta":rutaSerie,
+                "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaSerie.replace("/metadata.xml",""),
+                "metadatos":tmpList,
+                #"metadatos":[(EditGS.infoMetadatosSerie[x],self.groups[0].widgets[x].value) for x in infoMetadatosSerie]
+                }
+            if subSerieOk:
+                tmpList=[]
+                for x in infoMetadatoSubSerie:
+                    itFtext=self.groups[1].widgets[x].value
+                    if type(itFtext)==type([]):
+                        itFtext=itFtext[0]                
+                    tmpList.append((EditGS.infoMetadatoSubSerie[x],itFtext))
+                    
+                dicDatosSubSerie={
+                    "version":"1",
+                    "idColec":self.groups[3].widgets["coleccion"].value[0],
+                    "ruta":rutaSubSerie,
+                    "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaSubSerie.replace("/metadata.xml",""),
+                    "metadatos":tmpList
+                    }
+             
+            
+            self.fsmanager=FSManager()
+            flagm=0
+            
+            itemsaved=self.fsmanager.saveFile(dicDatosItem)
+            seriesaved=self.fsmanager.saveFile(dicDatosSerie)
+ 
+            if itemsaved==False:
                 msj="> No se pudo guardar el item en %s"%rutaItem
                 print msj
                 flagm+=1
-        if seriesaved==False:
+            else:
+                print "paso item"
+            if seriesaved==False:
                 msj="> No se pudo guardar la serie en %s"%rutaSerie             
                 print msj
                 flagm+=1                
-                
-        if subSerieOk:            
-            subSeriesaved=self.fsmanager.saveFile(dicDatosSubSerie)            
-            if subSeriesaved==False:
-                msj="> No se pudo guardar la sub serie en %s"%rutaSubSerie             
-                print msj
-                flagm+=1
+            else:
+                print "paso item"
+                    
+            if subSerieOk:            
+                subSeriesaved=self.fsmanager.saveFile(dicDatosSubSerie)
+                if subSeriesaved==False:
+                    msj="> No se pudo guardar la sub serie en %s" %rutaSubSerie
+                    print msj
+                    flagm+=1
             
-        if flagm==0:
-            self.status =u"Los archivos fueron modificados correctamente.Form handling guardados... mail to M. Pichinini!"
+            if flagm==0:
+                mandoCorreo=self.emails({'ritem':rutaItem,'rsubserie':rutaSubSerie,'rserie':rutaSerie})                
+                if mandoCorreo:                   
+                    self.msjForm =u"Los archivos fueron modificados correctamente.Form handling guardados... mail to M. Pichinini!"
+                else:
+                    self.msjForm =u"Los cambios se generaron correctamente. Pero hubo un error al querer enviar el correo"
+            else:
+                self.msjForm =u"No se pueden guardar los cambios... generando reporte"               
         else:
-            self.status =u"No se pueden guardar los cambios... generando reporte"               
-
-
-
-
+            self.status=self.msjForm
 
 
     @button.buttonAndHandler(u"Cancel",condition=showObras)
@@ -479,7 +511,70 @@ class EditGS(form.SchemaForm):
         self.status = "Cambios cancelados"
         self.editOk=False
 
+    def emails(self,datos):        
+        sender="admin@arcas.unlp.edu.ar"
+        mt=getToolByName(self.context,"portal_membership")   
+        
+        operarioMail    = mt.getAuthenticatedMember().getProperty('email',None)        
+        coordinadorMail = "pablomusa@gmail.com"        
+        reciver=[operarioMail,coordinadorMail]
+        
+        rutasItem =  datos["ritem"]
+        rutasSerie =  datos["rserie"]
+        rutasSubSerie =  datos["rsubserie"]
 
+
+        # Create message container - the correct MIME type is multipart/alternative.
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = "[ARCAS] Cambios en los metadatos de un registro"
+        msg['From'] = sender
+        msg['To'] = reciver[0]+','+reciver[1]
+
+        # Create the body of the message (a plain-text and an HTML version).
+        text = "Hola!\nSe modificaron metadatos en el Greenston de ARCAS.\n Los Archivos son: %s\n %s \n%s" %(rutasSerie,rutasSubSerie,rutasItem)
+        html = """\
+        <html>
+          <head></head>
+          <body>
+            <h2>Hola<h2>
+               Se modificaron los siguientes archivos de metadatos en el Greenstone de ARCAS.</br>
+               Por favor, revisar:</br>
+               <ul>
+               <li>Serie:%s</li>
+               <li>SubSerie:%s</li>
+               <li>Item:%s</li>
+               </ul>
+               <p>
+              Este es un mail automático, por favor no responder. En caso de errores
+              comunicarse con mpichinini@fahce.unlp.edu.ar
+              </p>
+              Gracias.
+            </p>
+          </body>
+        </html>
+        """ %(rutasSerie,rutasSubSerie,rutasItem)
+
+        # Record the MIME types of both parts - text/plain and text/html.        
+        part1 = MIMEText(text, 'plain')
+        part2 = MIMEText(html, 'html')
+        msg.attach(part1)
+        msg.attach(part2)
+        try:
+            s = smtplib.SMTP('localhost')
+            # sendmail function takes 3 arguments: sender's address, recipient's address
+            # and message to send - here it is sent as one string.
+            s.sendmail(sender, reciver, msg.as_string())      
+            s.quit()
+            return True
+        except Exception:
+            print "Error: unable to send email"
+            return False
+        
+        
+        
+        
+        
+        
 class FSManager:    
     """
         Abre el archivo y lo guarda en miXml
@@ -507,10 +602,9 @@ class FSManager:
         return result
                 
     def openFile(self, ruta):
-        try:
+        try:            
             xmlFile = ET.parse(ruta)
-            self.miXml=xmlFile
-            print "abriendo el archivos %s" %ruta
+            self.miXml=xmlFile             
             return True
         
         except ET.ParseError:
@@ -559,43 +653,116 @@ class FSManager:
     def saveFile(self,obModificado):
         """
         guarda los datos en el xml
+        
         """
         
         pathFolder      =obModificado["idColec"]+"/"+obModificado["ruta"]
         pathFolder      =obModificado["folder"]
         version         =self.dameSigVerison(pathFolder)        
-        newfilename     =obModificado["ruta"].replace("metadata.xml",self.xmlFileResto+"metadataV"+version+".xml")
+        #newfilename     =obModificado["ruta"].replace("metadata.xml",self.xmlFileResto+"metadataV"+version+".xml")
+        newfilename     =obModificado["ruta"].replace("metadata.xml","metadataV"+version+".xml")
+        newfilename     =self.xmlFileBase+obModificado["idColec"]+"/"+newfilename
         rm              =self.openF(obModificado["ruta"],obModificado["idColec"])
-       
+
         if rm == False:
             return False
         
         #elemino todos los metadatos del xml cargado
-        describeParent=self.miXml.getroot().find(".//FileSet")
-        describeParent.remove(self.miXml.getroot().find(".//FileSet/Description"))
+        docTypeHeader='<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE DirectoryMetadata SYSTEM \"http://greenstone.org/dtd/DirectoryMetadata/1.0/DirectoryMetadata.dtd \">'
+        copiXml=self.miXml.getroot()
+        
+        
+        #actualizo los que estan
+        for itemXml  in copiXml.find(".//FileSet/Description").findall(".//Metadata"):
+            itXnom=itemXml.attrib["name"]
+            itXtext=itemXml.text            
+            
+            for itemForm in obModificado["metadatos"]:
+                itFnom =  itemForm[0]
+                itFtext=  itemForm[1]
+
+                if itFnom==itXnom:                    
+                    if itFtext=="":
+                        #Si en el formulario el metadato está vacio lo borro el XNL
+                        copiXml.find(".//FileSet/Description").remove(itemXml)                    
+                    else:
+                        #actualizo el dato en el XNL con el valor que viene del form                        
+                        if type(itFtext)==type([]):
+                            itemXml.text=itFtext[0]
+                        else:
+                            itemXml.text=itFtext
+                        flagMatch=True
+                    break
+                
+                
+        ##agrego el elemento nuevo que no estaban en el FS XML mingshaobi     
+        for itemForm in obModificado["metadatos"]:
+            itFnom =  itemForm[0]
+            itFtext=  itemForm[1]
+            
+            if type(itFtext)==type([]):
+                itFtext=itFtext[0]            
+                
+            flagMatch=False
+            
+            for itemXml  in copiXml.find(".//FileSet/Description").findall(".//Metadata"):
+                itXnom=itemXml.attrib["name"]
+                if itXnom == itFnom:                    
+                    flagMatch=True
+                    break
+
+            if flagMatch==False:
+                print "texto que no estaba: %s " %itFtext
+                if itFtext!="":
+                    no=self.creatNewXmlMetadata(itFnom,itFtext)
+                    copiXml.find(".//FileSet/Description").append(no)
+                
+        """          
+        
+        copiXml.find(".//FileSet").remove(copiXml.find(".//FileSet/Description"))
+        
+        #describeParent=copiXml.getroot().find(".//FileSet")
+        #copiXml.remove(describeParent.find(".//Description"))
         
         #genero un contenedor para los metadatos
         newDescribe=ET.Element("Description")
-        
+         
         #agrego al nuevo  contenedor, los metadatos cargados del formulario
         for met in obModificado["metadatos"]:
             try:
                 if len(met[1])>0:
-                    newDescribe.append(self.creatNewXmlMetadata(met[0],met[1]))
+                    if type(met[1])==type([]):
+                        newDescribe.append(self.creatNewXmlMetadata(met[0],met[1][0]))
+                    else:
+                        newDescribe.append(self.creatNewXmlMetadata(met[0],met[1]))
+                    
                     #self.miXml.findall('.//Metadata[@name="'+met[0]+'"]')[0].text=met[1]
+                else:
+                    print "no tiene texto"
+                    
             except:
                 print "no pude guardar el metadato %s > %s" %(met[0],met[1])
+             
+        copiXml.find(".//FileSet").append(newDescribe)
         
-        import pdb
-        pdb.set_trace()
-                
-        return 
+        #ewC=ET.ElementTree(copiXml)      
+        #ewC.write(newfilename,encoding="UTF-8", xml_declaration=True)
 
+        """
+        xmlstr=ET.tostring(copiXml)
+        
         try:
-            self.miXml.write(newfilename,encoding="UTF-8", xml_declaration=True)
+            f=open(newfilename,"wr+")
+            newstr=docTypeHeader+xmlstr           
+            f.write(newstr)
+            f.close()
+            print "guardando en %s" %newfilename
+            return True
         except:
-            print "problema guardando el archivo"
-        return True
+            e = sys.exc_info()[0]            
+            print "Problema: %s"% e
+            
+        return False
         
     def dameMetadata(self,strMeta):
         try:

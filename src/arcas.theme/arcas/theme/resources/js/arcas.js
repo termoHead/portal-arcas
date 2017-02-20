@@ -35,7 +35,7 @@ var MOD_GSEDIT = (function () {
 		"fieldset-item"
 		]
 
-	infoMetaItem = {
+	/*infoMetaItem = {
 		'f_fechaCreacion' : 'ae.itemcoberturatemporal',
 		'f_lugarCreacion' : 'bi.lugar',
 		'f_descFisica' : 'ae.itemdescripcionfisica',
@@ -45,7 +45,7 @@ var MOD_GSEDIT = (function () {
 		'f_alcance' : 'ae.itemalcance',
 		'f_anotacion' : 'bi.anotacionitem',
 		'f_ruta' : 'bi.ruta'
-	}
+	}*/
 
 	var infoMetadatosSerie = {
 		'ae.serietitulo' : 's_titulo',

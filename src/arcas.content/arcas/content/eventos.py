@@ -14,6 +14,7 @@ from plone.app.vocabularies.groups import GroupsSource
 from AccessControl.interfaces import IRoleManager
 logger = logging.getLogger("Plone")
 from Products.PluggableAuthService.interfaces.events import IPASEvent
+from Products.CMFCore.permissions import setDefaultRoles
 
 PREFIJO_COOR_GROUP="_coor"
 PREFIJO_COOR_POTENCIAL="_pot"
@@ -86,8 +87,9 @@ def onModificaColeccion(colectObj,event):
             infoCoor.append({'type': 'user',
                          'id': user_id,
                          'title': user.getProperty('fullname', None) or user.getId(),
-                         'roles': ["Contributor"],
+                         'roles': ["Contributor",],
                          })
+            
 
     if hasattr(colectObj, "integrantes"):
         integrantes=colectObj.integrantes
@@ -218,8 +220,7 @@ def onCreaPerfil(evento,obj):
 
 def onModificaPerfil(evento,obj):
     """se paso a un evento en arcas.policy.adapter.on_save"""
-    import pdb
-    pdb.set_trace()
+
 
     pass
 
@@ -279,13 +280,18 @@ def creaGrupos(groupNames,groups_tool,colectObj):
         if not group_id in groups_tool.getGroupIds():
             groups_tool.addGroup(group_id)
             miGrupo=groups_tool.getGroupById(group_id)
+            
             #asigna roles al grupo
             if group_id.find(PREFIJO_COOR_GROUP)!=-1:
                 agregaRolesAGrupo(colectObj,group_id,['Owner',])
+                
             if group_id.find("_g")!=-1:
                 agregaRolesAGrupo(colectObj,group_id,['Contributor','Reader'])
+                
             print "se creo el grupo: %s"%groupName
+            
         else:
+            
             print "el grupo %s ya existia" %groupName
             #agrego el rol de owner a los coordinadores
 

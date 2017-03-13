@@ -107,7 +107,7 @@ class JSONGS_WS(View):
     def dameMetadatos(self):
         """Devuelve todas las series de una coleccion"""
         result={"serieMetadata":"","subserieMetadata":"","itemMetadata":""}             
-        
+
         if self.tienSub:        
             subSerieOk=True
         else:

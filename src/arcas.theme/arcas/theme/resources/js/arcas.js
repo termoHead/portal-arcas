@@ -10,32 +10,49 @@ jQuery.fn.exists = function () {
 }
 var solapaActiva
 var hojaActiva
-
 var HomeSlider = {}
+var objFormEnlaceGs = {};
 HomeSlider.stepSlide = 0
-
-	var objFormEnlaceGs = {};
 objFormEnlaceGs.tmpValor = ""
-	objFormEnlaceGs.setCampoTmp = function (valor) {
+objFormEnlaceGs.setCampoTmp = function (valor) {
 	this.tmpValor = valor
 }
 
 function enviaLoco() {
 	$('#form').submit()
 }
-var MOD_GSEDIT = (function () {
-	var camposEdicion = ["f_fechaCreacion", "f_lugarCreacion", "f_descFisica", "f_dimensiones", "f_idioma", "f_naturaleza", "f_alcance", "f_anotacion", "f_ruta"]
-	var grupos = ["fieldsetlegend-datos",
-		"fieldsetlegend-serie",		
-		"fieldsetlegend-subserie",
-        "fieldsetlegend-item",
-		"fieldset-datos",
-		"fieldset-serie",
-        "fieldsetlegend-subserie",
-		"fieldset-item"
-		]
 
-	/*infoMetaItem = {
+function getQueryParams(qs) {
+    //devuelve los paramatreos de la url
+    qs = qs.split('+').join(' ');
+
+    var params = {},
+        tokens,
+        re = /[?&]?([^=]+)=([^&]*)/g;
+
+    while (tokens = re.exec(qs)) {
+        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+    return params;
+}
+
+
+var MOD_GSEDIT = (function () {
+      
+        var qq = getQueryParams(document.location.search);
+        setTimeout(500,function(){
+        if(qq.coleccion!=undefined){
+            var inp=$(document.createElement("input"))
+            inp.attr('id','#form-widgets-coleccion')
+            $('option[value="puig"]').attr('selected', 'selected')}            
+            $( "#form-widgets-coleccion" ).replaceWith(inp);
+            $('#from-widgets-coleccion').parent().append("<h2>Coleccion "+qq.coleccion+"</h2>")            
+        })
+	var camposEdicion = ["f_fechaCreacion", "f_lugarCreacion", "f_descFisica", "f_dimensiones", "f_idioma", "f_naturaleza", "f_alcance", "f_anotacion", "f_ruta"]
+	var grupos = ["fieldsetlegend-datos", "fieldsetlegend-serie","fieldsetlegend-subserie","fieldsetlegend-item","fieldset-datos","fieldset-serie",
+        "fieldsetlegend-subserie","fieldset-item"]
+
+	var infoMetaItem = {
 		'f_fechaCreacion' : 'ae.itemcoberturatemporal',
 		'f_lugarCreacion' : 'bi.lugar',
 		'f_descFisica' : 'ae.itemdescripcionfisica',
@@ -45,7 +62,7 @@ var MOD_GSEDIT = (function () {
 		'f_alcance' : 'ae.itemalcance',
 		'f_anotacion' : 'bi.anotacionitem',
 		'f_ruta' : 'bi.ruta'
-	}*/
+	}
 
 	var infoMetadatosSerie = {
 		'ae.serietitulo' : 's_titulo',
@@ -76,6 +93,16 @@ var MOD_GSEDIT = (function () {
 	}
 	var my = {},
 	privateVariable = 1;
+        
+        function dameColeccionElegida(){
+            console.log($("#form-widgets-coleccion option:selected").length)
+            if($("#form-widgets-coleccion option:selected").length>0){
+                colec = $("#form-widgets-coleccion option:selected").attr("value")    
+            }else{
+                colec = $("#form-widgets-coleccion-1").attr("value")
+            }
+            return colec
+        }
 	function i() {
 		var subser = "false";
 		if ($("#form-buttons-guardar").length == 0) {
@@ -83,39 +110,39 @@ var MOD_GSEDIT = (function () {
 		}
 		$("#fieldset-datos").show()
 		$("#form-widgets-serie").change(function (e) {
-			var valor = $('#form-widgets-serie option:selected').attr('value')
-				var colec = $("#form-widgets-coleccion option:selected").attr("value")
-				buscaFuentejson('/json_gs', valor, colec)
+                        var colec = dameColeccionElegida()
+			var valor = $('#form-widgets-serie option:selected').attr('value')                         
+                        buscaFuentejson('/json_gs', valor, colec)
 		})
 		$("#form-widgets-coleccion").change(function () {
+                    var colec = dameColeccionElegida()
 			$("#form-widgets-obra option").remove()
-			var colec = $("#form-widgets-coleccion option:selected").attr("value")
-				buscaSeriejson("/json_gs", colec)
+			buscaSeriejson("/json_gs", colec)
 		})
 		$("#form-widgets-subserie").change(function () {
+                    var colec = dameColeccionElegida()
 			$("#form-widgets-obra option").remove()
-			var colec = $("#form-widgets-coleccion option:selected").attr("value")
-				var subserie = $("#form-widgets-subserie option:selected").attr("value")
-				buscaSubSeriejson(colec, subserie)
+			var subserie = $("#form-widgets-subserie option:selected").attr("value")
+			buscaSubSeriejson(colec, subserie)
 		})
 		$("#form-widgets-obra").change(function () {
+                    var colec = dameColeccionElegida()
 			var valor = $('#form-widgets-serie option:selected').attr('value')
-				var colec = $("#form-widgets-coleccion option:selected").attr("value")
-				var ruta = $("#form-widgets-obra option:selected").attr("value")
-				if ($("#form-widgets-obra option:selected").length > 0) {
-					subser = "true"
-				}
-				buscaMetadatajson("/json_gs", valor, colec, ruta, subser)
+			var ruta = $("#form-widgets-obra option:selected").attr("value")
+			if ($("#form-widgets-obra option:selected").length > 0) {
+                            subser = "true"
+			}
+			buscaMetadatajson("/json_gs", valor, colec, ruta, subser)
 		})
 	}
 	function ocultaCamposEdit() {
-		for (var a = 1; a < grupos.length; a++) {
+		/*for (var a = 1; a < grupos.length; a++) {
 			$("#" + grupos[a]).hide()
 			//$("#" + grupos[a + 3]).hide()
 		}
 		for (var a = 0; a < camposEdicion.length; a++) {
 			$("#formfield-form-widgets-" + camposEdicion[a]).hide()
-		}
+		}*/
 	}
 	function muestraCamposEdit() {        
 		for (var a = 1; a < Math.floor(grupos.length/2); a++) {
@@ -124,8 +151,8 @@ var MOD_GSEDIT = (function () {
 		for (var a = 0; a < camposEdicion.length; a++) {
 			$("#formfield-form-widgets-" + camposEdicion[a]).show()
 		}
-        $("#fieldsetlegend-item").click()
-        setTimeout(function(){$("#fieldset-item").show("slow")},100)
+            $("#fieldsetlegend-item").click()
+            setTimeout(function(){$("#fieldset-item").show("slow")},100)
 	}
 
 	function buscaSubSeriejson(colec, subserie) {
@@ -134,7 +161,7 @@ var MOD_GSEDIT = (function () {
 			url : "/json_gs",
 			data : {
 				"coleccion" : colec,
-				"subserie" : subserie,
+				"subserie" : subserie
 			},
 		}).done(function (data) {
 			$("#form-widgets-obra option").remove()
@@ -251,16 +278,14 @@ var MOD_GSEDIT = (function () {
 					})
 				}
 				$(val.value).attr("value", val.title)
-			})            
-			//setTimeout(muestraCamposEdit, 500)
+			})
+            //setTimeout(muestraCamposEdit, 500)
             setTimeout(function(){
                 $("#form").submit()
-            }, 500)
-            
-			return data
-		});
+            },500)
+                return data
+            });
 	}
-   
 	my.moduleProperty = 1;
 	my.inicia = function () {
 		i()
@@ -523,3 +548,5 @@ function updateFormNum(numForm, valor) {
 		}
 
 }
+
+

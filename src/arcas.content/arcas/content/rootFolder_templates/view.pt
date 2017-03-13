@@ -91,8 +91,8 @@
                                                     <a tal:attributes="href coleccionURL" href="#" alt="" tal:content="cco/titulo">titulo de la coleccion</a>
                                                     </div>
                                                     <div class="descrip"
-                                                        tal:condition="repeat/cco/start"
-                                                        tal:content="python:cco['descri'][:250]">laskjd alskdj alskjd lkasjd laksjd lkaj dlkajs lskdj 
+                                                        
+                                                        tal:content="python:cco['descri'][:87]">laskjd alskdj alskjd lkasjd laksjd lkaj dlkajs lskdj 
                                                     </div>
                                                     <div class="links"> 
                                                         <a tal:attributes="href cco/extraFolderFuenteUrl" href="#" class="enlaceComp" alt="">Fuentes</a> | <a tal:attributes="href cco/extraFolderUrl" href="#" class="enlaceComp" alt="">Estudios</a>

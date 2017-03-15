@@ -15,6 +15,7 @@ from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.dexterity.content import Container
 from arcas.content.utils import ColeccionUtils,ColeccionesPorCategoria
 from arcas.content.config import URL_GREENSTON_DOC
+from arcas.content.utils import TextoUtils
 class IRootFolder(form.Schema):
     """Una carpeta principal para documentos publicos
     """
@@ -92,30 +93,25 @@ class View(DisplayForm):
         ##recupera las categorias y las colecciones de cada una
         resuList=[]
         listado=ColeccionesPorCategoria(self.context)
-        
+        txu=TextoUtils()
         for elem in listado(self.context):            
             miCat={"titulo":elem["categoria"],"color":elem["color"],"colecciones":[],"ilustra":elem["ilustra"],"url":elem["url"]}
             for elC in elem["colecciones"]:
-                extraFUrl="%s/%s_estudios" %(elC["url"],elC["id"])
+                extraFUrl="%s/%s#estudios" %(elC["url"],elC["id"])
                 extraFT="Estudios"
                 extraFUrlF="%s%s/browse/CL1" %(URL_GREENSTON_DOC,elC["urlGS"])
                 elC["extraFolderUrl"]       =extraFUrl
                 elC["extraFolderTitulo"]    =extraFT
                 elC["extraFolderFuenteUrl"] =extraFUrlF                
-                desc=elC["descri"] 
-                if desc.find(".") > 120:
-                    elC["descri"]=desc[:desc[:120].rfind(" ")]+"..."
-                else:
-                    elC["descri"]=desc[:desc.find(".")+1]
-                    
-                    
+                desc=elC["descri"]                 
+                elC["descri"]=txu.cortaTexto(desc,87)
                 miCat["colecciones"].append(elC)
             resuList.append(miCat)
         
         
         return resuList
         
-        
+    
     def getColecciones(self):
         ##recreaFolder= self.getContainer(folder.encode('utf8'))
         ##cuando busca documento hace referencia al campo "documento" que es el destacado del directorio

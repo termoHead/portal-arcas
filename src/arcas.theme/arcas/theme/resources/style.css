@@ -244,10 +244,7 @@ margin-bottom: 7px;
     text-align: left;
     width: 220px;
 }
-
-
-.textoInterno .parrafo .pos1{height:126px}
-.textoInterno .parrafo .pos2{height:103px}
+.textoInterno .parrafo .pos2,.textoInterno .parrafo .pos1{height:113px}
 #carrusel{
  width:2000px;
  margin-left:0; 
@@ -302,8 +299,6 @@ line-height:17px;
 .col1Linea{
     border-bottom: 2px dotted #333;
 }
-
-
 .bloqueColeccion .textoInterno .links{     
     color: #fff;
     font-size: 11px;
@@ -311,11 +306,11 @@ line-height:17px;
     padding: 0 0 7px 23px;
     position: absolute;
     text-transform: uppercase;
-    top: 56px;
+    top: 92px;
     width: 223px;
     background: rgba(0, 0, 0, 0) url("/++resource++arcas.content/flechaHome.png") no-repeat scroll 10px 2px;
 } 
-.bloqueColeccion .textoInterno .pos1 .links{top: 102px;}
+.bloqueColeccion .textoInterno .pos1 .links{top: 90px;}
 .bloqueColeccion .textoInterno .links a{
 color:#ffcc66;
 text-decoration:none;

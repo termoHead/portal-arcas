@@ -31,7 +31,7 @@
             </tal:r>
 
             </div>
-            <div class="descri" tal:content="context/description"></div>
+         
             <a href="" title="Enlace" target="_blank"
                tal:attributes="href remote"
                     tal:condition="remote">Ir al sitio relacionado</a>

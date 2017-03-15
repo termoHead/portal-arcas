@@ -45,19 +45,21 @@ class ISugerencia(form.Schema):
     Sugerencia de lectura que complementa una colección o una exhibición
     """
     title = schema.TextLine(
-        title=u"Titulo",        
+        title=u"Cita",        
         required=False,
     )
+    
+    form.omitted('description')
     description = schema.Text(
         title=u"Año de publicacion",        
         required=False,
     )
+    
     tipoMedio = schema.Choice(
         title=u"Tipo de sugerencia",
         vocabulary=tiposVocab,
         required=True,
     )
-
 
     form.widget(autores=TextLinesFieldWidget)
     autores = schema.List(

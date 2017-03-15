@@ -29,6 +29,23 @@ from zope.security import checkPermission
 from zc.relation.interfaces import ICatalog
 from Products.CMFPlone.utils import safe_unicode
 
+
+class TextoUtils(object):
+    """Herramientas para recortar o manipular textos"""
+
+    def cortaTexto(self, texto, numcaracteres):
+        sacar =("de","la","las","lo","los","para","por","y")
+        if texto.find(".") > numcaracteres:                    
+            tmpd= texto[:texto[:numcaracteres].rfind(" ")]
+            laspalabra=tmpd[tmpd.rfind(" ")+1:]
+            if laspalabra in sacar:
+                tmpd=tmpd[:tmpd.rfind(" ")]
+            textoNuevo=tmpd+"..."
+        else:
+            textoNuevo=texto[:texto.find(".")+1]
+        return textoNuevo
+        
+
 class ColeccionesPorCategoria(object):
     ###Devuleve una lista de Categorias, con sus respectivas colecciones"""
     def __init__(self,contexto):

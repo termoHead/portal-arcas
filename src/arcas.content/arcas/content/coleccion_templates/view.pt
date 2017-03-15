@@ -37,8 +37,14 @@
                                name="form.button.Search"
                                value="Search"/>
                     </form>
-
-
+                    <tal:edit tal:condition="python:False">
+                    <div class="botEditFuente" >
+                    <a href="navFuentes.php"                          
+                        tal:attributes="href string:/arcas/portada/editGs?coleccion=${context/GS_ID}; 
+                        title string:Editar Fuentes de esta colección">
+				<img src="/++theme++arcas.theme/images/irA.gif" alt=""/>Editar Fuetes</a>
+                    </div>
+                    </tal:edit>
                     <div class="clr">&nbsp; </div>
                 </div>
                 <div class="clr">&nbsp; </div>
@@ -47,7 +53,9 @@
         </div>
         <div class="busquedaColeccion ">
             <form>
-                <select><option>Navegar Fuentes</option></select><input name="buscar" value="Buscar en la coleccion" type="text"></form>
+                <select><option>Navegar Fuentes</option></select>
+                <input name="buscar" value="Buscar en la coleccion" type="text"></form>
+                
             <div class="clr"></div>
         </div>
         <div class="clr"></div>
@@ -90,9 +98,11 @@
                         tal:define="listadoReco view/dameDicRecomendados | nothing"
 				        tal:condition="listadoReco">
                     <span class="label">Lecturas que profundizan en este tema</span>
+                   
                     <div id="tabs"                            
 							tal:condition="python:len(listadoReco)>0">
                         <div class="top">
+                             <a id="estudios"></a>
                             <tal:rra tal:repeat="item listadoReco" >
                                 <div tal:define="activola repeat/item/start"									
                                      tal:attributes="class python:activola and 'solapa activa' or 'solapa'">
@@ -138,7 +148,6 @@
                             <img src="images/bannerExhibicionPuig.jpg"
                                  tal:attributes="src string:${baner/url}/images/baner;
                                                 title baner/titulo"/></a>
-
                     </tal:a>
                 </div>
             </div>

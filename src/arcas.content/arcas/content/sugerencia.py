@@ -21,6 +21,7 @@ from plone.indexer import indexer
 from plone.z3cform.textlines.textlines import TextLinesFieldWidget
 tiposVocab = SimpleVocabulary(
     [SimpleTerm(value=u'articulo', title='Artículo'),
+     SimpleTerm(value=u'ponencia', title='Ponencia'),
      SimpleTerm(value=u'libro', title='Libro'),
      SimpleTerm(value=u'compilacion', title='Compilación'),
      SimpleTerm(value=u'cap', title='Capítulo de libro'),

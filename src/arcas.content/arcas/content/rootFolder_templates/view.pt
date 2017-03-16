@@ -20,14 +20,12 @@
                     <div class="bloqueExhi">
                         <div class="tituloExhibicion">
                             <h2>
-							<a href="#" tal:attributes="href artDestacado/exhiurl;"
+                                <a href="#" tal:attributes="href artDestacado/exhiurl;"
 							tal:content="artDestacado/tituloColec">Jumbol</a></h2>
                             <h3 tal:content="artDestacado/titulo">Apoyo a la Educación</h3>
                         </div>
                         <div class="datosExcibicion">
-
                             <p class="descri" tal:content="artDestacado/descri" />
-
                             <div class="responsables" tal:define="curas artDestacado/curador|nothing">
                                 <p class="curador" tal:condition="curas">
                                     <span>Curador:</span>
@@ -69,9 +67,7 @@
                                 <tal:odd tal:define="oddrow repeat/artDestacado/start">                                
                                     <div class="bloqueColeccion "                                         
                                         tal:define="imgCategoria artDestacado/url"
-                                        
-                                        
-                                        
+
                                         tal:attributes="style string:background:url('/++resource++arcas.content/topFichaHome.png') no-repeat #${artDestacado/color};
                                         class  string:bloqueColeccion color${artDestacado/color}">
                                         <a href="#" class="mascaraImg"

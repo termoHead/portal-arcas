@@ -27,8 +27,7 @@
     </rules>
 
 
-	<rules if-not-path="/arcas/portada/">
-		
+    <rules if-not-path="/arcas/portada/">		
         <xi:include href="arcas-header.xml" />
         <rules if-not-path="@@gsSearch">
             <rules css:if-content=".markColeccion">
@@ -36,6 +35,7 @@
             </rules>
             <rules if-content="//div[@class='markListExhibicion']">
                 <theme href="listadoExhibiciones.html" />
+                <replace css:content-children=".lista" css:theme-children=".lista"/>
             </rules>
             <rules if-content="//div[@class='markListColeccion'] or //div[@class='markListExhibicion']">
                 <theme href="listadoColecciones.html" />

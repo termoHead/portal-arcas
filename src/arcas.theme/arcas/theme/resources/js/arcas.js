@@ -363,6 +363,21 @@ $(document).ready(function () {
 			var objEGS = MOD_GSEDIT
 				objEGS.inicia()
 		}
+		
+		
+        /*IMagenes de la Galeria en una Coleccion */
+        $('.photoAlbumEntry a').prepOverlay({
+            subtype: 'image',
+            urlmatch: '/image_view_fullscreen$',
+            urlreplace: '_preview',
+            width:'70%',
+        });
+        
+        
+        /*agrega QUIK ADD*/
+        $("#")
+        agregaChekbox()
+        
 });
 
 function togTexto(ev) {
@@ -487,6 +502,7 @@ function comodaGaleria() {
 		} else {
 			$(buffer[1]).attr("style", "margin-left:" + gap + "px");
 		}
+		
 
 }
 function ocultaCamposEnlaceGS(valor) {
@@ -546,6 +562,29 @@ function updateFormNum(numForm, valor) {
 			$(formTitulo).hide()
 			break;
 		}
+
+}
+
+/*QUIK EDIT*/
+
+function agregaChekbox(){
+var nee=$(document.createElement('a'))
+nee.attr("href","http://arcasdev.fahce.unlp.edu.ar:9090/arcas/portada/colecciones/manuel-puig/manuel-puig_estudios/++add++arcas.sugerencia")
+nee.attr("id","sugerenciAdd")
+nee.text("Agregar Item")
+$("#enlace0").prepend(nee)
+$("#enlace0 .item").each(
+  function(){
+    var nea=$(document.createElement('input'))
+    nea.attr("type","checkbox")
+    $(this).prepend(nea)
+  })
+
+    $("#sugerenciAdd").prepOverlay({
+	subtype : 'ajax',
+        filter: '#content > *',
+        closeselector:'#form-buttons-cancel',
+    })
 
 }
 

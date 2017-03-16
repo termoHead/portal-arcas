@@ -100,7 +100,15 @@
                     <span class="label">Lecturas que profundizan en este tema</span>
                    
                     <div id="tabs"                            
-							tal:condition="python:len(listadoReco)>0">
+                                    tal:condition="python:len(listadoReco)>0">
+                            <div tal:condition="python:context.portal_membership.getAuthenticatedMember().id=='admin'">                                
+                                
+                                <div id="toolbarEstudios" style="display:none">
+                                <input type="button" value="borrar estudios" id="borraEstudio" />
+                                <input type="button" value="agregar estudio" id="agregaEstudio"/>
+                                </div>
+                                <input type="checkbox" name="editarSugeridos" value="editar" onclick="$('#toolbarEstudios').toggle()"> 
+                            </div>
                         <div class="top">
                              <a id="estudios"></a>
                             <tal:rra tal:repeat="item listadoReco" >
@@ -131,7 +139,7 @@
                                                             tal:content="string:; ">; </span>
                                                   </tal:r>
                                             </div>
-                                            <a href="#" tal:attributes="href subI/url" tal:content="subI/titulo"></a>
+                                            <a href="#" target="_blank" tal:attributes="href subI/url" tal:content="subI/titulo"></a>
                                         </tal:define>
                                     </div>
                                 </div>
@@ -148,6 +156,7 @@
                             <img src="images/bannerExhibicionPuig.jpg"
                                  tal:attributes="src string:${baner/url}/images/baner;
                                                 title baner/titulo"/></a>
+
                     </tal:a>
                 </div>
             </div>

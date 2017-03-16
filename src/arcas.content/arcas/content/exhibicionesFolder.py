@@ -47,6 +47,7 @@ class View(DisplayForm):
         catalogo=getToolByName(contexto,"portal_catalog")
         result  =catalogo(object_provides=IExhibicion.__identifier__)
         listados=[]
+        
 
         for exhi in result:
 

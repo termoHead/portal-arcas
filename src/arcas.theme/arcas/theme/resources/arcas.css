@@ -158,3 +158,5 @@ div.col1Linea {
 .tituColect a{ font-family: 'Attic', serif;font-size:22px; padding-top:12px}
 .tituColect{ letter-spacing: 1px;
     padding: 12px 8px 0 10px;}
+.overlay.overlay-image{background:rgba(0,0,0,.5)}
+ div.overlay{top: 410px !important;}

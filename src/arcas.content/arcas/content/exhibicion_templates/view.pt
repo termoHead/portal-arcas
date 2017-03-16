@@ -156,8 +156,8 @@
 								<div class="top">
 									<div class="contacto">
 										<a href="mailto:mail@mail.com"
-										tal:attributes="href string:mailto:${cureta/email}"><img src="++theme++arcas.theme/img/mailCurador.gif"></a><a class="cv" 
-											href="#">cv</a>
+										tal:attributes="href string:mailto:${cureta/email}"><img src="++theme++arcas.theme/img/mailCurador.gif"></a>
+										
 									</div>
 								</div>
 								<div class="curadorIMG">

@@ -81,10 +81,10 @@ def item_vocab(self):
         terms=[]
         if tieneSub:
             lista=cl.getDocsFromSubSerie(COLECCION,SUBSERIE)            
-            for pair in lista:                
+            for pair in lista:
                 terms.append(SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]))
             return SimpleVocabulary(terms)
-        else:            
+        else:
             lista=cl.getDocsFromSerie(COLECCION,SERIE)
             for pair in lista:                
                 terms.append(SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]))
@@ -221,11 +221,7 @@ class IGsMetaSerie(form.Schema):
         description=u"no se que es... sera el título del documento",required=False,)
     s_alcance= schema.TextLine(title=u"Alcance",
         description=u"no se que es... sera el título del documento",required=False,)
-    s_lenguaiso = schema.Choice(
-        title=u"Idioma",
-        vocabulary=iso_idiomas,
-        required=False,
-    )
+    s_lenguaiso = schema.Choice(title=u"Idioma",vocabulary=iso_idiomas,required=False,)
 
 class IEditGS(form.Schema, IGsMetaSerie , IGsSubSerie,IGsMetaItem ):
     """Campos del formulario de edición de un documento Greenston3 en el import!"""    
@@ -269,7 +265,6 @@ class EditGS(form.SchemaForm):
     """
        Edita un documento de Greenstone3 desde el import!
     """
-
     xmlFileBase  ='/usr/local/Greenstone3/web/sites/localsite/collect/'
     xmlFileResto ='/import/co.1/se.1/su.1/ar.1/it.1/'
     xmlFileName='metadata.xml'
@@ -318,8 +313,8 @@ class EditGS(form.SchemaForm):
         """
         
         COLECCION=SERIE=SUBSERIE=""
-        colec = self.request.get('coleccion', None)
-
+        colec = self.request.get('coleccion', None)        
+        
         if(len(self.groups[3].widgets["coleccion"].value)>0):
                 COLECCION=self.groups[3].widgets["coleccion"].value[0]
         if colec:
@@ -339,7 +334,12 @@ class EditGS(form.SchemaForm):
             self.groups[3].widgets["coleccion"].value = colec.encode('utf-8')
             COLECCION=self.groups[3].widgets["coleccion"].value
             self.groups[3].widgets["coleccion"].mode = HIDDEN_MODE
-    
+            
+            
+    def apagrupo(self,grupo):
+        for wid in grupo.widgets:
+            grupo.widgets[wid].mode=HIDDEN_MODE
+
     def showObras(self):
         # Set a custom widget for a field for this form instance only       
         if self.groups[0].widgets["f_ruta"].value!=u"":
@@ -356,7 +356,6 @@ class EditGS(form.SchemaForm):
     @button.buttonAndHandler(u'Guardar',condition=showObras)
     def saveHandler(self, action):
         self.saveFlag=self.saveFlag+1
-   
         if self.saveFlag<2:
             msj=rutaItem=rutaSubSerie=rutaSerie=""
             subSerieOk=False
@@ -398,9 +397,9 @@ class EditGS(form.SchemaForm):
             for x in infoMetadatos:
                 itFtext=self.groups[0].widgets[x].value
                 if type(itFtext)==type([]):
-                    itFtext=itFtext[0]                
+                    itFtext=itFtext[0]         
                 tmpList.append((EditGS.infoMetaItem[x],itFtext))
-                
+
             dicDatosItem={
                 "version":"1",
                 "idColec":self.groups[3].widgets["coleccion"].value[0],
@@ -409,7 +408,7 @@ class EditGS(form.SchemaForm):
                 "metadatos":tmpList,
                 #"metadatos":[(EditGS.infoMetaItem[x],self.groups[2].widgets[x].value) for x in infoMetadatos]
                 }
-                
+
             #-------- cargo ITEM    
             tmpList=[]
             for x in infoMetadatosSerie:
@@ -417,7 +416,7 @@ class EditGS(form.SchemaForm):
                 if type(itFtext)==type([]):
                     itFtext=itFtext[0]                
                 tmpList.append((EditGS.infoMetadatosSerie[x],itFtext))
-            
+
             dicDatosSerie={
                 "version":"1",
                 "idColec":self.groups[3].widgets["coleccion"].value[0],
@@ -426,7 +425,7 @@ class EditGS(form.SchemaForm):
                 "metadatos":tmpList,
                 #"metadatos":[(EditGS.infoMetadatosSerie[x],self.groups[0].widgets[x].value) for x in infoMetadatosSerie]
             }
-            
+
             if subSerieOk:
                 tmpList=[]
                 for x in infoMetadatoSubSerie:
@@ -434,7 +433,7 @@ class EditGS(form.SchemaForm):
                     if type(itFtext)==type([]):
                         itFtext=itFtext[0]                
                     tmpList.append((EditGS.infoMetadatoSubSerie[x],itFtext))
-                    
+
                 dicDatosSubSerie={
                     "version":"1",
                     "idColec":self.groups[3].widgets["coleccion"].value[0],
@@ -442,15 +441,13 @@ class EditGS(form.SchemaForm):
                     "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaSubSerie.replace("/metadata.xml",""),
                     "metadatos":tmpList
                 }
-             
-            
+
             self.fsmanager=FSManager()
             flagm=0
-            
-            
+
             itemsaved=self.fsmanager.saveFile(dicDatosItem)
             seriesaved=self.fsmanager.saveFile(dicDatosSerie)
- 
+
             if itemsaved[0]=="error":
                 msj="> No se pudo guardar el item en %s"%rutaItem
                 flagm+=1
@@ -898,9 +895,7 @@ class ClienteGS:
         subSeries=ET.fromstring(query.encode('utf-8'))
         
   
-        
-        import pdb
-        pdb.set_trace()
+
         subsT=subSeries.findall('.//documentNode')
         resultado=[]
         flag=0

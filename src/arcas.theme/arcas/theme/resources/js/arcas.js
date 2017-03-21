@@ -375,8 +375,8 @@ $(document).ready(function () {
         
         
         /*agrega QUIK ADD*/
-        $("#")
-        agregaChekbox()
+        
+        //agregaChekbox()
         
 });
 

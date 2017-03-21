@@ -160,3 +160,14 @@ div.col1Linea {
     padding: 12px 8px 0 10px;}
 .overlay.overlay-image{background:rgba(0,0,0,.5)}
  div.overlay{top: 410px !important;}
+
+.busquedaColeccion > span {
+    background: rgba(0, 0, 0, 0.5) none repeat scroll 0 0;
+    color: white;
+    font-size: 12px;
+    left: 640px;
+    padding: 8px;
+    position: absolute;
+    top: 370px;
+    width: 480px;
+}

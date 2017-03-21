@@ -2,13 +2,8 @@
 __author__ = 'Paul'
 #"lucene-jdbm-demo",
 
-import os
-import sys
-from zExceptions import Forbidden
-from suds.client import Client
-from suds.plugin import MessagePlugin
-import urllib2
-import xml.etree.ElementTree as ET
+
+
 from plone.autoform import directives
 from arcas.content.rootFolder import IRootFolder
 from Products.CMFPlone.utils import safe_unicode
@@ -30,20 +25,25 @@ from zope.component import getMultiAdapter
 from zope.schema.interfaces import IContextSourceBinder
 from zope.interface import directlyProvides
 from plone.supermodel import model
-import xml.etree.ElementTree as ET
+
 
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from Products.CMFCore.utils import getToolByName
-    
+
+
+from arcas.content.GSWManager import ClienteGS
+
+from arcas.content.config import infoMetadatosSerie
+from arcas.content.config import infoMetadatoSubSerie
+from arcas.content.config import infoMetaItem
+
 COLECCION=""
 SERIE=""
 SUBSERIE=""
-
 def serie_vocab(self):
     global COLECCION
-    print ">>>"+COLECCION
     if COLECCION=="":
         return  SimpleVocabulary([])
     terms=[]
@@ -56,7 +56,7 @@ def serie_vocab(self):
 
 def subserie_vocab(self):
     global SERIE
-    global COLECCION        
+    global COLECCION       
     
     if COLECCION!="" and SERIE!="":
         cl=ClienteGS()        
@@ -260,11 +260,13 @@ class IEditGS(form.Schema, IGsMetaSerie , IGsSubSerie,IGsMetaItem ):
         description=u"una pavada",
         required=False,
     ) 
-
+from arcas.content.FSManager import FSManager
 class EditGS(form.SchemaForm):
     """
        Edita un documento de Greenstone3 desde el import!
     """
+
+
     xmlFileBase  ='/usr/local/Greenstone3/web/sites/localsite/collect/'
     xmlFileResto ='/import/co.1/se.1/su.1/ar.1/it.1/'
     xmlFileName='metadata.xml'
@@ -287,12 +289,7 @@ class EditGS(form.SchemaForm):
     
     lsw=["f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones","f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta"]
 
-    infoMetadatosSerie={'s_titulo':'ae.serietitulo','s_temporal':'ae.seriecoberturatemporal','s_extension':'ae.fileextension','s_caracteristicas':'ae.seriedescripcionfisica','s_autor':'ae.serieautor','s_alcance':'ae.seriealcance','s_lenguaiso':'ae.serielenguaiso'}
-
-    infoMetadatoSubSerie={'sub_titulo':'ae.subserietitulo','sub_alcance' :'ae.subserieautor','sub_anotacion':'ae.subserielenguaiso'}
-
-    infoMetaItem={ 'f_fechaCreacion':'ae.itemcoberturatemporal','f_lugarCreacion':'bi.lugar','f_descFisica':'ae.itemdescripcionfisica','f_dimensiones':'ae.itemdimension','f_idioma':'ae.itemlenguaiso','f_naturaleza':'ae.itemnaturaleza','f_alcance':'ae.itemalcance','f_anotacion':'bi.anotacionitem','f_ruta':'bi.ruta'}
-    
+   
     editOk=False
     
     def update(self):
@@ -314,6 +311,7 @@ class EditGS(form.SchemaForm):
         
         COLECCION=SERIE=SUBSERIE=""
         colec = self.request.get('coleccion', None)        
+        
         
         if(len(self.groups[3].widgets["coleccion"].value)>0):
                 COLECCION=self.groups[3].widgets["coleccion"].value[0]
@@ -337,9 +335,9 @@ class EditGS(form.SchemaForm):
             
             
     def apagrupo(self,grupo):
-        for wid in grupo.widgets:
+        for wid in grupo.widgets:            
             grupo.widgets[wid].mode=HIDDEN_MODE
-
+        
     def showObras(self):
         # Set a custom widget for a field for this form instance only       
         if self.groups[0].widgets["f_ruta"].value!=u"":
@@ -356,18 +354,19 @@ class EditGS(form.SchemaForm):
     @button.buttonAndHandler(u'Guardar',condition=showObras)
     def saveHandler(self, action):
         self.saveFlag=self.saveFlag+1
+   
         if self.saveFlag<2:
             msj=rutaItem=rutaSubSerie=rutaSerie=""
             subSerieOk=False
 
-            infoMetadatos=self.infoMetaItem
-            infoMetadatosSerie=self.infoMetadatosSerie
+            infoMetadatos=infoMetaItem
+            #infoMetadatosSerie=infoMetadatosSerie
 
             data, errors = self.extractData()
 
             if len(self.groups[3].widgets["subserie"].value)>0:
                 subSerieOk=True
-                infoMetadatoSubSerie=self.infoMetadatoSubSerie
+                #infoMetadatoSubSerie=infoMetadatoSubSerie
 
             if errors:
                 self.status = self.formErrorsMessage
@@ -397,43 +396,43 @@ class EditGS(form.SchemaForm):
             for x in infoMetadatos:
                 itFtext=self.groups[0].widgets[x].value
                 if type(itFtext)==type([]):
-                    itFtext=itFtext[0]         
-                tmpList.append((EditGS.infoMetaItem[x],itFtext))
-
+                    itFtext=itFtext[0]                
+                tmpList.append((infoMetaItem[x],itFtext))
+                
             dicDatosItem={
                 "version":"1",
                 "idColec":self.groups[3].widgets["coleccion"].value[0],
                 "ruta":rutaItem,
                 "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaItem.replace("/metadata.xml",""),
                 "metadatos":tmpList,
-                #"metadatos":[(EditGS.infoMetaItem[x],self.groups[2].widgets[x].value) for x in infoMetadatos]
+                #"metadatos":[(infoMetaItem[x],self.groups[2].widgets[x].value) for x in infoMetadatos]
                 }
-
+                
             #-------- cargo ITEM    
             tmpList=[]
             for x in infoMetadatosSerie:
                 itFtext=self.groups[2].widgets[x].value
                 if type(itFtext)==type([]):
                     itFtext=itFtext[0]                
-                tmpList.append((EditGS.infoMetadatosSerie[x],itFtext))
-
+                tmpList.append((infoMetadatosSerie[x],itFtext))
+            
             dicDatosSerie={
                 "version":"1",
                 "idColec":self.groups[3].widgets["coleccion"].value[0],
                 "ruta":rutaSerie,
                 "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaSerie.replace("/metadata.xml",""),
                 "metadatos":tmpList,
-                #"metadatos":[(EditGS.infoMetadatosSerie[x],self.groups[0].widgets[x].value) for x in infoMetadatosSerie]
+                #"metadatos":[(infoMetadatosSerie[x],self.groups[0].widgets[x].value) for x in infoMetadatosSerie]
             }
-
+            
             if subSerieOk:
                 tmpList=[]
                 for x in infoMetadatoSubSerie:
                     itFtext=self.groups[1].widgets[x].value
                     if type(itFtext)==type([]):
                         itFtext=itFtext[0]                
-                    tmpList.append((EditGS.infoMetadatoSubSerie[x],itFtext))
-
+                    tmpList.append((infoMetadatoSubSerie[x],itFtext))
+                    
                 dicDatosSubSerie={
                     "version":"1",
                     "idColec":self.groups[3].widgets["coleccion"].value[0],
@@ -441,13 +440,16 @@ class EditGS(form.SchemaForm):
                     "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaSubSerie.replace("/metadata.xml",""),
                     "metadatos":tmpList
                 }
-
+             
+            
             self.fsmanager=FSManager()
-            flagm=0
 
+            flagm=0
+            
+            
             itemsaved=self.fsmanager.saveFile(dicDatosItem)
             seriesaved=self.fsmanager.saveFile(dicDatosSerie)
-
+ 
             if itemsaved[0]=="error":
                 msj="> No se pudo guardar el item en %s"%rutaItem
                 flagm+=1
@@ -528,7 +530,9 @@ class EditGS(form.SchemaForm):
         hhtml += u"<li><b>Serie:</b><ul>"
 
         for stra in rutasSerie:
-            hhtml += '<li>'+stra.decode('utf8')+'</li>'
+            txo=stra.encode('utf8')
+            hhtml += '<li>%s</li>'%txo.decode('utf8')
+
         if len(rutasSerie)==1:
             hhtml += '<li>Sin cambios</li>'
 
@@ -536,14 +540,17 @@ class EditGS(form.SchemaForm):
 
         hhtml += u"<li><b>SubSerie:</b><ul>"   
         for stra in rutasSubSerie:
-            hhtml += '<li>'+stra.decode('utf8')+'</li>'            
+            txo=stra.encode('utf8')
+            hhtml += '<li>%s</li>'%txo
         if len(rutasSubSerie)==1:
             hhtml += '<li>Sin cambios</li>'
         hhtml += "</ul></li>"
 
         hhtml += u"<li><b>Item:</b><ul>"
         for stra in rutasItem:
-            hhtml += '<li>'+stra.decode('utf8')+'</li>'
+            txo=stra.encode('utf8')
+            hhtml += '<li>%s</li>'%txo
+
         if len(rutasItem)==1:
             hhtml += '<li>Sin cambios</li>'            
         hhtml += "</ul></li>"
@@ -552,6 +559,7 @@ class EditGS(form.SchemaForm):
         hhtml += u"comunicarse con mariana@fahce.unlp.edu.ar</p>Gracias.</p>"
         hhtml += u"</br></br><p></p>"
         hhtml += u"</body></html>"
+
         # Record the MIME types of both parts - text/plain and text/html.        
         part1 = MIMEText(text, 'plain')
         part2 = MIMEText(hhtml.encode('utf8'), 'html')
@@ -568,565 +576,6 @@ class EditGS(form.SchemaForm):
             print "Error: unable to send email"
             return False
 
-class FSManager:    
-    """
-        Abre el archivo y lo guarda en miXml
-        gsx=FSManager()
-        fileOk=gsx.openF(ruta, coleccion)
-        if fileOk==False:
-            print "error:%s"%gsx.erromMsj
-            return            
-        fileXml=gsx.miXml
-
-    """
-    erromMsj=""
-    xmlFileBase  ='/usr/local/Greenstone3/web/sites/localsite/collect/'
-    xmlFileResto ='/import/co.1/se.1/su.1/ar.1/it.1/'
-    xmlFileName='metadata.xml'    
-    miXml=""
 
     
-    def openF(self,ruta,coll):
-        #if ruta.find("web")==-1:
-        #    self.xmlFileResto=ruta.split(coll)[1]
-        ruta=self.xmlFileBase+coll+"/"+ruta
-        result=self.openFile(ruta) 
-        
-        return result
-                
-    def openFile(self, ruta):
-        try:            
-            xmlFile = ET.parse(ruta)
-            self.miXml=xmlFile             
-            return True
-        
-        except ET.ParseError:
-            print("failure")
-            print("last successful: {0}".format(last))
-            self.erromMsj={"error":u"Error de parseo"}
-            
-        except:
-            print("catastrophic failure")
-            self.erromMsj={"error":u"No se encontró el archivo"}
 
-        return False
-
-
-    def dameSigVerison(self,carpeta):
-        rut=self.xmlFileBase+carpeta
-        listado =os.listdir(rut)
-        tmp     =["1"]
-        listR=[]
-        for elem in listado:   
-            fx="metadata"
-            ex=".xml"
-            if elem.find(ex)>-1 and elem.find(fx)>-1:
-                version=elem[len(fx):elem.find(ex)]
-                listR.append(version)
-
-        if len(listR)==0:
-            return "1"
-            
-        if len(listR)==1:
-            if len(listR[0])==0:
-                return "1"
-                
-            
-        
-        listR.sort()
-        nex=listR[-1]
-        resultado = str(int(nex[1:])+1)
-        return resultado
-        
-    def creatNewXmlMetadata(self,name,dato):
-        nodo=ET.Element('Metadata',{'mode':'accumulate','name':name})
-        nodo.text=dato
-        return nodo
-    
-    def saveFile(self,obModificado):
-        """
-            guarda los datos en el xml
-        """
-        listlog=[]
-        logstr=""
-        pathFolder      =obModificado["idColec"]+"/"+obModificado["ruta"]
-        pathFolder      =obModificado["folder"]
-        version         =self.dameSigVerison(pathFolder)        
-        #newfilename     =obModificado["ruta"].replace("metadata.xml",self.xmlFileResto+"metadataV"+version+".xml")
-        newfilename     =obModificado["ruta"].replace("metadata.xml","metadataV"+version+".xml")
-        newfilename     =self.xmlFileBase+obModificado["idColec"]+"/"+newfilename
-        rm              =self.openF(obModificado["ruta"],obModificado["idColec"])
-
-        if rm == False:
-            return False
-        
-        #elemino todos los metadatos del xml cargado
-        docTypeHeader='<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE DirectoryMetadata SYSTEM \"http://greenstone.org/dtd/DirectoryMetadata/1.0/DirectoryMetadata.dtd \">'
-        copiXml=self.miXml.getroot()
-        
-        
-        #actualizo los que estan
-        for itemXml  in copiXml.find(".//FileSet/Description").findall(".//Metadata"):
-            itXnom=itemXml.attrib["name"]
-            itXtext=itemXml.text
-            
-            for itemForm in obModificado["metadatos"]:
-                itFnom =  itemForm[0]
-                itFtext=  itemForm[1]
-
-                if itFnom==itXnom:
-                    if itFtext=="":
-                        #Si en el formulario el metadato está vacio lo borro el XNL                        
-                        copiXml.find(".//FileSet/Description").remove(itemXml)               
-                        #logstr="%s quedó vacio y se eliminó del metadata.xml" %itFnom
-                        #listlog.append(logstr)
-                    else:
-                        #actualizo el dato en el XNL con el valor que viene del form
-                        #puede venir una lista por los idiomas o un str 
-                        if type(itFtext)==type([]):
-                            if itXtext!=itFtext[0]:
-                                itemXml.text=itFtext[0]
-                                logstr="actualizado> %s: %s" %(itFnom,itFtext[0])
-                                listlog.append(logstr)
-                        else:
-                            itemXml.text=itFtext
-                            if itXtext!=itFtext:
-                                itemXml.text=itFtext
-                                logstr="actualizado> %s: %s" %(itFnom,itFtext)
-                                listlog.append(logstr)
-                        flagMatch=True
-                    break
-                
-                
-        ##agrego el elemento nuevo que no estaban en el FS XML mingshaobi     
-        for itemForm in obModificado["metadatos"]:
-            itFnom =  itemForm[0]
-            itFtext=  itemForm[1]
-            
-            if type(itFtext)==type([]):
-                itFtext=itFtext[0]
-
-            flagMatch=False
-            
-            for itemXml  in copiXml.find(".//FileSet/Description").findall(".//Metadata"):
-                itXnom=itemXml.attrib["name"]
-                if itXnom == itFnom:
-                    flagMatch=True
-                    break
-
-            if flagMatch==False:
-
-                if itFtext!="":
-                    no=self.creatNewXmlMetadata(itFnom,itFtext)
-                    copiXml.find(".//FileSet/Description").append(no)
-                    logstr="nuevo> %s: %s." %(itFnom,itFtext)
-                    listlog.append(logstr)
-        
-        xmlstr=ET.tostring(copiXml)
-        
-        try:
-            f=open(newfilename,"wr+")
-            newstr=docTypeHeader+xmlstr           
-            f.write(newstr)
-            f.close()
-            logstr=newfilename
-            listlog.insert(0,logstr)
-            
-        except:
-            e = sys.exc_info()[0]
-            print "Problema: %s"% e
-            logstr=newfilename
-            listlog.insert(0,"error")
-            
-        return listlog
-        
-        
-    def dameMetadata(self,strMeta):
-        try:
-            root = self.miXml.getroot()
-        except:
-            print "no se puede parsear el xml"
-            return []
-        
-        metadato=""
-        
-        
-
-        
-
-        
-        if len(self.miXml.findall(u'.//Metadata[@name="'+strMeta+'"]'))>0:
-            meta=self.miXml.findall(u'.//Metadata[@name="'+strMeta+'"]')[0].text
-            metadato=meta
-            
-        return metadato
-    
-
-
-    
-    
-    def getMetadataForItem(self):
-        """Metodo que devuelve un diccionario de METADATOS ITEMS para json"""                
-        res=self.getMetadataFor(EditGS.infoMetaItem)                
-        return res
-    
-    def getMetadataForSubSerie(self):
-        """Metodo que devuelve un diccionario de METADATOS SUBSERIE para json"""
-        res=self.getMetadataFor(EditGS.infoMetadatoSubSerie)
-        return res
-    
-    def getMetadataForSerie(self):
-        """Metodo que devuelve un diccionario de METADATOS SERIE para json"""
-        res=self.getMetadataFor(EditGS.infoMetadatosSerie)        
-        
-        return res
-    
-    def getMetadataFor(self,infoMetadatos):
-        """METODO AUXILIAR PARA DEVOLVER METADATOS EN EL DICIONARIO infoMetadatos,infoMetadatoSubSerie,infoMetaItem de EditGS"""
-        res=[]        
-        for ke,val in infoMetadatos.items():            
-            res.append({val:self.dameMetadata(val)})
-        return res
-    
-class ClienteGS:
-    ###ruta = "%s%s%s"%(self.xmlFileBase,self.coleccion,self.xmlFileResto)###
-    coleccion  =""
-    bService   ="GS2MGPPSearch"
-    idioma     ="en"
-    urlServicio  ='http://localhost:8383/greenstone3/services/QBRSOAPServerlocalsite?wsdl'    
-    error      =""        
-    client     =""
-    
-    def __init__(self):        
-        self.client= self.conectaServicio()
-        pass
-       
-    def conectaServicio(self):
-        try:
-            client = Client(self.urlServicio)
-        except urllib2.URLError, e:
-            self.error="urlError"
-            return []        
-        return client 
-
-    
-    def dameListadoColecciones(self):
-        ###Devuelve un listado de strings colecciones###   
-
-        try:
-            query = self.client.service.describe("","collectionList")
-            query=ET.fromstring(query)
-        except urllib2.URLError, e:
-            self.error="urlError"
-            print "error en las colecciones"
-            return []        
-        
-        
-        result=[]
-        result.append("sin valor")
-        for e in query.findall('.//collection'):
-            result.append(e.get('name'))
-            
-        return result    
-    
-    def dameRutaXMLDeId(self,coleccion,idDoc):
-        ###devuevle la bi.ruta de un idde documeento###
-        self.coleccion=coleccion
-        client=self.client
-        res=client.service.retrieveDocumentMetadata(coleccion,self.idioma,[idDoc],['bi.ruta'])
-        rtax=ET.fromstring(res)        
-        if len(rtax.findall(u".//metadata[@name='bi.ruta']"))>0:
-            rta=rtax.findall(u".//metadata[@name='bi.ruta']")[0]        
-            return rta.text
-        else:
-            return ""
-       
-    def dameSeriesDeColeccion(self,coleccion):        
-        """Devuleve un objeto con el titulo, clsificador y los lista de ids documentos hijos"""
-        if self.coleccion=="":
-            self.coleccion=coleccion            
-        if coleccion=="sin valor":
-            return []
-        client=self.client
-        try:
-            #query =client.service.browse(self.coleccion,"",self.idioma,["CL1"],["children"])
-            query = client.service.retrieveDocumentMetadata(self.coleccion,self.idioma,["CL1",],["contains"])
-        except suds.WebFault, e:
-            print "-------------------------"
-            print e
-            print "-------------------------"
-            self.error=e
-            return []
-
-        series=ET.fromstring(query.encode('utf-8'))        
-        subsT=series.findall('.//metadata')[0].text
-        listSubs=subsT.translate(None,'"').split(";")
-        f=0
-        for elem in listSubs:
-            listSubs[f]="CL1%s" %elem
-            f+=1        
-
-        subQuery =client.service.retrieveDocumentMetadata(self.coleccion,self.idioma,listSubs,["Title","contains"])
-        subSeries=ET.fromstring(subQuery.encode('utf-8'))        
-        
-        resultado=[]
-        subsT=subSeries.findall('.//documentNode')        
-        for elem in subsT:            
-            mid=elem.attrib["nodeID"]
-            mtitulo=elem.find('.//metadata[@name="Title"]').text
-            mdocs=elem.find('.//metadata[@name="contains"]').text.split(";")
-            serie={'id'     :mid ,
-                   'titulo' :mtitulo,
-                   'docs'  :mdocs}
-            resultado.append(serie)        
-        return resultado
-    
-    
-    def dameDocumentos(self,coleccion,docsIds):
-        """Dado un listado de ids, devuelve un listado de objetos con titulo,ruta,idoc"""
-        client=self.client
-        metadatos=[u"ae.itemtitulo",u"ae.filetitulo",u"bi.ruta",u"SourceFile"]        
-        
-        
-        if self.coleccion=="":
-            self.coleccion=coleccion
-        
-        query =client.service.retrieveDocumentMetadata(self.coleccion,self.idioma,docsIds,metadatos)        
-        subSeries=ET.fromstring(query.encode('utf-8'))
-        
-  
-
-        subsT=subSeries.findall('.//documentNode')
-        resultado=[]
-        flag=0
-        for elem in subsT:
-            mid=elem.attrib["nodeID"]
-            if elem.find('.//metadata[@name="ae.itemtitulo"]')!=None:
-                mit=elem.find('.//metadata[@name="ae.itemtitulo"]').text
-            else:
-                mit=""
-            if elem.find('.//metadata[@name="ae.filetitulo"]')!=None:
-                mtitulo=elem.find('.//metadata[@name="ae.filetitulo"]').text
-            else:
-                mtitulo=""
-            if elem.find('.//metadata[@name="bi.ruta"]')!=None:
-                mruta=elem.find('.//metadata[@name="bi.ruta"]').text
-            else:
-                mruta="%s" %flag
-            
-            flag+=1
-            
-            serie={'id'     :mid,
-                   'it'     :mit,
-                   'titulo' :mtitulo,
-                   'ruta'  :mruta}
-            resultado.append(serie)
-        return resultado
-
-
-    def todasObrasDeColeccion(self,coleccion):
-        ###Dada una coleccion devuelve una listado de ids de documentos###    
-        self.coleccion=coleccion
-        client=self.client
-        listado=[]
-        docsId              =client.factory.create("ArrayOf_xsd_string") 
-        infoMetadatos       =client.factory.create("ArrayOf_xsd_string") 
-        infoClasi           =client.factory.create("ArrayOf_xsd_string") 
-        infoClasi.value     =[u"CL1"]
-        
-        nivelSerie=""
-        nivelSubserie=""
-        
-        infoMetadatos.value=[u"ae.itemtitulo",u"ae.itemedicion",u"ae.itemnaturaleza",u"pr.idpreservacion",u"ae.filetitulo",u"bi.anotacion1","ae.coleccionnombreautor",u"bi.ruta"]        
-   
-        try:
-            query =client.service.browseDescendants(self.coleccion,"",self.idioma,infoClasi)
-            #query =client.service.browse(self.coleccion,"",self.idioma,["CL1"],["descendants"])
-        except suds.WebFault, e:
-            print "-------------------------"
-            print e
-            print "-------------------------"
-            self.error=e
-            return []
-
-        mquery=ET.fromstring(query.encode('utf-8'))
-        
-        
-        collectDATA=[{'conSubSeri':'boolean'},
-              {'serieId':'','serieVal':'',               
-               'subSList':[
-                   {'subId':'',
-                    'subSaval':'valor',
-                    'itemList':[{'itemsId':'','itemList':''}]}
-            ]}]        
-        
-        listClass=mquery.findall(".//classifierNode")
-        nivel=0
-        subR=[]
-        
-        CDA=[]
-        
-        for clN in listClass:
-            if "childType" in clN.attrib.keys():
-                longNanme=len(clN.attrib['nodeID'])
-                
-                if longNanme==5:                    
-                    seriOb={'serieId':clN.attrib['nodeID'],'listSubs':[]}
-                    subtmp=0                    
-                    for ltmp in clN.iter("classifierNode"):    
-                        subtmp+=1
-                    
-                    if subtmp>0:
-                        #.findall(".//classifierNode")
-                        for ltmp in clN.findall(".//classifierNode"):
-                            if ltmp.attrib["nodeID"] not in subR:
-                                subSOb={'idSub':ltmp.attrib["nodeID"],'listDocs':[]}
-                                
-                                for ek in ltmp.findall('.//documentNode[@nodeType="root"]'):
-                                    subSOb['listDocs'].append(ek.attrib["nodeID"])           
-                                    
-                                seriOb['listSubs'].append(subSOb)
-                    else:
-                        for ek in clN.findall('.//documentNode[@nodeType="root"]'):
-                                    print "docu:%s"%ek.attrib["nodeID"]
-                    
-                    CDA.append(seriOb)
-
-
-
-        
-        #docsIds=self.recorreDocNode(mquery)
-        #docsId.value=docsIds
-        #squery.find("//response/classifierNode")
-        
-
-        subQ  = client.service.retrieveDocumentMetadata(self.coleccion,self.idioma,docsId,infoMetadatos)
-        squery= ET.fromstring(subQ.encode('utf-8'))
-
-        resp  = []
-
-        for item in squery.findall(".//documentNode"):
-            tmpL=item.findall(".//metadata")
-            obra={}
-            if len(tmpL)>1:
-                obra["id"]=item.get("nodeID")
-                for noD in infoMetadatos.value:
-                    obra[noD]=""
-                    for elt in tmpL:
-                        if noD==elt.get("name"):
-                            obra[noD]=safe_unicode(elt.text)
-                            break
-                resp.append(obra) 
-        return resp
-        
-    def getDescendats(self,colec):
-        """devuelve una lista para armar el select"""
-        re=self.todasObrasDeColeccion(colec)
-        return re
-        
-    def getDocsFromSubSerie(self,colecName,subSerie):
-        """devuelve una lista para armar el select"""
-        ls=[]
-        
-        
-        try:
-            cco=self.client.service.retrieveDocumentMetadata(colecName,self.idioma,[subSerie],["contains"])
-        except suds.WebFault, e:
-            print "-------------------------"
-            print e
-            print "-------------------------"
-            self.error=e
-            return []
-        
-        
-        etMeta= ET.fromstring(cco.encode('utf-8'))
-        ddis=etMeta.find('.//metadata[@name="contains"]').text
-        
-        if ddis.find('"')>=0:
-            ddis=ddis.replace('"','')        
-            idsx=[]
-            for elemy in ddis.split(";"):
-                idsx.append(subSerie+elemy)            
-            docs=self.dameDocumentos(colecName,idsx)
-        else:
-            docs=self.dameDocumentos(colecName,ddis.split(";"))
-           
-        for elem in docs:
-            ls.append({"value":elem["ruta"],"title":elem["it"]})
-        
-        return ls
-   
-    def getDocsFromSerie(self,colecName,serieName):
-        """devuelve una lista para armar el select"""
-        series=self.dameSeriesDeColeccion(colecName)
-        
-        ls=[]
-        ids=[]
-        tmps=[]
-        for elem in series:
-            if elem["id"]==serieName:
-              tmps=elem["docs"]              
-              break;
-
-        for ee in tmps:
-            ids.append(ee.replace('"',serieName))
-        
-        if self.tieneSubSerie(self.coleccion):
-            subSeries=self.client.service.retrieveDocumentMetadata(self.coleccion,self.idioma,ids,["Title"])
-            SB= ET.fromstring(subSeries.encode('utf-8'))
-            ppa=SB.findall('.//documentNode')
-            ls.append({"value":"tieneSubSerie","title":"tieneSubSerie"})
-            for xl in ppa:
-                ls.append({'value':xl.attrib['nodeID'],'title':xl.find('.//metadata').text})
-            
-        else:
-            docs=self.dameDocumentos(colecName,ids)
-            for elem in docs:
-                ls.append({"value":elem["ruta"],"title":elem["it"]})        
-        return ls
-        
-   
-    def getSeries(self,colecName):
-        """devuelve una lista para armar el select"""        
-        subSerieOk=self.tieneSubSerie(colecName)
-        
-        obras=self.dameSeriesDeColeccion(colecName)
-        ls=[]
-        ls.append({"value":subSerieOk,"title":subSerieOk})
-        
-        for elem in obras:
-            ls.append({"value":elem["id"],"title":elem["titulo"]})
-            
-        return ls
-    
-    
-    def tieneSubSerie(self,colecName):
-        client=self.client
-        
-        try:
-            query = client.service.browse(colecName,"",self.idioma,["CL1.1"],["children"])
-        except:
-            print "error buscando subSerie"
-            return False
-        
-        mquery=ET.fromstring(query.encode('utf-8'))
-
-        if len(mquery.findall(".//classifierNode/classifierNode"))>0:
-            return True
-        else:
-            return False
-
-    def recorreDocNode(self,xmlR):
-        ###recorre el xml con un listado de documentos y devuelve sus IDs###
-        listado=xmlR.getiterator("documentNode")
-        dato=[]
-        resp=[]
-        for elem in listado:
-            if elem.tag=="documentNode":
-                dato.append(elem.get("nodeID"))
-
-        if len(dato)<1:
-            self.error="No se recuperaron registros"
-            return []
-
-        return dato

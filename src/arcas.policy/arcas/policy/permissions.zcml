@@ -1,0 +1,33 @@
+<configure
+	xmlns="http://namespaces.zope.org/zope"
+	xmlns:i18n="http://namespaces.zope.org/i18n"
+	i18n_domain="arcas.policy">
+	<permission
+		id="arcas.addColeccion"
+		title="Arcas: Add Coleccion"
+	/>
+	<permission
+		id="arcas.addExhibicion"
+		title="Arcas: Add Exhibicion"
+	/>
+	<permission
+		id="arcas.defineCurador"
+		title="Arcas: Define Curador"
+	/>
+	<permission
+		id="arcas.defineColabColec"
+		title="Arcas: Define Colaborador en Coleccion"
+	/>
+	<permission
+		id="arcas.defineColabExhi"
+		title="Arcas: Define Colaborador en Exhibicion"
+	/>
+	<permission
+		id="arcas.addCarpetasAColec"
+		title="Arcas: add Carpetas en Coleccion"
+	/>
+	<permission
+		id="arcas.addCarpetasAExhi"
+		title="Arcas: add Carpetas en Exhibicion"
+	/>
+</configure>

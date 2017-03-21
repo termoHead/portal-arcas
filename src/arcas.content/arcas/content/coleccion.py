@@ -31,7 +31,7 @@ class IColeccion(form.Schema):
     form.fieldset(
         'imagenes',
         u"Ilustraciones",
-        fields=['imagenCabecera','imagenHome','imagenLista'],
+        fields=['imagenCabecera','textoAltCabecera','imagenHome','imagenLista'],
     )
     form.fieldset(
         'columnaDer',
@@ -48,7 +48,7 @@ class IColeccion(form.Schema):
         title=_(u"Texto principal"),
         required=False,
     )
-    
+
     directives.read_permission(coordinador='arcas.defineCurador')
     directives.write_permission(coordinador='arcas.defineCurador')
     coordinador=schema.List(
@@ -64,6 +64,11 @@ class IColeccion(form.Schema):
     imagenCabecera=NamedBlobImage(
         title=_(u"Imagen cabezal"),
         description=_(u"Esta imagen se usa como cabezal en la visualización de la coleccion"),
+        required=False,
+    )
+    textoAltCabecera=schema.TextLine(
+        title=u"ALT Imagen cebecera",
+        description=_(u"Si la imagen de cabecera posee información de copyright, debe escribirse en este campo. Se desplegará la información al pasar el puntero sobre la imagen."),
         required=False,
     )
     imagenHome=NamedBlobImage(

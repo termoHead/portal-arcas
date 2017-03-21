@@ -12,7 +12,9 @@
 	<div class="markColeccion">
         <div class="boxHeader"
                 tal:attributes="style string:background:url(${context/absolute_url}/images/imagenCabecera) no-repeat">
+
             <div class="bloqH">
+
                 <div class="tituloColeccion">
                     <span class="subtituloColeccion">COLECCION</span>
                     <h2  tal:content="context/title">Manuel<br>Puig</h2>
@@ -38,19 +40,26 @@
                                value="Search"/>
                     </form>
                     <tal:edit tal:condition="python:False">
-                    <div class="botEditFuente" >
-                    <a href="navFuentes.php"                          
-                        tal:attributes="href string:/arcas/portada/editGs?coleccion=${context/GS_ID}; 
-                        title string:Editar Fuentes de esta colección">
-				<img src="/++theme++arcas.theme/images/irA.gif" alt=""/>Editar Fuetes</a>
-                    </div>
+		                <div class="botEditFuente" >
+				            <a href="navFuentes.php"                          
+				                tal:attributes="href string:/arcas/portada/editGs?coleccion=${context/GS_ID}; 
+				                title string:Editar Fuentes de esta colección">
+								<img src="/++theme++arcas.theme/images/irA.gif" alt=""/>Editar Fuetes</a>
+		                </div>
                     </tal:edit>
+
+                    <tal:pieimagen tal:condition="context/textoAltCabecera | none">
+					<span id="altCabecera" tal:content="context/textoAltCabecera"></span>
+</tal:pieimagen>
                     <div class="clr">&nbsp; </div>
                 </div>
                 <div class="clr">&nbsp; </div>
             </div>
             <div class="clr">&nbsp; </div>
+
         </div>
+
+
         <div class="busquedaColeccion ">
             <form>
                 <select><option>Navegar Fuentes</option></select>

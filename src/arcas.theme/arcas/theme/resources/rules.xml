@@ -91,7 +91,7 @@
             <merge attributes="class" css:theme="body" css:content="body" />
         </rules>
 	
-		<rules css:if-content=".portaltype-arcas-exhibicion">
+        <rules css:if-content=".portaltype-arcas-exhibicion">
              <rules css:if-not-content="body.template-edit">
                 <theme href="internaExhibicion.html" />
                 <merge attributes="style" css:theme="#presentacionExhibicion" css:content=".boxHeader" />
@@ -106,24 +106,30 @@
                 <replace css:content-children=".listadoEnlaces" css:theme-children=".listadoEnlaces"/>
             </rules>
         </rules>
+        
         <rules css:if-content=".template-newsitem_view ">
             <replace css:theme-children=".cabezalInterno" ><h2>Novedades</h2></replace>
             <before css:theme=".texto" css:content="h1#parent-fieldname-title"/>            
         </rules>
-		<rules css:if-content=".template-document_view"> 
-			<before css:theme=".cabezalInterno .clr" css:content="h1"/>
-		</rules>
-		<rules css:if-content=".portaltype-arcas-enlacegs"> 
-			<before css:theme=".cabezalInterno .clr" css:content="h1"/>
+        <rules css:if-content=".template-document_view"> 
+            <before css:theme=".cabezalInterno .clr" css:content="h1"/>
+        </rules>
+	<rules css:if-content=".portaltype-arcas-enlacegs"> 
+            <before css:theme=".cabezalInterno .clr" css:content="h1"/>
             <replace css:theme-children=".texto" css:content-children="#portal-column-content"/>
             <replace css:theme=".cabezalInterno h2">
                         <xsl:copy-of select="//*[@class='documentFirstHeading']" />
              </replace>
-
-		</rules>
+        </rules>
         
         
-        
+        <rules css:if-content=".template-editgs">
+            <theme href="estandar.html" />            
+             <append css:theme=".cabezalInterno ">
+                        <xsl:copy-of select="//*[@class='documentFirstHeading']" />
+             </append>
+             
+        </rules>
         <rules css:if-content=".template-contact-info">
             <theme href="estandar.html" />
             <replace css:theme-children=".texto" css:content-children="#portal-column-content"/>

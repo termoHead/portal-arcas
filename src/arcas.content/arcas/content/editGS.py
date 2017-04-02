@@ -38,7 +38,7 @@ from arcas.content.GSWManager import ClienteGS
 from arcas.content.config import infoMetadatosSerie
 from arcas.content.config import infoMetadatoSubSerie
 from arcas.content.config import infoMetaItem
-
+from arcas.content.FSManager import FSManager
 COLECCION=""
 SERIE=""
 SUBSERIE=""
@@ -50,7 +50,7 @@ def serie_vocab(self):
     cl=ClienteGS()
     lista=cl.getSeries(COLECCION)
     for pair in lista:
-        if pair["value"]!=False or  pair["value"]!=True or   pair["value"]!="true" or  pair["value"]!="false": 
+        if pair["value"]!=False or  pair["value"]!=True or pair["value"]!="true" or  pair["value"]!="false": 
             terms.append(SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]))
     return SimpleVocabulary(terms)
 
@@ -65,7 +65,7 @@ def subserie_vocab(self):
         if tieneSub:
             lista=cl.getDocsFromSerie(COLECCION,SERIE)            
             for pair in lista:   
-                if pair["value"]!=False or pair["value"]!=True or   pair["value"]!="true" or  pair["value"]!="false":
+                if pair["value"]!=False or pair["value"]!=True or pair["value"]!="true" or  pair["value"]!="false":
                     terms.append(SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]))
             return SimpleVocabulary(terms)
    
@@ -82,12 +82,14 @@ def item_vocab(self):
         if tieneSub:
             lista=cl.getDocsFromSubSerie(COLECCION,SUBSERIE)            
             for pair in lista:
-                terms.append(SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]))
+                terms.append(SimpleTerm(value=pair["value"], 
+token=pair["value"], title=pair["title"]))
             return SimpleVocabulary(terms)
         else:
             lista=cl.getDocsFromSerie(COLECCION,SERIE)
             for pair in lista:                
-                terms.append(SimpleTerm(value=pair["value"], token=pair["value"], title=pair["title"]))
+                terms.append(SimpleTerm(value=pair["value"], 
+token=pair["value"], title=pair["title"]))
             return SimpleVocabulary(terms)
     return  SimpleVocabulary([])
 
@@ -136,9 +138,11 @@ directlyProvides(item_vocab, IContextSourceBinder)
 
 
 class IGsMetaItem(form.Schema):
-    model.fieldset('Serie',
-        label=(u"Metadatos del Item"),
-        fields=["f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones","f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta"]
+    model.fieldset('Obra',
+        label=(u"Descripción del Item"),
+        
+    fields=["f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones",
+        "f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta"]
     )
     
     f_fechaCreacion= schema.TextLine(
@@ -146,6 +150,7 @@ class IGsMetaItem(form.Schema):
         description=u"Fecha de creacion del documento",
         required=False,
     )
+    
     f_lugarCreacion= schema.TextLine(
         title=u"Lugar",
         description=u"Lugar de creacion del documento",
@@ -156,15 +161,18 @@ class IGsMetaItem(form.Schema):
         description=u"Descripción física del documento",
         required=False,
     )
+    
     f_dimensiones= schema.TextLine(
         title=u"Dimensiones",        
         required=False,
     )
+    
     f_idioma= schema.Choice(
         title=u"Idioma",
         vocabulary=iso_idiomas,
         required=False,
     )
+    
     f_naturaleza= schema.TextLine(
         title=u"Naturaleza",
         description=u"Naturaleza del documento",
@@ -175,6 +183,7 @@ class IGsMetaItem(form.Schema):
         title=u"Alcance",        
         required=False,
     )
+    
     directives.mode(f_ruta='hidden')
     f_ruta= schema.TextLine(
         title=u"Ruta al xml",
@@ -183,10 +192,10 @@ class IGsMetaItem(form.Schema):
     ) 
     form.widget('f_anotacion', klass='recargaForm',size=5)
     f_anotacion = schema.Text(title=u"Anotación",required=False,)
-    
+
 class IGsSubSerie(form.Schema):
     model.fieldset('Subserie',
-        label=(u"Metadatos de la Sub Serie"),
+        label=(u"Descripción de la sub Serie"),
         fields=["sub_titulo","sub_alcance","sub_anotacion",]
     )
     sub_titulo= schema.TextLine(
@@ -200,35 +209,46 @@ class IGsSubSerie(form.Schema):
         required=False,
     ) 
     sub_anotacion=schema.TextLine(
-        title=u"Anotación",        
+        title=u"Anotación",
         required=False,
     ) 
     
 class IGsMetaSerie(form.Schema):
-    model.fieldset('Item',label=(u"Metadatos de la serie"),
-        fields=["s_titulo","s_temporal","s_autor","s_extension","s_caracteristicas","s_alcance","s_lenguaiso"]
+    model.fieldset('Item',label=(u"Descripción de la Serie"),
+        
+fields=["s_titulo","s_temporal","s_autor","s_extension","s_caracteristicas",
+"s_alcance","s_lenguaiso"]
     )
     s_titulo= schema.TextLine(title=u"Titulo",
-        description=u"no se que es... sera el título del documento",required=False,) 
-    s_temporal= schema.TextLine(title=u"Extensión Temporal",
-        description=u"no se que es... sera el título del documento",required=False,) 
+        description=u"Título de la serie",required=False,) 
+        
+    s_temporal= schema.TextLine(title=u"Cobertura temporal",
+        description=u"Extensión de tiempo que cubre la serie",required=False,) 
+        
     s_autor= schema.TextLine(title=u"Autor",
-        description=u"no se que es... sera el título del documento",required=False,) 
+        description=u"Autor de la Serie",required=False,) 
+        
     s_extension= schema.TextLine(title=u"Extensión",
         description=u"no se que es... sera el título del documento",required=False,)
    
-    s_caracteristicas= schema.TextLine(title=u"Caracteristicas",
-        description=u"no se que es... sera el título del documento",required=False,)
+    s_caracteristicas= schema.TextLine(title=u"Descripción física",
+        description=u"Cantidad de items de la serie",required=False,)
+        
     s_alcance= schema.TextLine(title=u"Alcance",
         description=u"no se que es... sera el título del documento",required=False,)
-    s_lenguaiso = schema.Choice(title=u"Idioma",vocabulary=iso_idiomas,required=False,)
+        
+    s_lenguaiso = schema.Choice(title=u"Idioma",vocabulary=iso_idiomas,description=u"Idioma de la serie",required=False,)
 
+
+    
 class IEditGS(form.Schema, IGsMetaSerie , IGsSubSerie,IGsMetaItem ):
-    """Campos del formulario de edición de un documento Greenston3 en el import!"""    
-    model.fieldset('Datos',
-        label=(u"Datos de la Obra"),
-        fields=["coleccion","serie","subserie","obra","obraTmp"]
+    """Campos del formulario de edición de un documento Greenston3 en el 
+import!"""    
+    model.fieldset('Selección de ítem Serie ',
+        label=(u"Elija una serie para editar"),
+        fields=["coleccion","serie","subserie","obra","obraTmp","tituColec"]
     )    
+    
     form.widget('coleccion', klass='recargaForm')
     coleccion= schema.Choice(
         title=u"Colección",
@@ -259,8 +279,17 @@ class IEditGS(form.Schema, IGsMetaSerie , IGsSubSerie,IGsMetaItem ):
         title=u"obraTmp",
         description=u"una pavada",
         required=False,
-    ) 
-from arcas.content.FSManager import FSManager
+    )    
+    directives.mode(tituColec='hidden')
+    tituColec= schema.TextLine(
+        title=u"Título",
+        description=u"título de la colección que está siendo editada",
+        required=False,
+    )
+
+
+    
+
 class EditGS(form.SchemaForm):
     """
        Edita un documento de Greenstone3 desde el import!
@@ -277,15 +306,23 @@ class EditGS(form.SchemaForm):
     #grok.require('arcas.addExhibicion')
     grok.context(IRootFolder)
     schema = IEditGS
+    
     ignoreContext = True    
-    label       = u"Editando un Documento GS"
-    description = u"Edición de metadatos"
+    label       = u"Formulario para edición de datos descriptivos de las fuentes primarias"
+    description = u'<div class="formuDescri">Los datos que usted va a editar se actualizarán una vez hayan sido revisados y aceptados\
+                    para su inclusión/modificación por el equipo técnico de ARCAS. Recibirá un mail con la modificación \
+                    por Usted realizada y cuando haya sido actualizado en el Portal público.<br \/>\
+                    En todos los casos, el formulario mostrará para editar la versión pública. Si necesita modificar \
+                    una versión generada por usted aún no publicada, utilice la información recibida por mail para \
+                    recuperar los datos de las versiones intermedias.</div>\
+                    '
     fsmanager   = ""
     coleccion   = "cordemia"
     serie       = ""
     obra        = ""
     saveFlag    = 0
     msjForm     = ""
+    
     
     lsw=["f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones","f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta"]
 
@@ -299,7 +336,8 @@ class EditGS(form.SchemaForm):
         super(EditGS, self).update()
         """
         tmpG=[]
-        ordenGrupos=[u"Metadatos del Item",u"Metadatos de la Sub Serie", u"Metadatos de la serie"]
+        ordenGrupos=[u"Metadatos del Item",u"Metadatos de la Sub Serie", 
+        u"Metadatos de la serie"]
         for grupo in ordenGrupos:
             for elem in self.groups:
                 if elem.label==grupo:
@@ -315,6 +353,7 @@ class EditGS(form.SchemaForm):
         
         if(len(self.groups[3].widgets["coleccion"].value)>0):
                 COLECCION=self.groups[3].widgets["coleccion"].value[0]
+                
         if colec:
             self.groups[3].widgets["coleccion"].value = colec.encode('utf-8')
             COLECCION=self.groups[3].widgets["coleccion"].value
@@ -326,14 +365,22 @@ class EditGS(form.SchemaForm):
         if(len(self.groups[3].widgets["subserie"].value)>0):
             if self.groups[3].widgets["subserie"].value[0] != "--NOVALUE--":
                 SUBSERIE=self.groups[3].widgets["subserie"].value[0]
+        
         super(EditGS, self).update()
         
+        self.groups[3].widgets["tituColec"].value=self.dameTituloColeccionByGSID(COLECCION)
+        if len(self.groups[3].widgets["tituColec"].value) >0:            
+            self.label="Formulario para edición de datos descriptivos de las fuentes primarias de la colección %s"%self.groups[3].widgets["tituColec"].value
         if colec:
             self.groups[3].widgets["coleccion"].value = colec.encode('utf-8')
             COLECCION=self.groups[3].widgets["coleccion"].value
             self.groups[3].widgets["coleccion"].mode = HIDDEN_MODE
-            
-            
+        
+        
+    
+        
+        
+        
     def apagrupo(self,grupo):
         for wid in grupo.widgets:            
             grupo.widgets[wid].mode=HIDDEN_MODE
@@ -402,7 +449,7 @@ class EditGS(form.SchemaForm):
             dicDatosItem={
                 "version":"1",
                 "idColec":self.groups[3].widgets["coleccion"].value[0],
-                "ruta":rutaItem,
+                "ruta":rutaItem,                
                 "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaItem.replace("/metadata.xml",""),
                 "metadatos":tmpList,
                 #"metadatos":[(infoMetaItem[x],self.groups[2].widgets[x].value) for x in infoMetadatos]
@@ -419,9 +466,9 @@ class EditGS(form.SchemaForm):
             dicDatosSerie={
                 "version":"1",
                 "idColec":self.groups[3].widgets["coleccion"].value[0],
-                "ruta":rutaSerie,
+                "ruta":rutaSerie,                
                 "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaSerie.replace("/metadata.xml",""),
-                "metadatos":tmpList,
+                "metadatos":tmpList,                
                 #"metadatos":[(infoMetadatosSerie[x],self.groups[0].widgets[x].value) for x in infoMetadatosSerie]
             }
             
@@ -436,7 +483,7 @@ class EditGS(form.SchemaForm):
                 dicDatosSubSerie={
                     "version":"1",
                     "idColec":self.groups[3].widgets["coleccion"].value[0],
-                    "ruta":rutaSubSerie,
+                    "ruta":rutaSubSerie,                    
                     "folder":self.groups[3].widgets["coleccion"].value[0]+"/"+rutaSubSerie.replace("/metadata.xml",""),
                     "metadatos":tmpList
                 }
@@ -447,36 +494,40 @@ class EditGS(form.SchemaForm):
             flagm=0
             
             
-            itemsaved=self.fsmanager.saveFile(dicDatosItem)
-            seriesaved=self.fsmanager.saveFile(dicDatosSerie)
+            itemsaved=self.fsmanager.saveFile(dicDatosItem,"item")
+            seriesaved=self.fsmanager.saveFile(dicDatosSerie,"serie")
  
             if itemsaved[0]=="error":
                 msj="> No se pudo guardar el item en %s"%rutaItem
                 flagm+=1
 
             if seriesaved[0]=="error":
-                msj="> No se pudo guardar la serie en %s"%rutaSerie                             
+                msj="> No se pudo guardar la serie en %s"%rutaSerie              
+               
                 flagm+=1                
             
                     
             if subSerieOk:            
-                subSeriesaved=self.fsmanager.saveFile(dicDatosSubSerie)
+                
+                subSeriesaved=self.fsmanager.saveFile(dicDatosSubSerie,"subSerie")
                 if subSeriesaved[0]=="error":
-                    msj="> No se pudo guardar la sub serie en %s" %rutaSubSerie                    
+                    msj="> No se pudo guardar la sub serie en %s" %rutaSubSerie  
+                  
                     flagm+=1
-            else:
-                subSeriesaved='sin sub serie'
-            
-            if flagm==0:
-                mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved})
-                if mandoCorreo:
-                    self.msjForm =u"Los cambios fueron guardados. Se generó una nueva versión de metadatos y se envió un para control"
                 else:
-                    self.msjForm =u"Los cambios fueron guardados. Pero hubo un error al querer enviar el correo."
+                    subSeriesaved='sin sub serie'
+                
+                if flagm==0:
+                    
+                    mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved})
+                    if mandoCorreo:
+                        self.msjForm =u"Los cambios fueron guardados correctamente. Se generó una nueva versión de metadatos y se envió un email para control."
+                    else:
+                        self.msjForm =u"Los cambios fueron guardados. Pero hubo un error al querer enviar el correo."
+                else:
+                    self.msjForm =u"No se pudieron guardar los cambios... se ha generando reporte"
             else:
-                self.msjForm =u"No se pudieron guardar los cambios... se ha generando reporte"
-        else:
-            self.status=self.msjForm
+                self.status=self.msjForm
 
 
     @button.buttonAndHandler(u"Cancel",condition=showObras)
@@ -493,22 +544,36 @@ class EditGS(form.SchemaForm):
         miurl=self.context.REQUEST.URL
         self.context.REQUEST.RESPONSE.redirect(miurl)
 
+        
+    def dameTituloColeccionByGSID(self,gsid):
+        cata=getToolByName(self.context,"portal_catalog")
+        brains=cata(portal_type="arcas.coleccion")        
+        nombreColeccion=""
+        for elem in brains:
+            if elem.getObject().GS_ID==gsid:
+                nombreColeccion=elem.Title
+                break
 
-
+        return nombreColeccion
+           
     def emails(self,datos):        
         sender="admin@arcas.unlp.edu.ar"
         mt=getToolByName(self.context,"portal_membership")
+        
+        nombreColeccion=self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value[0])
 
         operarioMail    = mt.getAuthenticatedMember().getProperty('email',None)
         operarioNombre  = mt.getAuthenticatedMember().getProperty('fullname',None)
-
+        
+        
+        
         if operarioMail=='':
             operarioMail="pablomusa@gmail.com"
 
         if operarioNombre=='':
             operarioNombre="Pablo Musa"
 
-        coordinadorMail = "pablomusa@gmail.com"
+        coordinadorMail = "mariana@fahce.unlp.edu.ar"
         reciver=[operarioMail,coordinadorMail]
 
         rutasItem =  datos["ritem"]
@@ -524,14 +589,13 @@ class EditGS(form.SchemaForm):
         # Create the body of the message (a plain-text and an HTML version).
         text = "Hola!\nSe modificaron metadatos en el Greenston de ARCAS.\n Los Archivos son: %s\n %s \n%s" %(rutasSerie,rutasSubSerie,rutasItem)
 
-        hhtml = u"<html><head></head><body><h2>Hola</h2>"
+        hhtml = u"<html><head></head><body><h3>Modificación en la coleccion: %s </h3>"%nombreColeccion
         hhtml += u"El usuario: %s, realizó modificaciones en los matadatos de ARCAS.</br>" %operarioNombre.decode("utf8")
         hhtml += u"<p>Esto es un registro básico de lo realizado:</p><ul>"
         hhtml += u"<li><b>Serie:</b><ul>"
 
-        for stra in rutasSerie:
-            txo=stra.encode('utf8')
-            hhtml += '<li>%s</li>'%txo.decode('utf8')
+        for stra in rutasSerie:            
+            hhtml += '<li>%s</li>'%stra
 
         if len(rutasSerie)==1:
             hhtml += '<li>Sin cambios</li>'
@@ -539,17 +603,16 @@ class EditGS(form.SchemaForm):
         hhtml += "</ul></li>"
 
         hhtml += u"<li><b>SubSerie:</b><ul>"   
-        for stra in rutasSubSerie:
-            txo=stra.encode('utf8')
-            hhtml += '<li>%s</li>'%txo
+        for stra in rutasSubSerie:            
+            hhtml += '<li>%s</li>'%stra
+            
         if len(rutasSubSerie)==1:
             hhtml += '<li>Sin cambios</li>'
         hhtml += "</ul></li>"
 
         hhtml += u"<li><b>Item:</b><ul>"
-        for stra in rutasItem:
-            txo=stra.encode('utf8')
-            hhtml += '<li>%s</li>'%txo
+        for stra in rutasItem:            
+            hhtml += '<li>%s</li>'%stra
 
         if len(rutasItem)==1:
             hhtml += '<li>Sin cambios</li>'            
@@ -560,7 +623,8 @@ class EditGS(form.SchemaForm):
         hhtml += u"</br></br><p></p>"
         hhtml += u"</body></html>"
 
-        # Record the MIME types of both parts - text/plain and text/html.        
+        # Record the MIME types of both parts - text/plain and text/html.       
+ 
         part1 = MIMEText(text, 'plain')
         part2 = MIMEText(hhtml.encode('utf8'), 'html')
         msg.attach(part1)

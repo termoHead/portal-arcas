@@ -37,17 +37,17 @@ function getQueryParams(qs) {
 }
 
 
-var MOD_GSEDIT = (function () {
-      
-        var qq = getQueryParams(document.location.search);
-        setTimeout(500,function(){
-        if(qq.coleccion!=undefined){
-            var inp=$(document.createElement("input"))
-            inp.attr('id','#form-widgets-coleccion')
-            $('option[value="puig"]').attr('selected', 'selected')}            
-            $( "#form-widgets-coleccion" ).replaceWith(inp);
-            $('#from-widgets-coleccion').parent().append("<h2>Coleccion "+qq.coleccion+"</h2>")            
-        })
+var MOD_GSEDIT = (function () {      
+    var qq = getQueryParams(document.location.search);
+ 
+    setTimeout(500,function(){
+    if(qq.coleccion!=undefined){
+        var inp=$(document.createElement("input"))
+        inp.attr('id','#form-widgets-coleccion')
+        $('option[value="puig"]').attr('selected', 'selected')}            
+        $( "#form-widgets-coleccion" ).replaceWith(inp);
+        $('#from-widgets-coleccion').parent().append("<h2>Coleccion "+qq.coleccion+"</h2>")            
+    })
 	var camposEdicion = ["f_fechaCreacion", "f_lugarCreacion", "f_descFisica", "f_dimensiones", "f_idioma", "f_naturaleza", "f_alcance", "f_anotacion", "f_ruta"]
 	var grupos = ["fieldsetlegend-datos", "fieldsetlegend-serie","fieldsetlegend-subserie","fieldsetlegend-item","fieldset-datos","fieldset-serie",
         "fieldsetlegend-subserie","fieldset-item"]
@@ -94,15 +94,14 @@ var MOD_GSEDIT = (function () {
 	var my = {},
 	privateVariable = 1;
         
-        function dameColeccionElegida(){
-            console.log($("#form-widgets-coleccion option:selected").length)
-            if($("#form-widgets-coleccion option:selected").length>0){
-                colec = $("#form-widgets-coleccion option:selected").attr("value")    
-            }else{
-                colec = $("#form-widgets-coleccion-1").attr("value")
-            }
-            return colec
+    function dameColeccionElegida(){            
+        if($("#form-widgets-coleccion option:selected").length>0){
+            colec = $("#form-widgets-coleccion option:selected").attr("value")    
+        }else{
+            colec = $("#form-widgets-coleccion-1").attr("value")
         }
+        return colec
+    }
 	function i() {
 		var subser = "false";
 		if ($("#form-buttons-guardar").length == 0) {
@@ -115,9 +114,13 @@ var MOD_GSEDIT = (function () {
                         buscaFuentejson('/json_gs', valor, colec)
 		})
 		$("#form-widgets-coleccion").change(function () {
-                    var colec = dameColeccionElegida()
+            var colec = dameColeccionElegida()
 			$("#form-widgets-obra option").remove()
-			buscaSeriejson("/json_gs", colec)
+            if(colec!='sin valor'){
+                buscaSeriejson("/json_gs", colec)
+            }else{
+                clarallforms()
+            }
 		})
 		$("#form-widgets-subserie").change(function () {
                     var colec = dameColeccionElegida()
@@ -136,13 +139,13 @@ var MOD_GSEDIT = (function () {
 		})
 	}
 	function ocultaCamposEdit() {
-		/*for (var a = 1; a < grupos.length; a++) {
+		for (var a = 1; a < grupos.length; a++) {
 			$("#" + grupos[a]).hide()
 			//$("#" + grupos[a + 3]).hide()
 		}
 		for (var a = 0; a < camposEdicion.length; a++) {
 			$("#formfield-form-widgets-" + camposEdicion[a]).hide()
-		}*/
+		}
 	}
 	function muestraCamposEdit() {        
 		for (var a = 1; a < Math.floor(grupos.length/2); a++) {
@@ -361,7 +364,7 @@ $(document).ready(function () {
 		if ($(".template-editgs").length > 0) {
 			//estoy en el formulario edicion greenstone
 			var objEGS = MOD_GSEDIT
-				objEGS.inicia()
+			objEGS.inicia()
 		}
 		
 		

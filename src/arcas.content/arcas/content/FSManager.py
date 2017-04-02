@@ -4,10 +4,10 @@ import urllib2
 import xml.etree.ElementTree as ET
 import os
 import sys
-from arcas.content.config import     infoMetadatosSerie as FinfoMetadatosSerie
-from arcas.content.config import     infoMetadatoSubSerie as FinfoMetadatoSubSerie
-from arcas.content.config import     infoMetaItem as FinfoMetaItem
-
+from arcas.content.config import infoMetadatosSerie as FinfoMetadatosSerie
+from arcas.content.config import infoMetadatoSubSerie as FinfoMetadatoSubSerie
+from arcas.content.config import infoMetaItem as FinfoMetaItem
+from arcas.content.config import itemTitles,subSerieTitles,serieTitle
 
 class FSManager(object):    
     """
@@ -85,7 +85,7 @@ class FSManager(object):
         nodo.text=dato
         return nodo
     
-    def saveFile(self,obModificado):
+    def saveFile(self,obModificado,tipoDato):
         """
             guarda los datos en el xml
         """
@@ -107,15 +107,31 @@ class FSManager(object):
         copiXml=self.miXml.getroot()
         
         
+        
         #actualizo los que estan
         for itemXml  in copiXml.find(".//FileSet/Description").findall(".//Metadata"):
             itXnom=itemXml.attrib["name"]
             itXtext=itemXml.text
+                        
             
             for itemForm in obModificado["metadatos"]:
                 itFnom =  itemForm[0]
-                itFtext=  itemForm[1]
-
+                itFtext=  itemForm[1]                
+                
+                
+                
+                if tipoDato=="serie":
+                    numCampo=FinfoMetadatosSerie.values().index(itFnom)
+                    tituloCampo=serieTitle[numCampo]
+                elif tipoDato=="subSerie":
+                    numCampo=FinfoMetadatoSubSerie.values().index(itFnom)
+                    tituloCampo=subSerieTitles[numCampo]                    
+                elif tipoDato=="item":
+                    numCampo=FinfoMetaItem.values().index(itFnom)
+                    tituloCampo=itemTitles[numCampo]
+                    
+                print tituloCampo
+                
                 if itFnom==itXnom:
                     if itFtext=="":
                         #Si en el formulario el metadato está vacio lo borro el XNL                        
@@ -128,13 +144,13 @@ class FSManager(object):
                         if type(itFtext)==type([]):
                             if itXtext!=itFtext[0]:
                                 itemXml.text=itFtext[0]
-                                logstr="actualizado> %s: %s" %(itFnom,itFtext[0])
+                                logstr="actualizado> %s[%s]: %s" %(itFnom,tituloCampo,itFtext[0])
                                 listlog.append(logstr)
                         else:
                             itemXml.text=itFtext
                             if itXtext!=itFtext:
                                 itemXml.text=itFtext
-                                logstr="actualizado> %s: %s" %(itFnom,itFtext)
+                                logstr="actualizado> %s[%s]: %s" %(itFnom,tituloCampo,itFtext)
                                 listlog.append(logstr)
                         flagMatch=True
                     break
@@ -150,6 +166,20 @@ class FSManager(object):
 
             flagMatch=False
             
+            
+            if tipoDato=="serie":
+                numCampo=FinfoMetadatosSerie.values().index(itFnom)
+                tituloCampo=serieTitle[numCampo]
+            elif tipoDato=="subSerie":
+                numCampo=FinfoMetadatoSubSerie.values().index(itFnom)
+                tituloCampo=subSerieTitles[numCampo]                    
+            elif tipoDato=="item":
+                numCampo=FinfoMetaItem.values().index(itFnom)
+                tituloCampo=itemTitles[numCampo]
+                
+            
+            
+            
             for itemXml  in copiXml.find(".//FileSet/Description").findall(".//Metadata"):
                 itXnom=itemXml.attrib["name"]
                 if itXnom == itFnom:
@@ -161,7 +191,7 @@ class FSManager(object):
                 if itFtext!="":
                     no=self.creatNewXmlMetadata(itFnom,itFtext)
                     copiXml.find(".//FileSet/Description").append(no)
-                    logstr="nuevo> %s: %s." %(itFnom,itFtext)
+                    logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext)
                     listlog.append(logstr)
         
         xmlstr=ET.tostring(copiXml)

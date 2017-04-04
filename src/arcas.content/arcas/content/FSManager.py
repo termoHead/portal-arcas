@@ -29,10 +29,10 @@ class FSManager(object):
 
     
     def openF(self,ruta,coll):
-        #if ruta.find("web")==-1:
-        #    self.xmlFileResto=ruta.split(coll)[1]
+        """ruta: es ruta al archivo greenston, desde el import,
+        coll: es id de coleccion"""
         ruta=self.xmlFileBase+coll+"/"+ruta
-        result=self.openFile(ruta) 
+        result=self.openFile(ruta)
         
         return result
                 
@@ -53,7 +53,25 @@ class FSManager(object):
 
         return False
 
+    def dameSigVerisonFolder(self,carpeta,nombre):
+        rut=self.xmlFileBase+carpeta
+        listado =os.listdir(rut)
+        tmp     =["1"]
+        listR=[]
+        for elem in listado:   
+            fx="metadata"
+            ex=".xml"
+            if elem.find(ex)>-1 and elem.find(fx)>-1:
+                version=elem[len(fx):elem.find(ex)]
+                listR.append(version)
 
+        if len(listR)==0:
+            return "1"
+            
+        if len(listR)==1:
+            if len(listR[0])==0:
+                return "1"
+                
     def dameSigVerison(self,carpeta):
         rut=self.xmlFileBase+carpeta
         listado =os.listdir(rut)

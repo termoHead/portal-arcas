@@ -4,7 +4,7 @@ from arcas.content import ArcasMessageFactory as _
 #La constantea es la base para un documento de greenstone
 #luego viene la colección elegida puig y la cadena fija "/document"
 #URL_GREENSTON_DOC="http://g3:8383/greenstone3/library/collection/"
-URL_GREENSTON_DOC="http://arcas.fahce.unlp.edu.ar:8383/greenstone3/library/collection/"
+URL_GREENSTON_DOC="http://arcas.fahce.unlp.edu.ar/greenstone3/library/collection/"
 
 
 
@@ -24,12 +24,21 @@ infoMetadatosSerie={'s_titulo':'ae.serietitulo',
     's_autor':'ae.serieautor',
     's_alcance':'ae.seriealcance',
     's_lenguaiso':'ae.serielenguaiso'}
+
+
+
+
 serieTitle=[u'Titulo',u'Cobertura temporal',u'Extensión',u'Descripción física',u'Autor',u'Alcance',u'Idioma']    
 
 infoMetadatoSubSerie={'sub_titulo':'ae.subserietitulo','sub_alcance' :'ae.subserieautor','sub_anotacion':'ae.subserielenguaiso'}
 subSerieTitles=[u'Título',u'Alcance',u'Anotación']
 
-infoMetaItem={ 'f_fechaCreacion':'ae.itemcoberturatemporal',
+infoMetaItem={ 
+    'f_titulo':'ae.itemtitulo',
+    'f_autor':'ae.itemautor',
+    'f_colaborador':'ae.itemcolaborador',
+    'f_edicion':'ae.itemedicion',
+    'f_fechaCreacion':'ae.itemcoberturatemporal',
     'f_lugarCreacion':'bi.lugar',
     'f_descFisica':'ae.itemdescripcionfisica',
     'f_dimensiones':'ae.itemdimension',

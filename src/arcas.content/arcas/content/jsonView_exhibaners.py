@@ -30,8 +30,8 @@ class JSONExhibicionesList(View):
     def update(self,idColeccion="puig"):
         self.contexto= aq_inner(self.context)
 
-        if self.request.form.has_key("idC"):
-            idColeccion=self.request.form["idC"]
+        if self.request.form.has_key("colecid"):
+            idColeccion=self.request.form["colecid"]
 
         self.idColeccion=idColeccion
 

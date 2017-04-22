@@ -130,6 +130,13 @@
              </append>
              
         </rules>
+         <rules css:if-content=".template-nuevoitemgs">
+            <theme href="estandar.html" />            
+             <append css:theme=".cabezalInterno ">
+                        <xsl:copy-of select="//*[@class='documentFirstHeading']" />
+             </append>
+             
+        </rules>
         <rules css:if-content=".template-contact-info">
             <theme href="estandar.html" />
             <replace css:theme-children=".texto" css:content-children="#portal-column-content"/>

@@ -13,6 +13,7 @@ from plone.directives import form
 
 from zope import schema
 from z3c.form import button
+from z3c.form.browser.checkbox import CheckBoxFieldWidget
 from z3c.form.interfaces import HIDDEN_MODE, DISPLAY_MODE, INPUT_MODE
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.statusmessages.interfaces import IStatusMessage
@@ -141,10 +142,31 @@ class IGsMetaItem(form.Schema):
     model.fieldset('Obra',
         label=(u"Descripción del Item"),
         
-    fields=["f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones",
+    fields=["f_titulo","f_autor","f_colaborador","f_edicion","f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones",
         "f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta"]
     )
     
+        
+    
+    f_titulo= schema.TextLine(
+        title=u"Título",
+        description=u"Título del documento",
+        required=True,
+    )
+    f_autor= schema.TextLine(
+        title=u"Autor",        
+        required=True,
+    )
+    
+    f_colaborador= schema.Text(
+        title=u'Colaboradore/s',
+        description=u'Agregar un colaborador por linea, en formato: apellido, nombre',
+        required=False,
+    )
+    f_edicion= schema.TextLine(
+        title=u"Edición",        
+        required=False,
+    )
     f_fechaCreacion= schema.TextLine(
         title=u"Fecha",
         description=u"Fecha de creacion del documento",
@@ -167,9 +189,11 @@ class IGsMetaItem(form.Schema):
         required=False,
     )
     
-    f_idioma= schema.Choice(
+    form.widget(f_idioma=CheckBoxFieldWidget)
+    f_idioma= schema.List(
         title=u"Idioma",
-        vocabulary=iso_idiomas,
+        description=u"Los valores que se desean asignar debe.",
+        value_type=schema.Choice(vocabulary=iso_idiomas),
         required=False,
     )
     
@@ -191,7 +215,7 @@ class IGsMetaItem(form.Schema):
         required=False,
     ) 
     form.widget('f_anotacion', klass='recargaForm',size=5)
-    f_anotacion = schema.Text(title=u"Anotación",required=False,)
+    f_anotacion = schema.Text(title=u"Anotación",required=True,)
 
 class IGsSubSerie(form.Schema):
     model.fieldset('Subserie',
@@ -294,12 +318,10 @@ class EditGS(form.SchemaForm):
     """
        Edita un documento de Greenstone3 desde el import!
     """
-
-
     xmlFileBase  ='/usr/local/Greenstone3/web/sites/localsite/collect/'
     xmlFileResto ='/import/co.1/se.1/su.1/ar.1/it.1/'
     xmlFileName='metadata.xml'
-
+    
     grok.name('editGs')
     grok.require('zope2.View')
     #grok.require('cmf.ListFolderContents')
@@ -324,7 +346,7 @@ class EditGS(form.SchemaForm):
     msjForm     = ""
     
     
-    lsw=["f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones","f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta"]
+    #lsw=["f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones","f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta"]
 
    
     editOk=False
@@ -335,21 +357,20 @@ class EditGS(form.SchemaForm):
         global SUBSERIE        
         super(EditGS, self).update()
         """
-        tmpG=[]
-        ordenGrupos=[u"Metadatos del Item",u"Metadatos de la Sub Serie", 
-        u"Metadatos de la serie"]
-        for grupo in ordenGrupos:
-            for elem in self.groups:
-                if elem.label==grupo:
-                    tmpG.append(elem)
-        
-        tmpG.append(self.groups[3])
-        self.groups=tuple(tmpG)
+            tmpG=[]
+            ordenGrupos=[u"Metadatos del Item",u"Metadatos de la Sub Serie", 
+            u"Metadatos de la serie"]
+            for grupo in ordenGrupos:
+                for elem in self.groups:
+                    if elem.label==grupo:
+                        tmpG.append(elem)
+            tmpG.append(self.groups[3])
+            self.groups=tuple(tmpG)
         """
         
         COLECCION=SERIE=SUBSERIE=""
-        colec = self.request.get('coleccion', None)        
-        
+        colec = self.request.get('coleccion', None)
+        self.xmlFileResto= self.request.get('coleccion', None)
         
         if(len(self.groups[3].widgets["coleccion"].value)>0):
                 COLECCION=self.groups[3].widgets["coleccion"].value[0]
@@ -375,11 +396,7 @@ class EditGS(form.SchemaForm):
             self.groups[3].widgets["coleccion"].value = colec.encode('utf-8')
             COLECCION=self.groups[3].widgets["coleccion"].value
             self.groups[3].widgets["coleccion"].mode = HIDDEN_MODE
-        
-        
-    
-        
-        
+
         
     def apagrupo(self,grupo):
         for wid in grupo.widgets:            
@@ -537,7 +554,7 @@ class EditGS(form.SchemaForm):
         global SERIE
         global SUBSERIE
 
-        COLECCION=SERIE=SUBSERIE=""        
+        COLECCION=SERIE=SUBSERIE=""
         self.status = "Cambios cancelados"
         self.editOk = False
         self.form._finishedAdd = True
@@ -547,7 +564,7 @@ class EditGS(form.SchemaForm):
         
     def dameTituloColeccionByGSID(self,gsid):
         cata=getToolByName(self.context,"portal_catalog")
-        brains=cata(portal_type="arcas.coleccion")        
+        brains=cata(portal_type="arcas.coleccion")
         nombreColeccion=""
         for elem in brains:
             if elem.getObject().GS_ID==gsid:
@@ -563,10 +580,8 @@ class EditGS(form.SchemaForm):
         nombreColeccion=self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value[0])
 
         operarioMail    = mt.getAuthenticatedMember().getProperty('email',None)
-        operarioNombre  = mt.getAuthenticatedMember().getProperty('fullname',None)
-        
-        
-        
+        operarioNombre  = mt.getAuthenticatedMember().getProperty('fullname',None)      
+                
         if operarioMail=='':
             operarioMail="pablomusa@gmail.com"
 
@@ -588,13 +603,14 @@ class EditGS(form.SchemaForm):
 
         # Create the body of the message (a plain-text and an HTML version).
         text = "Hola!\nSe modificaron metadatos en el Greenston de ARCAS.\n Los Archivos son: %s\n %s \n%s" %(rutasSerie,rutasSubSerie,rutasItem)
-
+        
+        
         hhtml = u"<html><head></head><body><h3>Modificación en la coleccion: %s </h3>"%nombreColeccion
         hhtml += u"El usuario: %s, realizó modificaciones en los matadatos de ARCAS.</br>" %operarioNombre.decode("utf8")
         hhtml += u"<p>Esto es un registro básico de lo realizado:</p><ul>"
         hhtml += u"<li><b>Serie:</b><ul>"
 
-        for stra in rutasSerie:            
+        for stra in rutasSerie:
             hhtml += '<li>%s</li>'%stra
 
         if len(rutasSerie)==1:
@@ -602,8 +618,8 @@ class EditGS(form.SchemaForm):
 
         hhtml += "</ul></li>"
 
-        hhtml += u"<li><b>SubSerie:</b><ul>"   
-        for stra in rutasSubSerie:            
+        hhtml += u"<li><b>SubSerie:</b><ul>"
+        for stra in rutasSubSerie:  
             hhtml += '<li>%s</li>'%stra
             
         if len(rutasSubSerie)==1:
@@ -623,17 +639,18 @@ class EditGS(form.SchemaForm):
         hhtml += u"</br></br><p></p>"
         hhtml += u"</body></html>"
 
-        # Record the MIME types of both parts - text/plain and text/html.       
+        #Record the MIME types of both parts - text/plain and text/html.
  
         part1 = MIMEText(text, 'plain')
         part2 = MIMEText(hhtml.encode('utf8'), 'html')
         msg.attach(part1)
         msg.attach(part2)
+        
         try:
             s = smtplib.SMTP('localhost')
             # sendmail function takes 3 arguments: sender's address, recipient's address
             # and message to send - here it is sent as one string.
-            s.sendmail(sender, reciver, msg.as_string())      
+            s.sendmail(sender, reciver, msg.as_string())
             s.quit()
             return True
         except Exception:

@@ -8,6 +8,7 @@ from arcas.content.config import infoMetadatosSerie as FinfoMetadatosSerie
 from arcas.content.config import infoMetadatoSubSerie as FinfoMetadatoSubSerie
 from arcas.content.config import infoMetaItem as FinfoMetaItem
 from arcas.content.config import itemTitles,subSerieTitles,serieTitle
+from xml.dom import minidom
 
 class FSManager(object):    
     """
@@ -53,25 +54,7 @@ class FSManager(object):
 
         return False
 
-    def dameSigVerisonFolder(self,carpeta,nombre):
-        rut=self.xmlFileBase+carpeta
-        listado =os.listdir(rut)
-        tmp     =["1"]
-        listR=[]
-        for elem in listado:   
-            fx="metadata"
-            ex=".xml"
-            if elem.find(ex)>-1 and elem.find(fx)>-1:
-                version=elem[len(fx):elem.find(ex)]
-                listR.append(version)
 
-        if len(listR)==0:
-            return "1"
-            
-        if len(listR)==1:
-            if len(listR[0])==0:
-                return "1"
-                
     def dameSigVerison(self,carpeta):
         rut=self.xmlFileBase+carpeta
         listado =os.listdir(rut)
@@ -83,16 +66,12 @@ class FSManager(object):
             if elem.find(ex)>-1 and elem.find(fx)>-1:
                 version=elem[len(fx):elem.find(ex)]
                 listR.append(version)
-
         if len(listR)==0:
-            return "1"
-            
+            return "1"            
         if len(listR)==1:
             if len(listR[0])==0:
                 return "1"
-                
-            
-        
+
         listR.sort()
         nex=listR[-1]
         resultado = str(int(nex[1:])+1)
@@ -103,6 +82,54 @@ class FSManager(object):
         nodo.text=dato
         return nodo
     
+    
+    def saveFileNuevoFile(self,obModificado):
+        """Genera y guarda el xml del formulario Nuevo Item"""
+        listlog=[]
+        docTypeHeader=u'<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE DirectoryMetadata SYSTEM \"http://greenstone.org/dtd/DirectoryMetadata/1.0/DirectoryMetadata.dtd \">'
+        root = ET.Element("DirectoryMetadata")
+        fset = ET.SubElement(root, "FileSet")
+        fm= ET.SubElement(fset, "FileName")
+        fm.text=".*"
+        desc= ET.SubElement(fset, "Description")
+        
+        for itemForm in obModificado["metadatos"]:
+            itFnom =  itemForm[0]
+            itFtext=  itemForm[1]
+            
+            if itFnom=="ae.itemcolaborador":                
+                for colab in itFtext.split("\r\n"):                 
+                    tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)                          
+                    tmpM.text=colab
+
+                
+            else:
+                tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)      
+                ttt=itFtext
+                tmpM.text=ttt
+                
+        xmlstr=minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
+        newfilename=obModificado["folder"]+"/metadata.xml"       
+        newstr=docTypeHeader+xmlstr
+
+       
+        try:         
+            
+            f=open(newfilename,"w+")            
+            f.write(newstr.encode('utf8'))
+            f.close()
+            logstr=newfilename
+            listlog.insert(0,logstr)
+        except:
+            e = sys.exc_info()[0]
+            print "Problema: %s"% e
+            logstr=newfilename
+            listlog.insert(0,"error")
+            
+        return listlog
+        
+
+                
     def saveFile(self,obModificado,tipoDato):
         """
             guarda los datos en el xml
@@ -128,7 +155,7 @@ class FSManager(object):
         
         #actualizo los que estan
         for itemXml  in copiXml.find(".//FileSet/Description").findall(".//Metadata"):
-            itXnom=itemXml.attrib["name"]
+            itXnom =itemXml.attrib["name"]
             itXtext=itemXml.text
                         
             
@@ -138,10 +165,10 @@ class FSManager(object):
                 
                 
                 
-                if tipoDato=="serie":
+                if tipoDato =="serie":
                     numCampo=FinfoMetadatosSerie.values().index(itFnom)
                     tituloCampo=serieTitle[numCampo]
-                elif tipoDato=="subSerie":
+                elif tipoDato =="subSerie":
                     numCampo=FinfoMetadatoSubSerie.values().index(itFnom)
                     tituloCampo=subSerieTitles[numCampo]                    
                 elif tipoDato=="item":
@@ -216,7 +243,7 @@ class FSManager(object):
         
         try:
             f=open(newfilename,"wr+")
-            newstr=docTypeHeader+xmlstr           
+            newstr=docTypeHeader+xmlstr
             f.write(newstr)
             f.close()
             logstr=newfilename
@@ -237,14 +264,9 @@ class FSManager(object):
         except:
             print "no se puede parsear el xml"
             return []
-        
+
         metadato=""
-        
-        
 
-        
-
-        
         if len(self.miXml.findall(u'.//Metadata[@name="'+strMeta+'"]'))>0:
             meta=self.miXml.findall(u'.//Metadata[@name="'+strMeta+'"]')[0].text
             metadato=meta

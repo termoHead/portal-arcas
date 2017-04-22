@@ -206,10 +206,14 @@ class JSONAutenticado(View):
     """
     grok.context(Interface)
     grok.name("json_autenticado")
-	
-    def update(self):
+    coId=""
+    def update(self):        
+        if self.request.form.has_key("colecid"):
+            self.coId=self.request.form['colecid']
+            
+            
         self.contexto= aq_inner(self.context)
-
+    
     def render(self):
         listing = self.datos()
         pretty = json.dumps(listing)
@@ -217,15 +221,39 @@ class JSONAutenticado(View):
         self.request.response.setHeader('Access-Control-Allow-Origin', '*')
         return pretty
 
-    def datos(self):
-        sdm = self.context.session_data_manager
-        session_id = sdm.getSessionData(create=False)
-        return [{'id':session_id}]
+    def datos(self):        
+        lsC=[]
+        listColeccionesHabilitado=[]
+        mt=getToolByName(self.context,"portal_membership")        
+        cat=getToolByName(self.context,"portal_catalog")        
+        
+        session_id=mt.getAuthenticatedMember().id
+        agrupos=mt.getAuthenticatedMember().getGroups()
+        
+        for grid in agrupos:
+            if grid.find("_g")>-1:
+                tmptext=grid[:grid.find("_g")]                
+                if tmptext not in lsC:
+                    lsC.append(tmptext)
+            elif grid.find("_pot")>1:
+                tmptext=grid[:grid.find("_pot")]                
+                if tmptext not in lsC:
+                    lsC.append(tmptext)
+                    
+        
+        for fold in lsC:
+            brains=cat.searchResults(id=fold)
+            if len(brains)>0:
+                for brain in brains:
+                    idg=brain.getObject().GS_ID
+                    if idg==self.coId:
+                        return [{'id':session_id,'colecciones_ok':'true'}]
+                    
+
+        return [{'id':session_id,'colecciones_ok':'false'}]
 
 class JSONExportMenu(View):
-    """
-    Called from main.js to populate the content listing view.
-    """
+    """Called from main.js to populate the content listing view"""
     grok.context(Interface)
     grok.name("json_menu")
 

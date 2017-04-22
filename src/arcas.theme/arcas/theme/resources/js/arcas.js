@@ -39,7 +39,14 @@ function getQueryParams(qs) {
 
 var MOD_GSEDIT = (function () {      
     var qq = getQueryParams(document.location.search);
- 
+    /*var tituloColeccion= $("#form-widgets-tituColec").attr("value")
+    console.log(tituloColeccion)
+    if(tituloColeccion.length>0){
+        tiutObj=$(document.createElement("h2"))
+        tituObj.text(tiutObj)
+        $('.cabezalInterno').append(tituObj)
+        
+    }*/
     setTimeout(500,function(){
     if(qq.coleccion!=undefined){
         var inp=$(document.createElement("input"))
@@ -94,14 +101,14 @@ var MOD_GSEDIT = (function () {
 	var my = {},
 	privateVariable = 1;
         
-    function dameColeccionElegida(){            
-        if($("#form-widgets-coleccion option:selected").length>0){
-            colec = $("#form-widgets-coleccion option:selected").attr("value")    
-        }else{
-            colec = $("#form-widgets-coleccion-1").attr("value")
+        function dameColeccionElegida(){            
+            if($("#form-widgets-coleccion option:selected").length>0){
+                colec = $("#form-widgets-coleccion option:selected").attr("value")    
+            }else{
+                colec = $("#form-widgets-coleccion-1").attr("value")
+            }
+            return colec
         }
-        return colec
-    }
 	function i() {
 		var subser = "false";
 		if ($("#form-buttons-guardar").length == 0) {
@@ -114,13 +121,9 @@ var MOD_GSEDIT = (function () {
                         buscaFuentejson('/json_gs', valor, colec)
 		})
 		$("#form-widgets-coleccion").change(function () {
-            var colec = dameColeccionElegida()
+                    var colec = dameColeccionElegida()
 			$("#form-widgets-obra option").remove()
-            if(colec!='sin valor'){
-                buscaSeriejson("/json_gs", colec)
-            }else{
-                clarallforms()
-            }
+			buscaSeriejson("/json_gs", colec)
 		})
 		$("#form-widgets-subserie").change(function () {
                     var colec = dameColeccionElegida()

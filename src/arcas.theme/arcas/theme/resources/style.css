@@ -1925,6 +1925,6 @@ tr.selected {
   right: 0;
   z-index: 999;
 }
-input[type="text"]:focus{background-color:#333}
-
+input[type="text"]:focus{background-color:#333;color:#fff}
+.destacado{font-weight:bold;color: #ffcc66}
 /* </dtml-with> */

@@ -68,7 +68,7 @@
                                     <div class="bloqueColeccion "                                         
                                         tal:define="imgCategoria artDestacado/url"
 
-                                        tal:attributes="style string:background:url('/++resource++arcas.content/topFichaHome.png') no-repeat #${artDestacado/color};
+                                        tal:attributes="style string:background:url('/arcas/++resource++arcas.content/topFichaHome.png') no-repeat #${artDestacado/color};
                                         class  string:bloqueColeccion color${artDestacado/color}">
                                         <a href="#" class="mascaraImg"
                                             tal:content="artDestacado/titulo"

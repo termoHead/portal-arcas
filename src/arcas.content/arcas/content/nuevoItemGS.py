@@ -59,7 +59,7 @@ class NuevoItemGS(form.SchemaForm):
     #grok.require('cmf.ListFolderContents')
     #grok.require('arcas.addExhibicion')
     grok.context(IRootFolder)
-    schema = IAddFiles    
+    schema = IAddFiles
     fields=field.Fields(IGsMetaItem).select("f_titulo","f_autor","f_colaborador","f_edicion","f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones",
         "f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta")
     ignoreContext = True
@@ -69,12 +69,8 @@ class NuevoItemGS(form.SchemaForm):
     
     def update(self):
         super(NuevoItemGS, self).update()
-
         if self.request.get('biruta', None):
-            self.widgets["f_ruta"].value=self.request.get('biruta', None)
-            
-        
-            
+            self.widgets["f_ruta"].value=self.request.get('biruta', None)    
         if self.request.get('colecId', None):
             self.widgets["colecId"].value=self.request.get('colecId', None)
             colec = self.request.get('colec', None)

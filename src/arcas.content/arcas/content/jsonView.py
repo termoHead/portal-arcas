@@ -227,7 +227,12 @@ class JSONAutenticado(View):
         mt=getToolByName(self.context,"portal_membership")        
         cat=getToolByName(self.context,"portal_catalog")        
         
+        
         session_id=mt.getAuthenticatedMember().id
+        
+        if session_id == 'acl_users':
+            return [{'id':session_id,'colecciones_ok':'false'}]
+        
         agrupos=mt.getAuthenticatedMember().getGroups()
         
         for grid in agrupos:
@@ -240,7 +245,7 @@ class JSONAutenticado(View):
                 if tmptext not in lsC:
                     lsC.append(tmptext)
                     
-        
+
         for fold in lsC:
             brains=cat.searchResults(id=fold)
             if len(brains)>0:

@@ -43,6 +43,8 @@ from arcas.content.FSManager import FSManager
 COLECCION=""
 SERIE=""
 SUBSERIE=""
+
+
 def serie_vocab(self):
     global COLECCION
     if COLECCION=="":

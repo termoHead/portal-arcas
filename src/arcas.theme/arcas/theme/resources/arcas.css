@@ -146,7 +146,9 @@ font-size:1px; color: transparent; background-position:3px}
 .portaltype-news-item   #parent-fieldname-description{padding-left:8px;}
 .fullDescriExhi{color: black; width:50%; overflow:scroll; height:700px; position:absolute;}
 .pb-ajax .introExhibicion{background-image: none; text-align: left;color:white}
-.pb-ajax{ background-color:#99928B}
+.pb-ajax{ 
+    background-color: #6d6558;
+}
 .listadoColecciones .lista{ margin-top:50px;}
 div.col1Linea {
   background-position: right center !important;

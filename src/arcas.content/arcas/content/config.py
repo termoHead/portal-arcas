@@ -48,7 +48,7 @@ infoMetaItem={
     'f_anotacion':'bi.anotacionitem',
     'f_ruta':'bi.ruta'}
 
-itemTitles=[u'Fecha',u'Lugar',u'Descripción física',u'Dimensiones',u'Idioma',u'Naturaleza',u'Alcance',u'Anotación','Ruta Archivo']
+itemTitles=[u'Titulo',u'Autor',u'Colaboradores',u'Edición',u'Fecha',u'Lugar',u'Descripción física',u'Dimensiones',u'Idioma',u'Naturaleza',u'Alcance',u'Anotación','Ruta Archivo']
 
 
  

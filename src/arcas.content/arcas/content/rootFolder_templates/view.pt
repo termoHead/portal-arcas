@@ -121,13 +121,23 @@
                    
                     </div>
                      
-                    <div class="buscadorColecciones">
-                        <form>
-                            <input type="text" value="Buscar en las colecciones" disabled/><img class="lupa" src="++theme++arcas.theme/img/lupa-negra.jpg"/>
+
+                    
+                </div>
+                    <div id="buscaEnTodo">
+                        <form action="/greenstone3/library">
+                            <input name="a" value="q" type="hidden">
+                            <input name="sa" value="" type="hidden">
+                            <input name="rt" value="rd" type="hidden">
+                            <input type="hidden" value="TextQuery" name="s">
+                            <input name="s1.maxDocs" value="20" type="hidden">
+                            <input name="s1.hitsPerPage" value="20" type="hidden">            
+                            <input name="s1.collection" value="all" type="hidden">     
+                            
+                            <input name="s1.query" type="text" value="Buscar en las colecciones"  />
+                            <img class="lupa" src="++theme++arcas.theme/img/lupa-negra.jpg"/>
                         </form>
                     </div>
-                </div>
-
 
             </div>
         </div>

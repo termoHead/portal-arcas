@@ -10,7 +10,7 @@ from arcas.content.config import infoMetaItem as FinfoMetaItem
 from arcas.content.config import itemTitles,subSerieTitles,serieTitle
 from xml.dom import minidom
 
-class FSManager(object):    
+class FSManager(object):
     """
         Abre el archivo y lo guarda en miXml
         gsx=FSManager()
@@ -38,6 +38,7 @@ class FSManager(object):
         return result
                 
     def openFile(self, ruta):
+        print ruta
         try:            
             xmlFile = ET.parse(ruta)
             self.miXml=xmlFile             
@@ -54,7 +55,22 @@ class FSManager(object):
 
         return False
 
+    def parseXmlFileMetadata(self,colec,ruta):
+        """Dada la ruta y la coleccion, abre un archivo XML y parsea los metadatos devolviendolos en un diccionario.
+        Lo uso en editItem"""
+        
+        dicc={}
+        miFile=self.openF(ruta,colec)        
+        if miFile:
+            metas=self.miXml.find("./FileSet/Description").findall(".//Metadata")
+            for elem in metas:
+                dicc.update({elem.attrib["name"]:elem.text})
+                
+            return dicc
+        else:
+            return "Error"
 
+        
     def dameSigVerison(self,carpeta):
         rut=self.xmlFileBase+carpeta
         listado =os.listdir(rut)
@@ -174,8 +190,7 @@ class FSManager(object):
                 elif tipoDato=="item":
                     numCampo=FinfoMetaItem.values().index(itFnom)
                     tituloCampo=itemTitles[numCampo]
-                    
-                print tituloCampo
+          
                 
                 if itFnom==itXnom:
                     if itFtext=="":

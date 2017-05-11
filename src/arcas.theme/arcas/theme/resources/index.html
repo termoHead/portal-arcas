@@ -16,12 +16,9 @@
 			<li><a href="#">CONTACTO</a></li>		
 			<li class="login"><a href="#">INICIAR SESION</a></li>		
 		</ul>
-		<h1 class="tituloPrincipal"><a href="index.html">ARCA</a>
-        </h1>
+		<h1 class="tituloPrincipal"><a href="index.html">ARCA</a></h1>
 		<div class="buscador">
-			<form>	
-				<input type="text" name="buscar" value="Buscar" />
-			</form>		
+			<form><input type="text" name="buscar" value="Buscar" /></form>
 		</div>
 		<div class="clr"></div>	
 	</div>
@@ -58,8 +55,7 @@
                     </div>
                 </div>		
                 <div class="clr"></div>
-                </div>
-
+            </div>
             <div class="separador">&nbsp</div>
             <div class="bloqueColeccion edgardoVigo">
                 <div class="textoInterno">
@@ -77,13 +73,21 @@
                 <div class="clr"></div>
             </div>
         </div>
-        <div class="controlC"></div>
-		<div class="buscarEnColecciones">
-			<form>
-				<input type="text" name="buscarEnColecciones" value="Buscar en las colecciones" />			
-			</form>		
-		</div>
-	<div class="clr"></div>
+            <div class="controlC"></div>
+            <div class="buscarEnColecciones">
+                 <form action="/greenstone3/library">
+                            <input name="a" value="q" type="hidden">
+                            <input name="sa" value="" type="hidden">
+                            <input name="rt" value="rd" type="hidden">
+                            <input type="hidden" value="TextQuery" name="s">
+                            <input name="s1.maxDocs" value="20" type="hidden">
+                            <input name="s1.hitsPerPage" value="20" type="hidden">            
+                            <input name="s1.collection" value="all" type="hidden">     
+                            
+                            <input name="s1.query" type="text" value="Buscar en las colecciones"  />
+                        </form>
+                </div>
+            <div class="clr"></div>
 	</div>
 
 	<div id="contenido">

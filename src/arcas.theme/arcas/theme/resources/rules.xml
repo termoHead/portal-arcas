@@ -117,7 +117,13 @@
         <rules css:if-content=".template-document_view"> 
             <before css:theme=".cabezalInterno .clr" css:content="h1"/>
         </rules>
-	<rules css:if-content=".portaltype-arcas-enlacegs"> 
+        <rules css:if-content=".template-edititem"> 
+        
+          <replace css:theme=".cabezalInterno h2">
+                        <xsl:copy-of select="//*[@class='documentFirstHeading']" />
+             </replace>
+        </rules>
+        <rules css:if-content=".portaltype-arcas-enlacegs"> 
             <before css:theme=".cabezalInterno .clr" css:content="h1"/>
             <replace css:theme-children=".texto" css:content-children="#portal-column-content"/>
             <replace css:theme=".cabezalInterno h2">
@@ -126,11 +132,13 @@
         </rules>
         
         
-        <rules css:if-content=".template-editgs">
+        <rules css:if-content=".template-edititem">
             <theme href="estandar.html" />            
-             <append css:theme=".cabezalInterno ">
-                        <xsl:copy-of select="//*[@class='documentFirstHeading']" />
-             </append>
+             <prepend css:theme=".cabezalInterno ">
+                    <h2>
+                    <xsl:value-of select="//*[@class='documentFirstHeading']" />
+                    </h2>
+             </prepend>
              
         </rules>
          <rules css:if-content=".template-nuevoitemgs">

@@ -1,4 +1,5 @@
- # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 __author__ = 'Paul'
 import urllib2
 import xml.etree.ElementTree as ET
@@ -210,7 +211,12 @@ class FSManager(object):
                             itemXml.text=itFtext
                             if itXtext!=itFtext:
                                 itemXml.text=itFtext
-                                logstr="actualizado> %s[%s]: %s" %(itFnom,tituloCampo,itFtext)
+                                try:
+                                    logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext)
+                                except:
+                                    print u'error de codificación ... lo paso a utf8'
+                                    logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext.decode('utf8'))
+                                
                                 listlog.append(logstr)
                         flagMatch=True
                     break
@@ -220,38 +226,38 @@ class FSManager(object):
         for itemForm in obModificado["metadatos"]:
             itFnom =  itemForm[0]
             itFtext=  itemForm[1]
-            
+
             if type(itFtext)==type([]):
                 itFtext=itFtext[0]
 
             flagMatch=False
-            
-            
+
             if tipoDato=="serie":
                 numCampo=FinfoMetadatosSerie.values().index(itFnom)
                 tituloCampo=serieTitle[numCampo]
             elif tipoDato=="subSerie":
                 numCampo=FinfoMetadatoSubSerie.values().index(itFnom)
-                tituloCampo=subSerieTitles[numCampo]                    
+                tituloCampo=subSerieTitles[numCampo]
             elif tipoDato=="item":
                 numCampo=FinfoMetaItem.values().index(itFnom)
                 tituloCampo=itemTitles[numCampo]
-                
-            
-            
-            
+
             for itemXml  in copiXml.find(".//FileSet/Description").findall(".//Metadata"):
                 itXnom=itemXml.attrib["name"]
                 if itXnom == itFnom:
                     flagMatch=True
                     break
 
-            if flagMatch==False:
-
+            if flagMatch==False:                
+                
                 if itFtext!="":
                     no=self.creatNewXmlMetadata(itFnom,itFtext)
                     copiXml.find(".//FileSet/Description").append(no)
-                    logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext)
+                    try:
+                        logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext)
+                    except:
+                        print u'error de codificación ... lo paso a utf8'
+                        logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext.decode('utf8'))
                     listlog.append(logstr)
         
         xmlstr=ET.tostring(copiXml)

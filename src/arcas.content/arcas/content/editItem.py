@@ -29,6 +29,7 @@ from arcas.content.FSManager import FSManager
 from plone.namedfile.field import NamedFile
 from z3c.form import field, group
 from arcas.content.config import infoMetaItem,infoMetadatoSubSerie,infoMetadatosSerie
+from arcas.content.config import MAIL_ADMIN , MAIL_COORDINADOR
 
    
 class IEditItem(form.Schema, IGsMetaSerie , IGsSubSerie,IGsMetaItem ):
@@ -122,25 +123,23 @@ class EditItem(form.SchemaForm):
         global SUBSERIE        
         super(EditItem, self).update()
         
-        """
-        tmpG=[]
-        ordenGrupos=[u"Metadatos del Item",u"Metadatos de la Sub Serie", 
-        u"Metadatos de la serie"]
-        for grupo in ordenGrupos:
-            for elem in self.groups:
-                if elem.label==grupo:
-                    tmpG.append(elem)
-        tmpG.append(self.groups[3])
-        self.groups=tuple(tmpG)
-        """
+        
+        
         dictForm= self.request.form
+        if 'cancel' in dictForm.keys():
+            self.status="Los cambios fueron cancelados"
+            return
+        if 'formOk' in dictForm.keys():
+            self.status=dictForm['formOk']
+            return 
+            
+            
         if 'obra' in dictForm.keys():
             tituloC=self.dameTituloDeColeccionPorID_GS(dictForm["coleccion"])
             self.label=u'Editando la obra %s, de la colección: %s' %(dictForm["obra"],tituloC)
             
         COLECCION=SERIE=SUBSERIE=""        
-        
-        
+
         if "biruta" in dictForm:
             biruta=dictForm["biruta"]
             print biruta
@@ -148,10 +147,6 @@ class EditItem(form.SchemaForm):
         else:
             #biruta=dictForm["form.widgets.f_ruta"]
             biruta=None
-
-            
-
-            
 
         if not biruta:
             return
@@ -166,8 +161,6 @@ class EditItem(form.SchemaForm):
             self.groups[3].widgets["coleccion"].update()
             self.groups[3].widgets["obra"].value=dictForm["obra"]
             self.groups[3].widgets["obra"].update()
-            
-            
         else:
             COLECCION=None
 
@@ -221,37 +214,38 @@ class EditItem(form.SchemaForm):
         itemSerieLoaded=fsmanager.parseXmlFileMetadata(COLECCION,rutaSerie)
         if subSerieOk:
             itemSubSerieLoaded=fsmanager.parseXmlFileMetadata(COLECCION,rutaSubSerie)
-
+        
         for tupla in itemLoaded.items():
             try:
-                widgetNumber=infoMetaItem.values().index(tupla[0])  
+                widgetNumber=infoMetaItem.values().index(tupla[0])                  
                 self.groups[0].widgets[infoMetaItem.keys()[widgetNumber]].value=tupla[1]
+                self.groups[0].widgets[infoMetaItem.keys()[widgetNumber]].update()
             except:
                 pass
                 #print u"el elemento no está"
 
         for tupla in itemSerieLoaded.items():
-            try:                
+            try:
                 widgetNumber=infoMetadatosSerie.values().index(tupla[0])     
                 self.groups[2].widgets[infoMetadatosSerie.keys()[widgetNumber]].value=tupla[1]
             except:
                 pass
                 #print u"el elemento no está"
-            
+
         if subSerieOk:
             for tupla in itemSubSerieLoaded.items():
-                try:                    
+                try:
                     widgetNumber=infoMetadatoSubSerie.values().index(tupla[0])
                     self.groups[1].widgets[infoMetadatoSubSerie.keys()[widgetNumber]].value=tupla[1]
                 except:
                     pass
                     #print u"el elemento no está"
 
-        
         self.groups[3].mode='hidden'
-        
+
+
+
         #super(EditItem, self).update()
-        
         #self.groups[3].widgets["tituColec"].value=self.dameTituloColeccionByGSID(COLECCION)
         #if len(self.groups[3].widgets["tituColec"].value) >0:
         #    self.label="Formulario para edición de datos descriptivos de las fuentes primarias de la colección %s"%self.groups[3].widgets["tituColec"].value
@@ -335,7 +329,7 @@ class EditItem(form.SchemaForm):
                 itFtext=self.groups[0].widgets[x].value
                 if type(itFtext)==type([]):
                     itFtext=itFtext[0]
-                tmpList.append((infoMetaItem[x],itFtext.encode("utf8")))
+                tmpList.append((infoMetaItem[x],itFtext))
                 
             dicDatosItem={
                 "version":"1",
@@ -417,7 +411,8 @@ class EditItem(form.SchemaForm):
                     self.msjForm =u"No se pudieron guardar los cambios... se ha generando reporte"
             else:
                 self.status=self.msjForm
-
+        miurl=self.context.REQUEST.URL
+        self.context.REQUEST.RESPONSE.redirect(miurl+"?formOk="+self.msjForm.encode('utf8'))
 
     @button.buttonAndHandler(u"Cancel")
     def handleCancel(self, action):
@@ -426,12 +421,12 @@ class EditItem(form.SchemaForm):
         global SERIE
         global SUBSERIE
 
-        COLECCION=SERIE=SUBSERIE=""
-        self.status = "Cambios cancelados"
+        COLECCION=SERIE=SUBSERIE=""        
         self.editOk = False
         self.form._finishedAdd = True
         miurl=self.context.REQUEST.URL
-        self.context.REQUEST.RESPONSE.redirect(miurl)
+        
+        self.context.REQUEST.RESPONSE.redirect(miurl+"?cancel=ok")
 
         
     def dameTituloColeccionByGSID(self,gsid):
@@ -446,7 +441,7 @@ class EditItem(form.SchemaForm):
         return nombreColeccion
            
     def emails(self,datos):        
-        sender="admin@arcas.unlp.edu.ar"
+        sender=MAIL_ADMIN
         mt=getToolByName(self.context,"portal_membership")
         
         nombreColeccion=self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value)
@@ -460,7 +455,7 @@ class EditItem(form.SchemaForm):
         if operarioNombre=='':
             operarioNombre="Pablo Musa"
 
-        coordinadorMail = "mariana@fahce.unlp.edu.ar"
+        coordinadorMail = MAIL_COORDINADOR
         reciver=[operarioMail,coordinadorMail]
 
         rutasItem =  datos["ritem"]

@@ -28,7 +28,7 @@ from arcas.content.editGS import IGsMetaItem,iso_idiomas
 from arcas.content.FSManager import FSManager
 from plone.namedfile.field import NamedFile
 from z3c.form import field, group
-from arcas.content.config import infoMetaItem
+from arcas.content.config import infoMetaItem, MAIL_ADMIN ,MAIL_COORDINADOR
 
 class IAddFiles(form.Schema):
     upFile = NamedFile(title=u"Subir archivo",

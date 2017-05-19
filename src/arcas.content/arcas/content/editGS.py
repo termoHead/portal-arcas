@@ -262,7 +262,7 @@ fields=["s_titulo","s_temporal","s_autor","s_extension","s_caracteristicas",
         
     s_alcance= schema.TextLine(title=u"Alcance",
         description=u"no se que es... sera el título del documento",required=False,)
-        
+    form.widget(s_lenguaiso=CheckBoxFieldWidget)
     s_lenguaiso = schema.Choice(title=u"Idioma",vocabulary=iso_idiomas,description=u"Idioma de la serie",required=False,)
 
 

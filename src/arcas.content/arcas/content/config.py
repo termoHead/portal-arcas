@@ -17,8 +17,7 @@ MAIL_COORDINADOR= u"mariana@fahce.unlp.edu.ar"
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 TIPOS_COLECCION = SimpleVocabulary(
     [SimpleTerm(value=u'0', title=_(u'Autor')),
-     SimpleTerm(value=u'1', title=_(u'Corpus Linguisticos'))
-     ]
+     SimpleTerm(value=u'1', title=_(u'Corpus Linguisticos'))]
     )
 infoMetadatosSerie={'s_titulo':'ae.serietitulo',
     's_temporal':'ae.seriecoberturatemporal',

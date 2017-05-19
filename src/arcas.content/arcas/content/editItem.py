@@ -29,19 +29,17 @@ from arcas.content.FSManager import FSManager
 from plone.namedfile.field import NamedFile
 from z3c.form import field, group
 from arcas.content.config import infoMetaItem,infoMetadatoSubSerie,infoMetadatosSerie
-from arcas.content.config import MAIL_ADMIN , MAIL_COORDINADOR
+from arcas.content.cartero import Cartero
 
    
 class IEditItem(form.Schema, IGsMetaSerie , IGsSubSerie,IGsMetaItem ):
-    """Campos del formulario de edición de un documento Greenston3 en el 
-import!   """ 
+    """Campos del formulario de edición de un documento Greenston3 en el import!""" 
     model.fieldset('Selección de ítem Serie ',
         label=(u"Elija una serie para editar"),
         fields=["coleccion","serie","subserie","obra","obraTmp","tituColec"]
         
     )    
-    
-    
+
     form.widget('coleccion', klass='recargaForm')
     directives.mode(coleccion='hidden')
     coleccion= schema.TextLine(
@@ -331,16 +329,19 @@ class EditItem(form.SchemaForm):
                     itFtext=itFtext[0]
                 tmpList.append((infoMetaItem[x],itFtext))
                 
+                #Agrega el nombre de la coleccion como está en cargado en Plone               
+            
             dicDatosItem={
                 "version":"1",
+                "nomreColeccion":self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value),
                 "idColec":self.groups[3].widgets["coleccion"].value,
                 "ruta":rutaItem,                
                 "folder":self.groups[3].widgets["coleccion"].value+"/"+rutaItem.replace("/metadata.xml",""),
                 "metadatos":tmpList,
                 #"metadatos":[(infoMetaItem[x],self.groups[2].widgets[x].value) for x in infoMetadatos]
                 }
-                
-            #-------- cargo ITEM    
+            
+            #-------- cargo ITEM
             tmpList=[]
             for x in infoMetadatosSerie:
                 itFtext=self.groups[2].widgets[x].value
@@ -350,10 +351,11 @@ class EditItem(form.SchemaForm):
             
             dicDatosSerie={
                 "version":"1",
+                "nomreColeccion":self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value),
                 "idColec":self.groups[3].widgets["coleccion"].value,
-                "ruta":rutaSerie,                
+                "ruta":rutaSerie,
                 "folder":self.groups[3].widgets["coleccion"].value+"/"+rutaSerie.replace("/metadata.xml",""),
-                "metadatos":tmpList,                                  
+                "metadatos":tmpList,
                 #"metadatos":[(infoMetadatosSerie[x],self.groups[0].widgets[x].value) for x in infoMetadatosSerie]
             }
             
@@ -364,15 +366,16 @@ class EditItem(form.SchemaForm):
                     if type(itFtext)==type([]):
                         itFtext=itFtext[0]                
                     tmpList.append((infoMetadatoSubSerie[x],itFtext))
-                    
+                
                 dicDatosSubSerie={
                     "version":"1",
+                    "nomreColeccion":self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value),
                     "idColec":self.groups[3].widgets["coleccion"].value,
                     "ruta":rutaSubSerie,                    
                     "folder":self.groups[3].widgets["coleccion"].value+"/"+rutaSubSerie.replace("/metadata.xml",""),
                     "metadatos":tmpList
                 }
-             
+                
             
             self.fsmanager=FSManager()
 
@@ -387,9 +390,8 @@ class EditItem(form.SchemaForm):
                 flagm+=1
 
             if seriesaved[0]=="error":
-                msj="> No se pudo guardar la serie en %s"%rutaSerie              
-               
-                flagm+=1                
+                msj="> No se pudo guardar la serie en %s"%rutaSerie
+                flagm+=1
             
                     
             if subSerieOk:                
@@ -399,9 +401,7 @@ class EditItem(form.SchemaForm):
                     flagm+=1
                 else:
                     subSeriesaved='sin sub serie'
-                
                 if flagm==0:
-                    
                     mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved})
                     if mandoCorreo:
                         self.msjForm =u"Los cambios fueron guardados correctamente. Se generó una nueva versión de metadatos y se envió un email para control."
@@ -421,7 +421,7 @@ class EditItem(form.SchemaForm):
         global SERIE
         global SUBSERIE
 
-        COLECCION=SERIE=SUBSERIE=""        
+        COLECCION=SERIE=SUBSERIE=""
         self.editOk = False
         self.form._finishedAdd = True
         miurl=self.context.REQUEST.URL
@@ -441,88 +441,9 @@ class EditItem(form.SchemaForm):
         return nombreColeccion
            
     def emails(self,datos):        
-        sender=MAIL_ADMIN
-        mt=getToolByName(self.context,"portal_membership")
-        
-        nombreColeccion=self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value)
-
-        operarioMail    = mt.getAuthenticatedMember().getProperty('email',None)
-        operarioNombre  = mt.getAuthenticatedMember().getProperty('fullname',None)      
-                
-        if operarioMail=='':
-            operarioMail="pablomusa@gmail.com"
-
-        if operarioNombre=='':
-            operarioNombre="Pablo Musa"
-
-        coordinadorMail = MAIL_COORDINADOR
-        reciver=[operarioMail,coordinadorMail]
-
-        rutasItem =  datos["ritem"]
-        rutasSerie =  datos["rserie"]
-        rutasSubSerie =  datos["rsubserie"]
-
-        # Create message container - the correct MIME type is multipart/alternative.
-        msg = MIMEMultipart('alternative')
-        msg['Subject'] = "[ARCAS] Cambios en los metadatos de un registro"
-        msg['From'] = sender
-        msg['To'] = reciver[0]+','+reciver[1]
-
-        # Create the body of the message (a plain-text and an HTML version).
-        text = "Hola!\nSe modificaron metadatos en el Greenston de ARCAS.\n Los Archivos son: %s\n %s \n%s" %(rutasSerie,rutasSubSerie,rutasItem)
-        
-        
-        hhtml = u"<html><head></head><body><h3>Modificación en la coleccion: %s </h3>"%nombreColeccion
-        hhtml += u"El usuario: %s, realizó modificaciones en los matadatos de ARCAS.</br>" %operarioNombre.decode("utf8")
-        hhtml += u"<p>Esto es un registro básico de lo realizado:</p><ul>"
-        hhtml += u"<li><b>Serie:</b><ul>"
-
-        for stra in rutasSerie:
-            hhtml += '<li>%s</li>'%stra
-
-        if len(rutasSerie)==1:
-            hhtml += '<li>Sin cambios</li>'
-
-        hhtml += "</ul></li>"
-
-        hhtml += u"<li><b>SubSerie:</b><ul>"
-        for stra in rutasSubSerie:  
-            hhtml += '<li>%s</li>'%stra
-            
-        if len(rutasSubSerie)==1:
-            hhtml += '<li>Sin cambios</li>'
-        hhtml += "</ul></li>"
-
-        hhtml += u"<li><b>Item:</b><ul>"
-        for stra in rutasItem:            
-            hhtml += '<li>%s</li>'%stra
-
-        if len(rutasItem)==1:
-            hhtml += '<li>Sin cambios</li>'            
-        hhtml += "</ul></li>"
-
-        hhtml += u"</ul><hr/><p>Este es un mail automático, por favor no responder. En caso de errores "
-        hhtml += u"comunicarse con mariana@fahce.unlp.edu.ar</p>Gracias.</p>"
-        hhtml += u"</br></br><p></p>"
-        hhtml += u"</body></html>"
-
-        #Record the MIME types of both parts - text/plain and text/html.
- 
-        part1 = MIMEText(text, 'plain')
-        part2 = MIMEText(hhtml.encode('utf8'), 'html')
-        msg.attach(part1)
-        msg.attach(part2)
-        
-        try:
-            s = smtplib.SMTP('localhost')
-            # sendmail function takes 3 arguments: sender's address, recipient's address
-            # and message to send - here it is sent as one string.
-            s.sendmail(sender, reciver, msg.as_string())
-            s.quit()
-            return True
-        except Exception:
-            print "Error: unable to send email"
-            return False
+        msj=Cartero()
+        loMando=msj.sendModificacion(datos)
+        return loMnando
 
 
     

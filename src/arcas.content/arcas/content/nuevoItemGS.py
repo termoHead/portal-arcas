@@ -11,6 +11,7 @@ from plone.directives import form
 
 from zope import schema
 from z3c.form import button
+from z3c.form.browser.checkbox import CheckBoxFieldWidget
 from z3c.form.interfaces import HIDDEN_MODE, DISPLAY_MODE, INPUT_MODE
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.statusmessages.interfaces import IStatusMessage
@@ -29,22 +30,49 @@ from arcas.content.FSManager import FSManager
 from plone.namedfile.field import NamedFile
 from z3c.form import field, group
 from arcas.content.config import infoMetaItem, MAIL_ADMIN ,MAIL_COORDINADOR
+from arcas.content.cartero import Cartero
 
 class IAddFiles(form.Schema):
     upFile = NamedFile(title=u"Subir archivo",
     description=u"El archivo con la fuente primaria. Si son muchos, por favor comprima los mismos en un archivo ZIP")
-    #directives.mode(rutaNivelObra='hidden')
+    directives.mode(rutaNivelObra='hidden')
     rutaNivelObra= schema.TextLine(
         title=u"Ruta de la obra",
         description=u"ruta para armar la carpeta nueva",
         required=False,
     )   
-    #directives.mode(colecId='hidden')
+    directives.mode(colecId='hidden')
     colecId= schema.TextLine(
         title=u"Id colección",
         description=u"Colección",
         required=False,
-    )   
+    )
+    directives.mode(colec='hidden')
+    colec= schema.TextLine(
+        title=u"coleccion",
+        description=u"Colección",
+        required=False,
+    )
+    directives.mode(serie='hidden')
+    serie= schema.TextLine(
+        title=u"serie",
+        description=u"Colección",
+        required=False,
+    )
+    directives.mode(subSerie='hidden')
+    subSerie= schema.TextLine(
+        title=u"subserie",
+        description=u"Colección",
+        required=False,
+    )
+    form.widget(f_idioma=CheckBoxFieldWidget)
+    f_idioma= schema.List(
+        title=u"Idioma",
+        description=u"Los valores que se desean asignar debe.",
+        value_type=schema.Choice(vocabulary=iso_idiomas),
+        required=False,
+    )
+    
     
 class NuevoItemGS(form.SchemaForm):
     xmlFileBase  ='/usr/local/Greenstone3/web/sites/localsite/collect/'
@@ -61,10 +89,10 @@ class NuevoItemGS(form.SchemaForm):
     grok.context(IRootFolder)
     schema = IAddFiles
     fields=field.Fields(IGsMetaItem).select("f_titulo","f_autor","f_colaborador","f_edicion","f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones",
-        "f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta")
+        "f_naturaleza","f_alcance","f_anotacion","f_ruta")
     ignoreContext = True
     label       = u"Nueva obra"
-    description = u'<div class="formuDescri">Se está agregando una obra nueva</div>'
+    description = u'<div class="formuDescri">Se está agregando una obra nueva </div>'
     
     
     def update(self):
@@ -76,14 +104,18 @@ class NuevoItemGS(form.SchemaForm):
             colec = self.request.get('colec', None)
             serie = self.request.get('serie', None)
             subserie = self.request.get('subserie', None)
+            self.widgets["colec"].value=colec
+            self.widgets["serie"].value=serie
+            
             if subserie:
                 self.description = u'<div class="descriForm">Se agregará una nueva obra a la colección <span class="destacado">%s</span>, serie: <span class="destacado">%s</span>, subserie: <span class="destacado">%s</span></div>.' %(colec,serie,subserie)
+                self.widgets["subSerie"].value=subserie
             else:
                 self.description = '<div class="descriForm">Se agregará una nueva obra a la colección <span class="destacado">%s</span>, serie: <span class="destacado">%s</span></div>.'%(colec,serie)
             
         rutaObra=self.determinaRutaNivelSerie(self.widgets["f_ruta"].value,self.widgets["colecId"].value)        
         self.widgets["rutaNivelObra"].value=rutaObra
-        
+      
         
     def tmlpaaaaa(self):
         
@@ -163,14 +195,20 @@ class NuevoItemGS(form.SchemaForm):
         for x in infoMetadatos:
             itFtext=self.widgets[x].value
             if itFtext!="":
-                if type(itFtext)==type([]):
-                    itFtext=itFtext[0]                
+                if type(itFtext)==type([]):                    
+                    itFtext=itFtext[0]
                 tmpList.append((infoMetaItem[x],itFtext))
-
-        rutaItem= self.widgets["f_ruta"].value  
+            
+        rutaItem= self.widgets["f_ruta"].value 
+        nomSerie=self.widgets["serie"].value
+        nomSubSerie=self.widgets["subSerie"].value
         
         dicDatosItem={                   
             "folder":rutaSerie,
+            "nombreColeccion":self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value),
+            "nomSerie":nomSerie,
+            "nomSubSerie":nomSubSerie,
+            "ruta":rutaItem,
             "metadatos":tmpList,            
             }
         
@@ -182,13 +220,18 @@ class NuevoItemGS(form.SchemaForm):
         #guardo el xml
         fsmanager=FSManager()
         itemsaved=fsmanager.saveFileNuevoFile(dicDatosItem)
+        
         if itemsaved[0]=="error":
                 msj="> No se pudo guardar el item en %s"%rutaSerie
                 flagm+=1
+                return
+                
+        mandoMail=self.emails({'itemTitulo':itemsaved,'serieTitulo':subSeriesaved,'rserie':seriesaved})
         
-        print itemsaved
-        
-        self.status = "Cambios guardados"
+        if mandoMail:        
+            self.status = u"Se creó un nuevo registro"
+        else:
+            self.status = u"Se creó el nuevo registro, pero no se pudo enviar el correo"
         
     
     @button.buttonAndHandler(u"Cancel")
@@ -201,4 +244,8 @@ class NuevoItemGS(form.SchemaForm):
         miurl=self.context.REQUEST.URL
         self.context.REQUEST.RESPONSE.redirect(miurl)
 
-        
+
+    def emails(self,datos):        
+        msj=Cartero()
+        loMando=msj.sendAlta(datos)
+        return loMnando

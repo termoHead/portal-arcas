@@ -10,6 +10,7 @@ from arcas.content.config import infoMetadatoSubSerie as FinfoMetadatoSubSerie
 from arcas.content.config import infoMetaItem as FinfoMetaItem
 from arcas.content.config import itemTitles,subSerieTitles,serieTitle
 from xml.dom import minidom
+import pdb
 
 class FSManager(object):
     """
@@ -103,6 +104,9 @@ class FSManager(object):
     def saveFileNuevoFile(self,obModificado):
         """Genera y guarda el xml del formulario Nuevo Item"""
         listlog=[]
+        xcolec=obModificado["nombreColeccion"]
+        xserie=obModificado["nomSrie"]
+        xsubSerie=obModificado["nomSubSerie"]
         docTypeHeader=u'<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE DirectoryMetadata SYSTEM \"http://greenstone.org/dtd/DirectoryMetadata/1.0/DirectoryMetadata.dtd \">'
         root = ET.Element("DirectoryMetadata")
         fset = ET.SubElement(root, "FileSet")
@@ -114,17 +118,20 @@ class FSManager(object):
             itFnom =  itemForm[0]
             itFtext=  itemForm[1]
             
-            if itFnom=="ae.itemcolaborador":                
+            if itFnom=="ae.itemcolaborador":
                 for colab in itFtext.split("\r\n"):                 
                     tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)                          
                     tmpM.text=colab
-
-                
             else:
-                tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)      
-                ttt=itFtext
-                tmpM.text=ttt
-                
+                if itFnom=="ae.itemlenguaiso" or itFnom=="ae.serielenguaiso":  
+                    for elem in itFtext:
+                        tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)
+                        tmpM.text=elem
+                else:
+                    tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)      
+                    ttt=itFtext
+                    tmpM.text=ttt
+
         xmlstr=minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
         newfilename=obModificado["folder"]+"/metadata.xml"       
         newstr=docTypeHeader+xmlstr
@@ -149,7 +156,7 @@ class FSManager(object):
                 
     def saveFile(self,obModificado,tipoDato):
         """
-            guarda los datos en el xml
+           guarda los datos en el xml
         """
         listlog=[]
         logstr=""
@@ -179,21 +186,24 @@ class FSManager(object):
             for itemForm in obModificado["metadatos"]:
                 itFnom =  itemForm[0]
                 itFtext=  itemForm[1]                
-                
-                
-                
+
                 if tipoDato =="serie":
                     numCampo=FinfoMetadatosSerie.values().index(itFnom)
                     tituloCampo=serieTitle[numCampo]
+                    
                 elif tipoDato =="subSerie":
                     numCampo=FinfoMetadatoSubSerie.values().index(itFnom)
-                    tituloCampo=subSerieTitles[numCampo]                    
+                    tituloCampo=subSerieTitles[numCampo]
+
                 elif tipoDato=="item":
                     numCampo=FinfoMetaItem.values().index(itFnom)
                     tituloCampo=itemTitles[numCampo]
-          
-                
+
+                if itXnom=="ae.itemlenguaiso" or itXnom=="ae.serielenguaiso":                    
+                    pdb.set_trace()
+                    
                 if itFnom==itXnom:
+                    
                     if itFtext=="":
                         #Si en el formulario el metadato está vacio lo borro el XNL                        
                         copiXml.find(".//FileSet/Description").remove(itemXml)               
@@ -227,8 +237,8 @@ class FSManager(object):
             itFnom =  itemForm[0]
             itFtext=  itemForm[1]
 
-            if type(itFtext)==type([]):
-                itFtext=itFtext[0]
+            #if type(itFtext)==type([]):
+            #    itFtext=itFtext[0]
 
             flagMatch=False
 
@@ -249,7 +259,6 @@ class FSManager(object):
                     break
 
             if flagMatch==False:                
-                
                 if itFtext!="":
                     no=self.creatNewXmlMetadata(itFnom,itFtext)
                     copiXml.find(".//FileSet/Description").append(no)

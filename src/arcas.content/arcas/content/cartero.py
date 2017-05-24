@@ -47,16 +47,18 @@ class Cartero(object):
         hhtml += u"El usuario: %s, realizó modificaciones en los matadatos de ARCAS.</br>" %operarioNombre.decode("utf8")
         hhtml += u"<p>Esto es un registro básico de lo realizado:</p>"
         hhtml += u"<ul><li><b>Serie:</b><li>"
-        
         for stra in rutasSerie:
             hhtml += '<li>%s</li>'%stra
+        
         if len(rutasSerie)==1:
             hhtml += '<li>Sin cambios</li>'
+            
         hhtml += u"</ul></li><li><b>SubSerie:</b><ul>"
+        
         for stra in rutasSubSerie:  
             hhtml += '<li>%s</li>'%stra
         if len(rutasSubSerie)==1:
-            hhtml += '<li>Sin cambios</li>'
+            hhtml += '<li>Sin cambios</li>'           
         hhtml += u"</ul></li><li><b>Item:</b><ul>"        
         for stra in rutasItem:            
             hhtml += '<li>%s</li>'%stra

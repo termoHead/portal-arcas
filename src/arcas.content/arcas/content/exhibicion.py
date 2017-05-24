@@ -60,14 +60,16 @@ class IExhibicion(form.Schema):
 
 
     curador=schema.List(
-        title=_("Curadores"),
+        title=_(u"Curadores"),
         value_type=schema.Choice(source="arcas.ExhibicionMembersVocab",),
-        required=False,
+        required=False
     )
+    
     integrantes=schema.List(
-        title=_("Integrantes"),
-        value_type=schema.Choice(source="arcas.ExhibicionMembersVocab",),
-        required=False,
+        title=_(u"Integrantes"),
+        description=u"Listado de personas que colaboran con esta exhibición",
+        value_type=schema.Choice(source="arcas.ExhibicionMembersVocab"),
+        required=False
     )
 
 
@@ -76,17 +78,32 @@ class IExhibicion(form.Schema):
         description=u"Colección a la que pertenece esta exhibicón",
         value_type=RelationChoice(
             source=ObjPathSourceBinder(portal_type='arcas.coleccion')
-            ),
+        ),
         required=False,
     )
 
 
 from Acquisition import aq_inner
-from plone.directives.dexterity import DisplayForm
+
+from Products.CMFCore.interfaces import ISiteRoot
+from plone.directives.dexterity import DisplayForm,EditForm
+class Edit(EditForm):
+    grok.context(IExhibicion)    
+    def update(self):
+        super(Edit, self).update()
+     
+        
+        
+    #def updateWidgets(self):
+    #    super(Edit, self).updateWidgets()
+        
+    
+    
 
 class View(DisplayForm):
     grok.context(IExhibicion)
-    grok.require('zope2.View')
+    grok.require('zope2.View')    
+
 
     def listadoDeImagenesGS3(self):
         """Trae todos los recursoGS3 en la carpeta enlacesgs"""
@@ -118,11 +135,7 @@ class View(DisplayForm):
         """Devuelve los usuarios del grupo coor"""
         groups_tool = getToolByName(self.context, 'portal_groups')
         fUser=[]
-
-        colecR=self.dameObjectoColeccion()
-
-        
-
+        colecR=self.dameObjectoColeccion()        
         if colecR:
             ppa=IColecGroupName(colecR)
             group_id = ppa.groupName.replace("_g",PREFIJO_COOR_GROUP)
@@ -162,6 +175,7 @@ class View(DisplayForm):
         usrTool = getToolByName(self.context, 'portal_membership')
         colabs = self.context.integrantes
         result=[]
+
         for userO in colabs:
             userO=usrTool.getMemberById(userO)
             users={'nombre':userO.getProperty("fullname"),
@@ -193,12 +207,13 @@ class View(DisplayForm):
     def dameEnlaces(self):
         """devuelve el contenidos de los objetos que se encuentran dentro de la carpeta
         enlaces"""
+        respuesta=[]
         try:
             catalog=getToolByName(self.context,"portal_catalog")
             idF=self.context.id+'_enlace'
             ruta='/'.join(self.context[idF].getPhysicalPath())
-            result=catalog(review_state=('published','private'),path={'query': ruta, 'depth': 1},sort_on='getObjPositionInParent')
-			
+            result=catalog(review_state=('published','private'),path={'query': ruta, 'depth': 1},sort_on='getObjPositionInParent')            
+            
             return result
         except:
             return None

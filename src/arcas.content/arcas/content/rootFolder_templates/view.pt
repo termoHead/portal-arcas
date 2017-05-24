@@ -21,7 +21,7 @@
                         <div class="tituloExhibicion">
                             <h2>
                                 <a href="#" tal:attributes="href artDestacado/exhiurl;"
-							tal:content="artDestacado/tituloColec">Jumbol</a></h2>
+                                        tal:content="artDestacado/tituloColec">Jumbol</a></h2>
                             <h3 tal:content="artDestacado/titulo">Apoyo a la Educación</h3>
                         </div>
                         <div class="datosExcibicion">
@@ -36,7 +36,7 @@
                                 <div class="colaboradores">
                                     <span>Coordinador de la colección: </span>
                                     <tal:ri tal:repeat="int artDestacado/integrantes">
-                                        <span tal:content="int/title ">Hernesto Corona</span>
+                                        <span tal:content="int/title ">Martín Marengo</span>
                                         <span tal:replace="string:," tal:condition="not: repeat/int/end"></span>
                                     </tal:ri>
                                 </div>

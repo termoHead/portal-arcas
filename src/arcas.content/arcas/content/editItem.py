@@ -33,7 +33,8 @@ from arcas.content.cartero import Cartero
 
    
 class IEditItem(form.Schema, IGsMetaSerie , IGsSubSerie,IGsMetaItem ):
-    """Campos del formulario de edición de un documento Greenston3 en el import!""" 
+    """Campos del formulario de edición de un documento Greenston3 en el 
+import!   """ 
     model.fieldset('Selección de ítem Serie ',
         label=(u"Elija una serie para editar"),
         fields=["coleccion","serie","subserie","obra","obraTmp","tituColec"]
@@ -322,14 +323,11 @@ class EditItem(form.SchemaForm):
                 rutaSerie = "/".join(arTmp)
 
             #-------- cargo ITEM
-            tmpList=[]
+            tmpList={}
             for x in infoMetadatos:
                 itFtext=self.groups[0].widgets[x].value
-                if type(itFtext)==type([]):
-                    itFtext=itFtext[0]
-                tmpList.append((infoMetaItem[x],itFtext))
-                
-                #Agrega el nombre de la coleccion como está en cargado en Plone               
+                #tmpList.append((infoMetaItem[x],itFtext))
+                tmpList[infoMetaItem[x]]=itFtext
             
             dicDatosItem={
                 "version":"1",
@@ -342,13 +340,12 @@ class EditItem(form.SchemaForm):
                 }
             
             #-------- cargo ITEM
-            tmpList=[]
+            tmpList={}
             for x in infoMetadatosSerie:
                 itFtext=self.groups[2].widgets[x].value
-                if type(itFtext)==type([]):
-                    itFtext=itFtext[0]                
-                tmpList.append((infoMetadatosSerie[x],itFtext))
-            
+                #tmpList.append((infoMetadatosSerie[x],itFtext))
+                tmpList[infoMetadatosSerie[x]]=itFtext
+                            
             dicDatosSerie={
                 "version":"1",
                 "nomreColeccion":self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value),
@@ -360,35 +357,27 @@ class EditItem(form.SchemaForm):
             }
             
             if subSerieOk:
-                tmpList=[]
+                tmpList={}
                 for x in infoMetadatoSubSerie:
-                    itFtext=self.groups[1].widgets[x].value
-                    if type(itFtext)==type([]):
-                        itFtext=itFtext[0]                
-                    tmpList.append((infoMetadatoSubSerie[x],itFtext))
+                    itFtext=self.groups[1].widgets[x].value                      
+                    #tmpList.append((infoMetadatoSubSerie[x],itFtext))
+                    tmpList[infoMetadatoSubSerie[x]]=itFtext
                 
                 dicDatosSubSerie={
                     "version":"1",
                     "nomreColeccion":self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value),
                     "idColec":self.groups[3].widgets["coleccion"].value,
-                    "ruta":rutaSubSerie,                    
+                    "ruta":rutaSubSerie,
                     "folder":self.groups[3].widgets["coleccion"].value+"/"+rutaSubSerie.replace("/metadata.xml",""),
                     "metadatos":tmpList
                 }
-                
-            
             self.fsmanager=FSManager()
-
             flagm=0
-            
-            
             itemsaved=self.fsmanager.saveFile(dicDatosItem,"item")
             seriesaved=self.fsmanager.saveFile(dicDatosSerie,"serie")
- 
             if itemsaved[0]=="error":
                 msj="> No se pudo guardar el item en %s"%rutaItem
                 flagm+=1
-
             if seriesaved[0]=="error":
                 msj="> No se pudo guardar la serie en %s"%rutaSerie
                 flagm+=1

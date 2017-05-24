@@ -49,16 +49,13 @@ class View(DisplayForm):
     def getExhiDestacado(self):
         ##recreaFolder= self.getContainer(folder.encode('utf8'))
         ##cuando busca documento hace referencia al campo "documento" que es el destacado del directorio
-
-
         try:
 
             if self.context.exhiDestacada!=None:
-
                 destacado=self.context.exhiDestacada[0].to_object
-                colecTRelated=destacado.coleccionR[0].to_object
+                colecTRelated=destacado.coleccionR[0].to_object                
                 colecUtils=ColeccionUtils(colecTRelated)
-                descrD=destacado.description
+                descrD=destacado.description                
                 if len(descrD)>250:
                     descrD=descrD[0:descrD[:250].rfind(" ")]+" ..."
 

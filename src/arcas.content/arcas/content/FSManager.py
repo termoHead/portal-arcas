@@ -10,7 +10,6 @@ from arcas.content.config import infoMetadatoSubSerie as FinfoMetadatoSubSerie
 from arcas.content.config import infoMetaItem as FinfoMetaItem
 from arcas.content.config import itemTitles,subSerieTitles,serieTitle
 from xml.dom import minidom
-import pdb
 
 class FSManager(object):
     """
@@ -123,15 +122,18 @@ class FSManager(object):
                     tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)                          
                     tmpM.text=colab
             else:
-                if itFnom=="ae.itemlenguaiso" or itFnom=="ae.serielenguaiso":  
-                    for elem in itFtext:
-                        tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)
-                        tmpM.text=elem
-                else:
-                    tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)      
-                    ttt=itFtext
-                    tmpM.text=ttt
-
+                tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)      
+                ttt=itFtext
+                tmpM.text=ttt
+                
+            if itFnom=="ae.itemlenguaiso" or itFnom=="ae.serielenguaiso":  
+                for elem in itFtext:
+                    tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)
+                    tmpM.text=elem
+                
+            
+            
+            
         xmlstr=minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
         newfilename=obModificado["folder"]+"/metadata.xml"       
         newstr=docTypeHeader+xmlstr
@@ -156,10 +158,13 @@ class FSManager(object):
                 
     def saveFile(self,obModificado,tipoDato):
         """
-           guarda los datos en el xml
+            guarda los datos en el xml
         """
+        #los elementos que vienen en un array y que es necesario guardarlo con un tag metadata independiente
+        multiplesValores=["ae.itemlenguaiso","ae.serielenguaiso","ae.itemcolaborador"]
+        
         listlog=[]
-        logstr=""
+        logstr=""        
         pathFolder      =obModificado["idColec"]+"/"+obModificado["ruta"]
         pathFolder      =obModificado["folder"]
         version         =self.dameSigVerison(pathFolder)        
@@ -171,111 +176,113 @@ class FSManager(object):
         if rm == False:
             return False
         
-        #elemino todos los metadatos del xml cargado
+        #Nuevo Encabezado para el xml
         docTypeHeader='<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE DirectoryMetadata SYSTEM \"http://greenstone.org/dtd/DirectoryMetadata/1.0/DirectoryMetadata.dtd \">'
+        #Copio el XML base
         copiXml=self.miXml.getroot()
         
         
-        
-        #actualizo los que estan
+        #elemeino del XML los elementos multivalor, porque los agrego al final
+        for nomMet in multiplesValores:
+            for itemXml  in copiXml.find('.//FileSet/Description').findall('.//Metadata[@name="'+nomMet +'"]'):                
+                copiXml.find(".//FileSet/Description").remove(itemXml)
+                
+        #actualizo los que estan    
         for itemXml  in copiXml.find(".//FileSet/Description").findall(".//Metadata"):
             itXnom =itemXml.attrib["name"]
             itXtext=itemXml.text
                         
-            
-            for itemForm in obModificado["metadatos"]:
-                itFnom =  itemForm[0]
-                itFtext=  itemForm[1]                
+            if itXnom not in multivalor:                              
+                for itemForm in obModificado["metadatos"].keys():
+                    itFnom =  itemForm
+                    itFtext=  obModificado["metadatos"][itemForm]
 
-                if tipoDato =="serie":
+                    if tipoDato =="serie":
+                        numCampo=FinfoMetadatosSerie.values().index(itFnom)
+                        tituloCampo=serieTitle[numCampo]
+                        
+                    elif tipoDato =="subSerie":
+                        numCampo=FinfoMetadatoSubSerie.values().index(itFnom)
+                        tituloCampo=subSerieTitles[numCampo]
+
+                    elif tipoDato=="item":
+                        numCampo=FinfoMetaItem.values().index(itFnom)
+                        tituloCampo=itemTitles[numCampo]
+
+                    if itFnom==itXnom:
+                        if itFtext=="":
+                            #Si en el formulario el metadato está vacio lo borro el XNL                        
+                            copiXml.find(".//FileSet/Description").remove(itemXml)
+                            #logstr="%s quedó vacio y se eliminó del metadata.xml" %itFnom
+                            #listlog.append(logstr)
+                        else:
+                            #actualizo el dato en el XNL con el valor que viene del form
+                            #puede venir una lista por los idiomas o un str 
+                            if type(itFtext)==type([]):
+                                if itXtext!=itFtext[0]:
+                                    itemXml.text=itFtext[0]
+                                    logstr="actualizado> %s[%s]: %s" %(itFnom,tituloCampo,itFtext[0])
+                                    listlog.append(logstr)
+                            else:
+                                itemXml.text=itFtext
+                                if itXtext!=itFtext:
+                                    itemXml.text=itFtext
+                                    try:
+                                        logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext)
+                                    except:
+                                        print u'error de codificación ... lo paso a utf8'
+                                        logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext.decode('utf8'))
+                                    
+                                    listlog.append(logstr)
+                            flagMatch=True
+                        break
+                
+                
+        ##agrego el elemento nuevo que no estaban en el FS XML mingshaobi     
+        for itemForm in obModificado["metadatos"].keys():
+            itFnom =  itemForm
+            itFtext=  obModificado["metadatos"][itemForm]
+            
+            if itFnom in multiplesValores:
+                for elem in itFtext:                    
+                    no=self.creatNewXmlMetadata(itFnom,elem)
+                    copiXml.find(".//FileSet/Description").append(no)
+            else:
+                flagMatch=False
+
+                if tipoDato=="serie":
                     numCampo=FinfoMetadatosSerie.values().index(itFnom)
                     tituloCampo=serieTitle[numCampo]
-                    
-                elif tipoDato =="subSerie":
+                elif tipoDato=="subSerie":
                     numCampo=FinfoMetadatoSubSerie.values().index(itFnom)
                     tituloCampo=subSerieTitles[numCampo]
-
                 elif tipoDato=="item":
                     numCampo=FinfoMetaItem.values().index(itFnom)
                     tituloCampo=itemTitles[numCampo]
 
-                if itXnom=="ae.itemlenguaiso" or itXnom=="ae.serielenguaiso":                    
-                    pdb.set_trace()
-                    
-                if itFnom==itXnom:
-                    
-                    if itFtext=="":
-                        #Si en el formulario el metadato está vacio lo borro el XNL                        
-                        copiXml.find(".//FileSet/Description").remove(itemXml)               
-                        #logstr="%s quedó vacio y se eliminó del metadata.xml" %itFnom
-                        #listlog.append(logstr)
-                    else:
-                        #actualizo el dato en el XNL con el valor que viene del form
-                        #puede venir una lista por los idiomas o un str 
-                        if type(itFtext)==type([]):
-                            if itXtext!=itFtext[0]:
-                                itemXml.text=itFtext[0]
-                                logstr="actualizado> %s[%s]: %s" %(itFnom,tituloCampo,itFtext[0])
-                                listlog.append(logstr)
-                        else:
-                            itemXml.text=itFtext
-                            if itXtext!=itFtext:
-                                itemXml.text=itFtext
-                                try:
-                                    logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext)
-                                except:
-                                    print u'error de codificación ... lo paso a utf8'
-                                    logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext.decode('utf8'))
-                                
-                                listlog.append(logstr)
+                for itemXml  in copiXml.find(".//FileSet/Description").findall(".//Metadata"):
+                    itXnom=itemXml.attrib["name"]
+                    if itXnom == itFnom:
                         flagMatch=True
-                    break
-                
-                
-        ##agrego el elemento nuevo que no estaban en el FS XML mingshaobi     
-        for itemForm in obModificado["metadatos"]:
-            itFnom =  itemForm[0]
-            itFtext=  itemForm[1]
-
-            #if type(itFtext)==type([]):
-            #    itFtext=itFtext[0]
-
-            flagMatch=False
-
-            if tipoDato=="serie":
-                numCampo=FinfoMetadatosSerie.values().index(itFnom)
-                tituloCampo=serieTitle[numCampo]
-            elif tipoDato=="subSerie":
-                numCampo=FinfoMetadatoSubSerie.values().index(itFnom)
-                tituloCampo=subSerieTitles[numCampo]
-            elif tipoDato=="item":
-                numCampo=FinfoMetaItem.values().index(itFnom)
-                tituloCampo=itemTitles[numCampo]
-
-            for itemXml  in copiXml.find(".//FileSet/Description").findall(".//Metadata"):
-                itXnom=itemXml.attrib["name"]
-                if itXnom == itFnom:
-                    flagMatch=True
-                    break
-
-            if flagMatch==False:                
-                if itFtext!="":
-                    no=self.creatNewXmlMetadata(itFnom,itFtext)
-                    copiXml.find(".//FileSet/Description").append(no)
-                    try:
-                        logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext)
-                    except:
-                        print u'error de codificación ... lo paso a utf8'
-                        logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext.decode('utf8'))
-                    listlog.append(logstr)
+                        break
+                if flagMatch==False:                                
+                    if itFtext!="":
+                        no=self.creatNewXmlMetadata(itFnom,itFtext)
+                        copiXml.find(".//FileSet/Description").append(no)
+                        try:
+                            logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext)
+                        except:
+                            print u'error de codificación ... lo paso a utf8'
+                            logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext.decode('utf8'))
+                        listlog.append(logstr)
         
         xmlstr=ET.tostring(copiXml)
         
         try:
-            f=open(newfilename,"wr+")
-            newstr=docTypeHeader+xmlstr
-            f.write(newstr)
-            f.close()
+            #f=open(newfilename,"wr+")
+            #newstr=docTypeHeader+xmlstr
+            #f.write(newstr)
+            #f.close()
             logstr=newfilename
             listlog.insert(0,logstr)
             

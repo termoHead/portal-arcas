@@ -170,7 +170,6 @@ class GroupMembers(object):
 
         return SimpleVocabulary(terms)
 
-
 GroupMembersVocabFactory = GroupMembers("Staff")
 #CategoriasVocabFactory = CategoriasVocab()
 
@@ -180,12 +179,53 @@ GroupMembersVocabFactory = GroupMembers("Staff")
 
 
 
+class ExhibichionUtils(object):
+    """utilidades para las exhibiciones"""
+    
+    def __init__(self,colec):
+        self.exhibicion=colec            
+        postaC=coleccionR[0].to_object
+        self.colecPosta=postaC
 
+    def getCoordinadores(self):
+        """Devuelve los coordinadores de la colección"""
+        exhibicion=self.exhibicion
+        idsCoords=self.colecPosta.coordinador
+        mt = getToolByName(exhibicion, 'portal_membership')        
+        infoCoor = []
+        for idm in idsCoords:
+            coordina = mt.getMemberById(idm)
+            infoCoor.append({'type' : 'user',
+                             'id'   : coordina.id,
+                             'title': coordina.getProperty('fullname', None) or coordina.id,
+                             'email': coordina.getProperty('email'),
+                             'img'  : mt.getPersonalPortrait(id=coordina.id),
+                             })
+        return infoCoor
+    def getCuradores(self):
+        """Devuelve los curadores de la Exhibivión"""
+        exhibicion=self.exhibicion        
+        mt = getToolByName(exhibicion, 'portal_membership')        
+        idsCuras=exhibicion.curador
+        infoCoor = []
+        for idm in idsCuras:
+            cura = mt.getMemberById(idm)
+            infoCoor.append({'type' : 'user',
+                             'id'   : cura.id,
+                             'title': cura.getProperty('fullname', None) or cura.id,
+                             'email': cura.getProperty('email'),
+                             'img'  : mt.getPersonalPortrait(id=cura.id),
+                             })
+        return infoCoor
+        
 
 class ColeccionUtils(object):
 
     def __init__(self,colec):
         self.coleccion=colec
+        
+        
+        
 
     def getUrlAFuente(self):
         """devuelv la dirección a la fuente primaria"""
@@ -196,20 +236,17 @@ class ColeccionUtils(object):
 
     def getCoordinadores(self):
         """Devuelve los curadores de la coleción"""
-
-        coleccion=self.coleccion
-       
-        idsCoords=coleccion.coordinador
-        mt = getToolByName(self.coleccion, 'portal_membership')
-        mtool = getToolByName(self.coleccion, 'portal_membership')
-        infoCoor = []
+        coleccion=self.coleccion       
+        idsCoords=coleccion.coordinador        
+        mt = getToolByName(self.coleccion, 'portal_membership')        
+        infoCoor = []        
         for idm in idsCoords:
             coordina = mt.getMemberById(idm)
             infoCoor.append({'type' : 'user',
                              'id'   : coordina.id,
                              'title': coordina.getProperty('fullname', None) or coordina.id,
                              'email': coordina.getProperty('email'),
-                             'img'  : mtool.getPersonalPortrait(id=coordina.id),
+                             'img'  : mt.getPersonalPortrait(id=coordina.id),
                              })
         return infoCoor
         

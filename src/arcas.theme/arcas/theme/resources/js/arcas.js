@@ -13,6 +13,7 @@ var hojaActiva
 var HomeSlider = {}
 var objFormEnlaceGs = {};
 HomeSlider.stepSlide = 0
+
 objFormEnlaceGs.tmpValor = ""
 objFormEnlaceGs.setCampoTmp = function (valor) {
 	this.tmpValor = valor
@@ -164,7 +165,7 @@ var MOD_GSEDIT = (function () {
 	function buscaSubSeriejson(colec, subserie) {
 		$.ajax({
 			dataType : "json",
-			url : "/json_gs",
+			url : "/arcas/json_gs",
 			data : {
 				"coleccion" : colec,
 				"subserie" : subserie
@@ -188,7 +189,7 @@ var MOD_GSEDIT = (function () {
 	function buscaSeriejson(url, colec) {
 		$.ajax({
 			dataType : "json",
-			url : "/json_gs",
+			url : "/arcas/json_gs",
 			data : {
 				"series" : colec
 			},
@@ -224,7 +225,7 @@ var MOD_GSEDIT = (function () {
 	function buscaFuentejson(url, serie, coleccion) {
 		$.ajax({
 			dataType : "json",
-			url : "/json_gs",
+			url : "/arcas/json_gs",
 			data : {
 				"docs" : serie,
 				"coleccion" : coleccion
@@ -256,7 +257,7 @@ var MOD_GSEDIT = (function () {
 	function buscaMetadatajson(url, serie, coleccion, ruta, subser) {
 		$.ajax({
 			dataType : "json",
-			url : "/json_gs",
+			url : "/arcas/json_gs",
 			data : {
 				"docs" : serie,
 				"coleccion" : coleccion,
@@ -379,13 +380,29 @@ $(document).ready(function () {
             width:'70%',
         });
         
+        $("input[name*='s1.query']").focus(foco) 
+        $("input[name*='s1.query']").blur(esfumado) 
+        
+        
         
         /*agrega QUIK ADD*/
         
         //agregaChekbox()
         
 });
-
+function foco(e){    
+    var valor=$(this).attr("value")
+    if (valor=="Buscar en las colecciones"){
+        $(this).attr("value","")
+    }
+}
+function esfumado(e){
+    
+    var valor=$(this).attr("value")
+    if (valor==""){
+        $(this).attr("value","Buscar en las colecciones")
+    }
+}
 function togTexto(ev) {
 
 	if ($(ev).html().indexOf("(+)") >= 0) {
@@ -399,22 +416,25 @@ function togTexto(ev) {
 }
 function cambiaSlide(ev) {
 	/*Cambia slide de la exhibición*/
+    
 	if (ev.currentTarget != hojaActiva) {
 		var src = $("img", ev.currentTarget).attr("src")
 			var idM = $(ev.currentTarget).attr("class")
 			var titulo = $(".titulo", ev.currentTarget).text()
 			var texto = $(".cuerpo", ev.currentTarget).text()
-			$("#fullIMG").remove()
-			$(".tituloSlide").text("")
-			$(".textoSlide").text("")
+			$("#fullIMG").remove()			
+			$(".texto").text("")
 			$('<img />').attr({
 				'id' : 'fullIMG',
 				'src' : src,
 				'alt' : 'MyAlt'
 			}).appendTo($('.colImg'));
 		$('.pagina .scan').attr("src", src)
-		$(".tituloSlide").text(titulo)
-		$(".textoSlide").text(texto)
+        var nuevoCuerpo=$('<p>'+texto+'</p>')
+        var nuevoTitulo=$('<h3>'+titulo+'</h3>')
+        $(".texto").append(nuevoTitulo)	
+        $(".texto").append(nuevoCuerpo)
+			
 		$("a", ev.currentTarget).addClass("activo")
 		$("a", hojaActiva).removeClass("activo")
 		if ($("a", ev.currentTarget).hasClass("externa")) {

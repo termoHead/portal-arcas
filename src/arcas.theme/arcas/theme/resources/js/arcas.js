@@ -40,6 +40,7 @@ function getQueryParams(qs) {
 
 var MOD_GSEDIT = (function () {      
     var qq = getQueryParams(document.location.search);
+    
     /*var tituloColeccion= $("#form-widgets-tituColec").attr("value")
     console.log(tituloColeccion)
     if(tituloColeccion.length>0){
@@ -49,6 +50,7 @@ var MOD_GSEDIT = (function () {
         
     }*/
     setTimeout(500,function(){
+        
     if(qq.coleccion!=undefined){
         var inp=$(document.createElement("input"))
         inp.attr('id','#form-widgets-coleccion')
@@ -112,6 +114,8 @@ var MOD_GSEDIT = (function () {
         }
 	function i() {
 		var subser = "false";
+        
+       
 		if ($("#form-buttons-guardar").length == 0) {
 			ocultaCamposEdit()
 		}
@@ -384,6 +388,9 @@ $(document).ready(function () {
         $("input[name*='s1.query']").blur(esfumado) 
         
         
+        if($(".template-edititem").length>0){
+            $("#fieldsetlegend-seleccia3n-de-atem-serie").parent().hide()
+        }
         
         /*agrega QUIK ADD*/
         
@@ -416,24 +423,31 @@ function togTexto(ev) {
 }
 function cambiaSlide(ev) {
 	/*Cambia slide de la exhibición*/
-    
+        console.log($(".cuerpo", ev.currentTarget).clone().html())
+        
 	if (ev.currentTarget != hojaActiva) {
-		var src = $("img", ev.currentTarget).attr("src")
-			var idM = $(ev.currentTarget).attr("class")
+            $(".texto").text("")
+            var src = $("img", ev.currentTarget).attr("src")
+                        
+			var idM = $(ev.currentTarget).attr("class")                        
+            var texto = $(".cuerpo", ev.currentTarget).clone()
+                        
 			var titulo = $(".titulo", ev.currentTarget).text()
-			var texto = $(".cuerpo", ev.currentTarget).text()
-			$("#fullIMG").remove()			
-			$(".texto").text("")
+            var nuevoTitulo=$('<h3>'+titulo+'</h3>')
+             
+            
+            $("#contenido .texto").append(nuevoTitulo)	
+            $("#contenido .texto").append(texto.html())	
+			
+			$("#fullIMG").remove()						
 			$('<img />').attr({
 				'id' : 'fullIMG',
 				'src' : src,
 				'alt' : 'MyAlt'
 			}).appendTo($('.colImg'));
 		$('.pagina .scan').attr("src", src)
-        var nuevoCuerpo=$('<p>'+texto+'</p>')
-        var nuevoTitulo=$('<h3>'+titulo+'</h3>')
-        $(".texto").append(nuevoTitulo)	
-        $(".texto").append(nuevoCuerpo)
+                
+                
 			
 		$("a", ev.currentTarget).addClass("activo")
 		$("a", hojaActiva).removeClass("activo")

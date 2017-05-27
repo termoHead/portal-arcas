@@ -179,45 +179,53 @@ GroupMembersVocabFactory = GroupMembers("Staff")
 
 
 
-class ExhibichionUtils(object):
+class ExhibicionUtils(object):
     """utilidades para las exhibiciones"""
-    
-    def __init__(self,colec):
-        self.exhibicion=colec            
-        postaC=coleccionR[0].to_object
-        self.colecPosta=postaC
 
-    def getCoordinadores(self):
-        """Devuelve los coordinadores de la colección"""
-        exhibicion=self.exhibicion
-        idsCoords=self.colecPosta.coordinador
-        mt = getToolByName(exhibicion, 'portal_membership')        
-        infoCoor = []
-        for idm in idsCoords:
-            coordina = mt.getMemberById(idm)
-            infoCoor.append({'type' : 'user',
-                             'id'   : coordina.id,
-                             'title': coordina.getProperty('fullname', None) or coordina.id,
-                             'email': coordina.getProperty('email'),
-                             'img'  : mt.getPersonalPortrait(id=coordina.id),
-                             })
-        return infoCoor
-    def getCuradores(self):
-        """Devuelve los curadores de la Exhibivión"""
-        exhibicion=self.exhibicion        
-        mt = getToolByName(exhibicion, 'portal_membership')        
-        idsCuras=exhibicion.curador
-        infoCoor = []
-        for idm in idsCuras:
-            cura = mt.getMemberById(idm)
-            infoCoor.append({'type' : 'user',
-                             'id'   : cura.id,
-                             'title': cura.getProperty('fullname', None) or cura.id,
-                             'email': cura.getProperty('email'),
-                             'img'  : mt.getPersonalPortrait(id=cura.id),
-                             })
-        return infoCoor
+    def __init__(self,colec):        
+        self.exhibicion=colec
+        self.colecPosta=colec.coleccionR[0].to_object
+        self.mt = getToolByName(colec, 'portal_membership')
         
+    
+    def dameCoordinadores(self):
+        """Devuelve los coordinadores de la colección"""
+        listResult=[]
+        idsCoords=self.buscameEn(self.colecPosta,"coordinador")
+
+        for idm in idsCoords:
+            
+            listResult.append({
+                                'type' : 'user',
+                                'id'   : idm["id"],
+                                'nombre': idm["nombre"] or idm["id"],
+                                'email': idm["email"],
+                                'img'  : self.mt.getPersonalPortrait(id=idm['id']),
+                             })
+        return listResult
+    
+    def dameCuradores(self):
+        """Devuelve los curadores de la Exhibivión"""
+        listResult=self.buscameEn(self.exhibicion,"curador")
+        return listResult
+    
+    def dameColaboradores(self):
+        """Devuleve los integrantes de una exhibición"""        
+        listResult=self.buscameEn(self.exhibicion,"integrantes")
+        return listResult
+    
+    def buscameEn(self, obj, campo):
+        listResult=[]
+        idsCuras=getattr(obj,campo)
+        for idm in idsCuras:
+            chabon = self.mt.getMemberById(idm)
+            listResult.append({'type' : 'user',
+                             'id'   : chabon.id,
+                             'nombre': chabon.getProperty('fullname', None) or chabon.id,
+                             'email': chabon.getProperty('email'),
+                             'img'  : self.mt.getPersonalPortrait(id=chabon.id),
+                             })
+        return listResult
 
 class ColeccionUtils(object):
 

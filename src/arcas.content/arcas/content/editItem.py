@@ -122,6 +122,8 @@ class EditItem(form.SchemaForm):
         global SUBSERIE        
         super(EditItem, self).update()
         
+        if 'HTTP_REFERER' in self.request.keys():
+            self.vengoDe=self.request.HTTP_REFERER
         
         
         dictForm= self.request.form
@@ -413,9 +415,10 @@ class EditItem(form.SchemaForm):
         COLECCION=SERIE=SUBSERIE=""
         self.editOk = False
         self.form._finishedAdd = True
-        miurl=self.context.REQUEST.URL
+        miurl=self.context.REQUEST.URL+"?cancel=ok"
+            
+        self.context.REQUEST.RESPONSE.redirect(miurl)
         
-        self.context.REQUEST.RESPONSE.redirect(miurl+"?cancel=ok")
 
         
     def dameTituloColeccionByGSID(self,gsid):

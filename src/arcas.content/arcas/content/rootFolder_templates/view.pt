@@ -10,7 +10,8 @@
     <metal:content-core define-macro="main">
 	 <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
         <div class="boxTop rootFolder">
-            <div class="exhiV"  tal:define="artDestacado view/getExhiDestacado | nothing" tal:condition="artDestacado">
+            <div class="exhiV" tal:define="artDestacado view/getExhiDestacado | nothing"
+                               tal:condition="artDestacado">
                 <div  id="exhibicionHome" class="exhibicio_componenet"
                       tal:attributes="style string:background:url(${artDestacado/exhiurl}/@@images/bgCabezalHome) no-repeat">
 
@@ -28,7 +29,8 @@
                             <p class="descri" tal:content="artDestacado/descri" />
                             <div class="responsables" tal:define="curas artDestacado/curador|nothing">
                                 <p class="curador" tal:condition="curas">
-                                    <span>Curador:</span>
+                                    <span tal:condition="python:len(curas)==1">Curador:</span>
+                                    <span tal:condition="python:len(curas)>1">Curadores:</span>
                                     <tal:rr tal:repeat="cura curas">
                                         <span tal:content="cura/nombre"></span>
                                     </tal:rr>
@@ -36,7 +38,7 @@
                                 <div class="colaboradores">
                                     <span>Coordinador de la colección: </span>
                                     <tal:ri tal:repeat="int artDestacado/integrantes">
-                                        <span tal:content="int/title ">Martín Marengo</span>
+                                        <span tal:content="int/nombre ">Martín Marengo</span>
                                         <span tal:replace="string:," tal:condition="not: repeat/int/end"></span>
                                     </tal:ri>
                                 </div>

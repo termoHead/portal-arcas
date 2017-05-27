@@ -156,7 +156,8 @@ class IGsMetaItem(form.Schema):
         required=True,
     )
     f_autor= schema.TextLine(
-        title=u"Autor",        
+        title=u"Autor",  
+        description=u"Autor del documento",
         required=True,
     )
     
@@ -166,7 +167,8 @@ class IGsMetaItem(form.Schema):
         required=False,
     )
     f_edicion= schema.TextLine(
-        title=u"Edición",        
+        title=u"Edición",  
+        description=u"Edición a la que pertenence el documento",
         required=False,
     )
     f_fechaCreacion= schema.TextLine(
@@ -187,14 +189,15 @@ class IGsMetaItem(form.Schema):
     )
     
     f_dimensiones= schema.TextLine(
-        title=u"Dimensiones",        
+        title=u"Dimensiones",
+        description=u"Dimensiones de la fuente, si aplica.",
         required=False,
     )
     
     form.widget(f_idioma=CheckBoxFieldWidget)
     f_idioma= schema.List(
         title=u"Idioma",
-        description=u"Los valores que se desean asignar debe.",
+        description=u"Selecciones el o los idiomas.",
         value_type=schema.Choice(vocabulary=iso_idiomas),
         required=False,
     )
@@ -206,38 +209,38 @@ class IGsMetaItem(form.Schema):
     )
     
     f_alcance= schema.TextLine(
-        title=u"Alcance",        
+        title=u"Alcance",
+        description=u"Alcance de la obra",
         required=False,
     )
     
     directives.mode(f_ruta='hidden')
     f_ruta= schema.TextLine(
         title=u"Ruta al xml",
-        description=u"no se que es... sera el título del documento",
+        description=u"Información interna",
         required=False,
     ) 
-    form.widget('f_anotacion', klass='recargaForm',size=5)
-    f_anotacion = schema.Text(title=u"Anotación",required=True,)
+    form.widget('f_anotacion', klass='alcance',size=5)
+    f_anotacion = schema.Text(title=u"Anotación",required=True,description=u"Anotaciones sobre la obra",)
 
 class IGsSubSerie(form.Schema):
     model.fieldset('Subserie',
         label=(u"Descripción de la sub Serie"),
-        fields=["sub_titulo","sub_alcance","sub_anotacion",]
+        fields=["sub_titulo","sub_alcance","sub_anotacion",],
+        required=False,
     )
     sub_titulo= schema.TextLine(
         title=u"Título",
-        description=u"titulo de la sub serie",
+        description=u"Título de la sub serie",
         required=False,
     )  
+    form.widget('sub_alcance', klass='alcanceSub',size=5)
     sub_alcance= schema.TextLine(
         title=u"Alcance",
         description=u"Alcance de la subserie",
         required=False,
     ) 
-    sub_anotacion=schema.TextLine(
-        title=u"Anotación",
-        required=False,
-    ) 
+    sub_anotacion=schema.Text(title=u"Anotación",required=True,description=u"Anotaciones sobre la obra",)
     
 class IGsMetaSerie(form.Schema):
     model.fieldset('Item',label=(u"Descripción de la Serie"),

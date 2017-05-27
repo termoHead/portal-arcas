@@ -13,7 +13,7 @@ from arcas.content.coleccionesFolder import IColeccionesFolder
 from plone.formwidget.contenttree import ObjPathSourceBinder
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.dexterity.content import Container
-from arcas.content.utils import ColeccionUtils,ColeccionesPorCategoria
+from arcas.content.utils import ColeccionUtils,ColeccionesPorCategoria,ExhibicionUtils
 from arcas.content.config import URL_GREENSTON_DOC
 from arcas.content.utils import TextoUtils
 class IRootFolder(form.Schema):
@@ -49,29 +49,36 @@ class View(DisplayForm):
     def getExhiDestacado(self):
         ##recreaFolder= self.getContainer(folder.encode('utf8'))
         ##cuando busca documento hace referencia al campo "documento" que es el destacado del directorio
-        try:
+        
+        
 
-            if self.context.exhiDestacada!=None:
-                destacado=self.context.exhiDestacada[0].to_object
-                colecTRelated=destacado.coleccionR[0].to_object                
-                colecUtils=ColeccionUtils(colecTRelated)
-                descrD=destacado.description                
-                if len(descrD)>250:
-                    descrD=descrD[0:descrD[:250].rfind(" ")]+" ..."
+        if self.context.exhiDestacada!=None:
+            destacado     = self.context.exhiDestacada[0].to_object
+            colecTRelated = destacado.coleccionR[0].to_object                                
+            exhibUtils    = ExhibicionUtils(destacado)  
+            
+            mcura=exhibUtils.dameCuradores()
+            minte=exhibUtils.dameCoordinadores()
+            
+                          
+            descrD=destacado.description
+            
+            if len(descrD)>250:
+                descrD=descrD[0:descrD[:250].rfind(" ")]+" ..."
+            
+            resp={
+                'titulo'   : destacado.title,
+                'tituloColec': colecTRelated.title,
+                'descri' : descrD,
+                'exhiurl': destacado.absolute_url(),
+                'curador': mcura,
+                'integrantes': minte
+            }
 
-                resp={
-                    'titulo' : destacado.title,
-                    'tituloColec': colecTRelated.title,
-                    'descri' : descrD,
-                    'exhiurl': destacado.absolute_url(),
-                    'curador': colecUtils.dameCurador(destacado.id),#esta dameCurador funcion ya devuelve una lista,
-                    'integrantes': colecUtils.getCoordinadores()+colecUtils.dameIntegrantes()
-                }
-
-                return resp
-        except :
-            print "no hay exhibiciones asiganadas al portlet"
-            pass
+            return resp
+    
+        print "no hay exhibiciones asiganadas al portlet"
+        pass
 
         return []
 

@@ -272,21 +272,13 @@ class EditItem(form.SchemaForm):
         for wid in grupo.widgets:
             grupo.widgets[wid].mode=HIDDEN_MODE
 
-    def showObras(self):
-        # Set a custom widget for a field for this form instance only 
-
-        if self.groups[0].widgets["f_ruta"].value!=u"":
-            return True
-        else:
-            return False
-
     def showSave(self):
-        if "form.buttons.editar" in self.request.form:
-            return True
-        else:
-            return False
-
-    @button.buttonAndHandler(u'Guardar')
+        vva=True
+        if 'cancel' in self.request.keys():
+            vva=False
+        return vva
+        
+    @button.buttonAndHandler(u'Guardar',condition=showSave)
     def saveHandler(self, action):
         self.saveFlag=self.saveFlag+1
    

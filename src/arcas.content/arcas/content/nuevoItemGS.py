@@ -47,6 +47,7 @@ class IAddFiles(form.Schema):
         description=u"Colección",
         required=False,
     )
+    
     directives.mode(colec='hidden')
     colec= schema.TextLine(
         title=u"coleccion",
@@ -73,7 +74,8 @@ class IAddFiles(form.Schema):
         required=False,
     )
     
-    
+from plone.z3cform.fieldsets.utils import move
+
 class NuevoItemGS(form.SchemaForm):
     xmlFileBase  ='/usr/local/Greenstone3/web/sites/localsite/collect/'
     folderNameBase='nuevo_item'
@@ -89,7 +91,7 @@ class NuevoItemGS(form.SchemaForm):
     grok.context(IRootFolder)
     schema = IAddFiles
     fields=field.Fields(IGsMetaItem).select("f_titulo","f_autor","f_colaborador","f_edicion","f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones",
-        "f_naturaleza","f_alcance","f_anotacion","f_ruta")
+        "f_naturaleza","f_alcance","f_ruta","f_anotacion")
     ignoreContext = True
     label       = u"Nueva obra"
     description = u'<div class="formuDescri">Se está agregando una obra nueva </div>'
@@ -97,6 +99,10 @@ class NuevoItemGS(form.SchemaForm):
     
     def update(self):
         super(NuevoItemGS, self).update()
+        
+        if self.request.get('cancel', None):
+            return
+        
         if self.request.get('biruta', None):
             self.widgets["f_ruta"].value=self.request.get('biruta', None)    
         if self.request.get('colecId', None):
@@ -108,7 +114,7 @@ class NuevoItemGS(form.SchemaForm):
             self.widgets["serie"].value=serie
             
             if subserie:
-                self.description = u'<div class="descriForm">Se agregará una nueva obra a la colección <span class="destacado">%s</span>, serie: <span class="destacado">%s</span>, subserie: <span class="destacado">%s</span></div>.' %(colec,serie,subserie)
+                self.description = u'<div class="descriForm">Se agregará una nueva obra a la colección <span class="destacado">%s</span>, serie: <span class="destacado">%s</span>, subserie: <span class="destacado">%s</span>.</div>' %(colec,serie,subserie)
                 self.widgets["subSerie"].value=subserie
             else:
                 self.description = '<div class="descriForm">Se agregará una nueva obra a la colección <span class="destacado">%s</span>, serie: <span class="destacado">%s</span></div>.'%(colec,serie)
@@ -116,7 +122,8 @@ class NuevoItemGS(form.SchemaForm):
         rutaObra=self.determinaRutaNivelSerie(self.widgets["f_ruta"].value,self.widgets["colecId"].value)        
         self.widgets["rutaNivelObra"].value=rutaObra
       
-        
+  
+
     def tmlpaaaaa(self):
         
         colec = self.request.get('colec', None)
@@ -172,8 +179,13 @@ class NuevoItemGS(form.SchemaForm):
             sum=int(listR[len(listR)-1])+1
             return(str(sum))
         
-                
-    @button.buttonAndHandler(u'Guardar')
+    def showSave(self):
+        vva=True
+        if 'cancel' in self.request.keys():
+            vva=False
+        return vva        
+        
+    @button.buttonAndHandler(u'Guardar',condition=showSave)
     def saveHandler(self, action):
         print "guardando datos"
         flagm=0
@@ -184,7 +196,7 @@ class NuevoItemGS(form.SchemaForm):
         numLastVersion=self.dameSigVerisonFolder()
         rutaSerie=self.widgets["rutaNivelObra"].value
         xfile   =self.widgets['upFile'].value.headers.fp
-        fileName=self.widgets['upFile'].value.filename        
+        fileName=self.widgets['upFile'].value.filename
         rutaSerie+='/nuevoItem'+numLastVersion      
         
         if not os.path.exists(rutaSerie):
@@ -238,10 +250,9 @@ class NuevoItemGS(form.SchemaForm):
     def handleCancel(self, action):
         """User cancelled. Redirect back to the front page."""
         COLECCION=SERIE=SUBSERIE=""        
-        self.status = "Cambios cancelados"
-        self.editOk = False
+        self.status = "Cambios cancelados"        
         self.form._finishedAdd = True
-        miurl=self.context.REQUEST.URL
+        miurl=self.context.REQUEST.URL+"?cancel=ok"            
         self.context.REQUEST.RESPONSE.redirect(miurl)
 
 

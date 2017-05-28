@@ -37,6 +37,81 @@ function getQueryParams(qs) {
     return params;
 }
 
+var EDITGS=(function () { 
+    var my = {},
+    objIds=0,
+	privateVariable = 1;        
+    function init(){
+        agregaIdioma("#formfield-form-widgets-f_idioma")
+        agregaIdioma("#formfield-form-widgets-s_lenguaiso")
+    }
+    
+    
+    function agregaIdioma(selector){        
+        var boton=$(document.createElement("div"))
+        var enlace=$(document.createElement("a"))
+        var holdimg=$(document.createElement("span"))
+        var idBoton="agregaOp"+objIds
+       
+        holdimg.attr('class',"holdimage")
+        enlace.attr("id",idBoton)
+        enlace.attr("href","#")        
+        enlace.attr("style","margin-top:12px")
+        enlace.text('agregar idioma [+]')
+        enlace.append(holdimg)        
+        boton.attr("class","option")
+        boton.attr("id","masoption")
+        boton.attr("style","width:400px;margin-top:65px")
+        boton.append(enlace)      
+        
+        
+        $(selector).append(boton)        
+        $("#"+idBoton).click(function(e){            
+            e.preventDefault()            
+            var n=addOption(selector.split("-")[selector.split("-").length-1])
+            $(this).parent().parent().append(n)
+            $(this).parent().parent().height('200')
+        })
+        objIds++
+    }
+    function addOption(nombreLista){   
+        var nuevoID="nuevoOption" + privateVariable;
+        
+        var elemento= $(document.createElement("span"))        
+        var borra   =$(document.createElement("a"))                
+        var imput = $(document.createElement("input"))
+        var help = $(document.createElement("label"))
+        
+        imput.attr("name","form.widgets."+nombreLista+":list")
+        
+        help.text(" borrar")
+        borra.text("[X]")
+        borra.attr("href","#")      
+        elemento.attr("id",nuevoID)        
+        elemento.attr("style","margin-right:15px")
+        elemento.append(imput)
+        elemento.append(help)
+        elemento.append(borra)
+         
+        borra.click(function(e){
+            e.preventDefault()            
+            privateVariable--            
+            if(privateVariable==1){
+                $(this).parent().parent().height('120')
+            }
+            $(this).parent().remove()
+        })
+        privateVariable++
+        return elemento
+    }
+    my.inicia=function(){        
+        init()
+    }
+    
+    return my
+})()
+
+
 
 var MOD_GSEDIT = (function () {      
     var qq = getQueryParams(document.location.search);
@@ -49,8 +124,12 @@ var MOD_GSEDIT = (function () {
         $('.cabezalInterno').append(tituObj)
         
     }*/
+    $(".formControls #form-buttons-cancel").click(function(e){
+        e.preventDefault()
+        setTimeout(500,function(){window.close()})
+    })
     setTimeout(500,function(){
-        
+    
     if(qq.coleccion!=undefined){
         var inp=$(document.createElement("input"))
         inp.attr('id','#form-widgets-coleccion')
@@ -104,7 +183,7 @@ var MOD_GSEDIT = (function () {
 	var my = {},
 	privateVariable = 1;
         
-        function dameColeccionElegida(){            
+    function dameColeccionElegida(){            
             if($("#form-widgets-coleccion option:selected").length>0){
                 colec = $("#form-widgets-coleccion option:selected").attr("value")    
             }else{
@@ -145,6 +224,7 @@ var MOD_GSEDIT = (function () {
 			}
 			buscaMetadatajson("/json_gs", valor, colec, ruta, subser)
 		})
+        
 	}
 	function ocultaCamposEdit() {
 		for (var a = 1; a < grupos.length; a++) {
@@ -297,9 +377,12 @@ var MOD_GSEDIT = (function () {
                 return data
             });
 	}
+    
+   
 	my.moduleProperty = 1;
 	my.inicia = function () {
 		i()
+        
 	};
 	return my
 })()
@@ -374,7 +457,12 @@ $(document).ready(function () {
 			var objEGS = MOD_GSEDIT
 			objEGS.inicia()
 		}
-		
+		if ($(".template-edititem").length > 0) {
+			//estoy en el formulario edicion greenstone            
+			var objEGS = EDITGS
+			objEGS.inicia()
+		}
+        
 		
         /*IMagenes de la Galeria en una Coleccion */
         $('.photoAlbumEntry a').prepOverlay({

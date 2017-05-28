@@ -176,18 +176,23 @@ div.col1Linea {
 .formuDescri {
     padding: 10px 5px 25px 5px;
 }
-.template-edititem #form .field{width:48%; clear:none; float:left; margin-top:10px}
+.template-nuevoitemgs #form .field,
+.template-edititem #form .field{width:48%; clear:none; float:left; margin-top:10px; }
 
 .template-edititem #form .field:nth-child(4),
-.template-edititem #form #formfield-form-widgets-f_edicion   {
+.template-nuevoitemgs #form #formfield-form-widgets-f_anotacion,
+.template-edititem #form #formfield-form-widgets-f_edicion{
     clear: both;
     width: 90%;
 }
-.template-edititem #form .field:nth-child(10){
-    clear: both;
-    height: 100px;
-    margin-top: 23px;
-    width: 98%;
+
+.template-nuevoitemgs #formfield-form-widgets-f_colaborador,
+.template-nuevoitemgs #form #formfield-form-widgets-f_idioma,
+.template-edititem #form #formfield-form-widgets-f_idioma{
+    clear: both !important;
+    height: 120px;
+    margin-top: 23px !important;
+    width: 98% !important;
 }
 .template-edititem #form .field:nth-child(13),
 .template-edititem #form #formfield-form-widgets-s_lenguaiso
@@ -197,24 +202,52 @@ div.col1Linea {
     margin-top: 23px;
     width: 98%;
 }
+.template-nuevoitemgs #formfield-form-widgets-f_anotacion textarea,
 .template-edititem #form .field:nth-child(13) textarea{
     width:100%;
     height:100px
     height:auto
     
 }
-
-.template-edititem #form .field input[type="text"] {width:80%;}
-.template-edititem #form span.option {
+.template-nuevoitemgs #form .field input[type="text"],
+.template-edititem #form .field input[type="text"] {width:80%; line-height: 1.78em;}
+.template-nuevoitemgs #form span.option
+,.template-edititem #form span.option {
     display: block;
     float: left;
     margin-right: 12px;
     width: 135px;
 }
+.template-nuevoitemgs #form div.formControls{clear:both}
 .template-edititem #form div.formControls {
     margin: 1em;
     margin-left: 25px;
     margin-top: 200px;
 }
-
+#form-widgets-sub_anotacion{width:90%; height:50px}
 #form-buttons-cancel,#form-buttons-guardar{padding:4px;margin-right:10px}
+.template-edititem #contenido #form .formTabs{
+    border-bottom:2px solid white !important;
+    border-top:0px !important;        
+    border-left:0px !important;        
+    border-right:0px !important;        
+    
+}
+
+#content-views li.selected a, #content-views li a:hover, #content li.formTab a.selected, #content li.formTab a:hover, #content-core li.formTab a.selected, #content-core li.formTab a:hover {
+    background: White none repeat scroll 0 0;
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+    color: Black !important;
+}
+div.field.error {color:black}
+div.field.error .formHelp {color:#666 !important}
+#content li.formTab .selected{font-size: 2em}
+
+.holdimage {
+    display: block;
+    height: 19px;
+    overflow: hidden;
+    width: 19px;
+}
+#agregaOp .holdimage{background-image:url(++theme++arcas.theme/img/additem1.gif) right center}

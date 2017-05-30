@@ -47,25 +47,23 @@ var EDITGS=(function () {
     }
     
     
-    function agregaIdioma(selector){        
+    function agregaIdioma(selector){
         var boton=$(document.createElement("div"))
         var enlace=$(document.createElement("a"))
         var holdimg=$(document.createElement("span"))
         var idBoton="agregaOp"+objIds
-       
+
         holdimg.attr('class',"holdimage")
         enlace.attr("id",idBoton)
-        enlace.attr("href","#")        
+        enlace.attr("href","#")
         enlace.attr("style","margin-top:12px")
         enlace.text('agregar idioma [+]')
         enlace.append(holdimg)        
         boton.attr("class","option")
-        boton.attr("id","masoption")
+        boton.attr("id","masoption"+objIds)
         boton.attr("style","width:400px;margin-top:65px")
-        boton.append(enlace)      
-        
-        
-        $(selector).append(boton)        
+        boton.append(enlace)
+        $(selector).append(boton)
         $("#"+idBoton).click(function(e){            
             e.preventDefault()            
             var n=addOption(selector.split("-")[selector.split("-").length-1])
@@ -74,56 +72,46 @@ var EDITGS=(function () {
         })
         objIds++
     }
-    function addOption(nombreLista){   
-        var nuevoID="nuevoOption" + privateVariable;
-        
-        var elemento= $(document.createElement("span"))        
-        var borra   =$(document.createElement("a"))                
-        var imput = $(document.createElement("input"))
-        var help = $(document.createElement("label"))
+
+    function addOption(nombreLista){
+        var nuevoID ="nuevoOption" + privateVariable;
+        var elemento= $(document.createElement("span"))
+        var borra   = $(document.createElement("a"))
+        var imput   = $(document.createElement("input"))
+        var help    = $(document.createElement("label"))
         
         imput.attr("name","form.widgets."+nombreLista+":list")
-        
         help.text(" borrar")
         borra.text("[X]")
-        borra.attr("href","#")      
-        elemento.attr("id",nuevoID)        
+        borra.attr("href","#")
+
+        elemento.attr("id",nuevoID)
         elemento.attr("style","margin-right:15px")
         elemento.append(imput)
         elemento.append(help)
         elemento.append(borra)
-         
+
         borra.click(function(e){
-            e.preventDefault()            
-            privateVariable--            
-            if(privateVariable==1){
-                $(this).parent().parent().height('120')
-            }
-            $(this).parent().remove()
+            e.preventDefault();
+            privateVariable-- ;
+            if(privateVariable==1){$(this).parent().parent().height('120');}
+            $(this).parent().remove();
         })
-        privateVariable++
-        return elemento
+
+        privateVariable++;
+        return elemento;
+
     }
     my.inicia=function(){        
         init()
     }
-    
     return my
 })()
 
 
 
 var MOD_GSEDIT = (function () {      
-    var qq = getQueryParams(document.location.search);
-    
-    /*var tituloColeccion= $("#form-widgets-tituColec").attr("value")
-    console.log(tituloColeccion)
-    if(tituloColeccion.length>0){
-        tiutObj=$(document.createElement("h2"))
-        tituObj.text(tiutObj)
-        $('.cabezalInterno').append(tituObj)
-        
-    }*/
+    var qq = getQueryParams(document.location.search);    
     $(".formControls #form-buttons-cancel").click(function(e){
         e.preventDefault()
         setTimeout(500,function(){window.close()})
@@ -457,7 +445,7 @@ $(document).ready(function () {
 			var objEGS = MOD_GSEDIT
 			objEGS.inicia()
 		}
-		if ($(".template-edititem").length > 0) {
+		if ($(".template-edititem").length > 0 || $(".template-nuevoitemgs").length > 0 ) {
 			//estoy en el formulario edicion greenstone            
 			var objEGS = EDITGS
 			objEGS.inicia()

@@ -185,7 +185,7 @@ font-size:41px;color:#fff;font-weight:normal;line-height: 41px;width: 170px;disp
     color: #FFFFFF;
     float: right;
     font-family: "Arial",sans-serif;
-    margin-top: 34px;
+    margin-top: 4px;
     text-align: left;
 	padding-left:10px;
     width: 357px;
@@ -244,7 +244,7 @@ margin-bottom: 7px;
     text-align: left;
     width: 220px;
 }
-.textoInterno .parrafo .pos2,.textoInterno .parrafo .pos1{height:113px}
+.textoInterno .parrafo .pos2,.textoInterno .parrafo .pos1{height:115px}
 #carrusel{
  width:2000px;
  margin-left:0; 

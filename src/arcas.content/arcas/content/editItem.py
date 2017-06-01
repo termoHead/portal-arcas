@@ -243,7 +243,7 @@ class EditItem(form.SchemaForm):
                     #print u"el elemento no está"
 
         self.groups[3].mode='hidden'
-
+        
 
 
         #super(EditItem, self).update()
@@ -318,14 +318,16 @@ class EditItem(form.SchemaForm):
 
             #-------- cargo ITEM
             tmpList={}
-            for x in infoMetadatos:
-                itFtext=self.groups[0].widgets[x].value
+            
+            
+            for x in infoMetadatos:                
+                itFtext=self.reuqest.form["form.widgets."+x].value
                 #tmpList.append((infoMetaItem[x],itFtext))
                 tmpList[infoMetaItem[x]]=itFtext
-            
+            nombreColeccion=self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value)
             dicDatosItem={
                 "version":"1",
-                "nomreColeccion":self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value),
+                "nomreColeccion":nombreColeccion,
                 "idColec":self.groups[3].widgets["coleccion"].value,
                 "ruta":rutaItem,                
                 "folder":self.groups[3].widgets["coleccion"].value+"/"+rutaItem.replace("/metadata.xml",""),
@@ -336,13 +338,14 @@ class EditItem(form.SchemaForm):
             #-------- cargo ITEM
             tmpList={}
             for x in infoMetadatosSerie:
-                itFtext=self.groups[2].widgets[x].value
+                itFtext=self.reuqest.form["form.widgets."+x].value
+                #itFtext=self.groups[2].widgets[x].value
                 #tmpList.append((infoMetadatosSerie[x],itFtext))
                 tmpList[infoMetadatosSerie[x]]=itFtext
                             
             dicDatosSerie={
                 "version":"1",
-                "nomreColeccion":self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value),
+                "nomreColeccion":nombreColeccion,
                 "idColec":self.groups[3].widgets["coleccion"].value,
                 "ruta":rutaSerie,
                 "folder":self.groups[3].widgets["coleccion"].value+"/"+rutaSerie.replace("/metadata.xml",""),
@@ -353,13 +356,14 @@ class EditItem(form.SchemaForm):
             if subSerieOk:
                 tmpList={}
                 for x in infoMetadatoSubSerie:
-                    itFtext=self.groups[1].widgets[x].value                      
+                    itFtext=self.reuqest.form["form.widgets."+x].value
+                    #itFtext=self.groups[1].widgets[x].value                      
                     #tmpList.append((infoMetadatoSubSerie[x],itFtext))
                     tmpList[infoMetadatoSubSerie[x]]=itFtext
                 
                 dicDatosSubSerie={
                     "version":"1",
-                    "nomreColeccion":self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value),
+                    "nomreColeccion":nombreColeccion,
                     "idColec":self.groups[3].widgets["coleccion"].value,
                     "ruta":rutaSubSerie,
                     "folder":self.groups[3].widgets["coleccion"].value+"/"+rutaSubSerie.replace("/metadata.xml",""),
@@ -367,6 +371,8 @@ class EditItem(form.SchemaForm):
                 }
             self.fsmanager=FSManager()
             flagm=0
+            import pdb            
+            pdb.set_trace()
             itemsaved=self.fsmanager.saveFile(dicDatosItem,"item")
             seriesaved=self.fsmanager.saveFile(dicDatosSerie,"serie")
             if itemsaved[0]=="error":
@@ -385,7 +391,7 @@ class EditItem(form.SchemaForm):
                 else:
                     subSeriesaved='sin sub serie'
                 if flagm==0:
-                    mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved})
+                    mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved,'nombreColeccion':nombreColeccion})
                     if mandoCorreo:
                         self.msjForm =u"Los cambios fueron guardados correctamente. Se generó una nueva versión de metadatos y se envió un email para control."
                     else:
@@ -394,8 +400,12 @@ class EditItem(form.SchemaForm):
                     self.msjForm =u"No se pudieron guardar los cambios... se ha generando reporte"
             else:
                 self.status=self.msjForm
-        miurl=self.context.REQUEST.URL
-        self.context.REQUEST.RESPONSE.redirect(miurl+"?formOk="+self.msjForm.encode('utf8'))
+        
+        
+        miurltmp=self.context.REQUEST.URL
+        miurl="/".join(miurltmp.split("/")[:-2])
+        self.context.REQUEST.RESPONSE.redirect(miurl+"/formsOk_view?mensaje="+self.msjForm.encode('utf8'))
+        
 
     @button.buttonAndHandler(u"Cancel")
     def handleCancel(self, action):
@@ -425,9 +435,9 @@ class EditItem(form.SchemaForm):
         return nombreColeccion
            
     def emails(self,datos):        
-        msj=Cartero()
+        msj=Cartero(self.context)
         loMando=msj.sendModificacion(datos)
-        return loMnando
+        return loMando
 
 
     

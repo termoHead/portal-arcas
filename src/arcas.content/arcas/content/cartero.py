@@ -9,26 +9,26 @@ from arcas.content.config import MAIL_ADMIN , MAIL_COORDINADOR
 
 class Cartero(object):
     """Manda Mails de las modificaciones en los formilarios de greenstone"""    
-    
-    def encabezado(self):
-        sender=MAIL_ADMIN
-        mt=getToolByName(self.context,"portal_membership")        
-        nombreColeccion=dicDatos["nombreColeccion"]
-        operarioMail    = mt.getAuthenticatedMember().getProperty('email',None)
-        operarioNombre  = mt.getAuthenticatedMember().getProperty('fullname',None)      
-        if operarioMail=='':
-            operarioMail="pablomusa@gmail.com"
-
-        if operarioNombre=='':
-            operarioNombre="Pablo Musa"
+    def __init__(self, context):
+        self.context=context
+        self.sender=MAIL_ADMIN
+        mt=getToolByName(self.context,"portal_membership")   
+        self.operarioMail    = mt.getAuthenticatedMember().getProperty('email',None)
+        self.operarioNombre  = mt.getAuthenticatedMember().getProperty('fullname',None)      
+        
+    def encabezado(self,dicDatos):
+        if self.operarioMail=='':
+            self.operarioMail="pablomusa@gmail.com"
+        if self.operarioNombre=='':
+            self.operarioNombre="Pablo Musa"
 
         coordinadorMail = MAIL_COORDINADOR
-        reciver=[operarioMail,coordinadorMail]
+        reciver=[self.operarioMail,coordinadorMail]
         
          # Create message container - the correct MIME type is multipart/alternative.
         msg = MIMEMultipart('alternative')
         msg['Subject'] = "[ARCAS] Cambios en los metadatos de un registro"
-        msg['From'] = sender
+        msg['From'] = self.sender
         msg['To'] = reciver[0]+','+reciver[1]        
         return msg
     
@@ -37,14 +37,14 @@ class Cartero(object):
         rutasItem =  dicDatos["ritem"]
         rutasSerie =  dicDatos["rserie"]
         rutasSubSerie =  dicDatos["rsubserie"]
-        
-        msg=self.encabezado()        
+        nombreColeccion=dicDatos["nombreColeccion"]
+        msg=self.encabezado(dicDatos)        
         # Cuerpo del mensaje solo texto
         text = "Hola!\nSe modificaron metadatos en el Greenston de ARCAS.\n Los Archivos son: %s\n %s \n%s" %(rutasSerie,rutasSubSerie,rutasItem)       
         
         # Cuerpo del mensaje solo texto
         hhtml = u"<html><head></head><body><h3>Modificación en la coleccion: %s </h3>"%nombreColeccion
-        hhtml += u"El usuario: %s, realizó modificaciones en los matadatos de ARCAS.</br>" %operarioNombre.decode("utf8")
+        hhtml += u"El usuario: %s, realizó modificaciones en los matadatos de ARCAS.</br>" %self.operarioNombre.decode("utf8")
         hhtml += u"<p>Esto es un registro básico de lo realizado:</p>"
         hhtml += u"<ul><li><b>Serie:</b><li>"
         for stra in rutasSerie:

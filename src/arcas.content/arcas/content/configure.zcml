@@ -38,7 +38,13 @@
 		/>
 	-*-
 	-->
-    
+    <browser:page
+        for="*"
+        name="formsOk_view"
+        permission="zope2.Public"
+        class=".formsOk_view.FormsOkView"
+        template="templates/formsOk_view.pt"
+    />
     <browser:viewletManager
         name="arcas.coleccion.seccion1"
         provides=".colDerViewlets.ISeccionUno"

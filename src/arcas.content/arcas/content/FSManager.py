@@ -192,7 +192,7 @@ class FSManager(object):
             itXnom =itemXml.attrib["name"]
             itXtext=itemXml.text
                         
-            if itXnom not in multivalor:                              
+            if itXnom not in multiplesValores:                         
                 for itemForm in obModificado["metadatos"].keys():
                     itFnom =  itemForm
                     itFtext=  obModificado["metadatos"][itemForm]

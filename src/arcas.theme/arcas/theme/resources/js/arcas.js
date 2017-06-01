@@ -55,21 +55,28 @@ var EDITGS=(function () {
 
         holdimg.attr('class',"holdimage")
         enlace.attr("id",idBoton)
-        enlace.attr("href","#")
+        enlace.attr("class","option")
+        enlace.attr("href","#")        
         enlace.attr("style","margin-top:12px")
         enlace.text('agregar idioma [+]')
         enlace.append(holdimg)        
-        boton.attr("class","option")
+        //boton.attr("class","option")
         boton.attr("id","masoption"+objIds)
         boton.attr("style","width:400px;margin-top:65px")
         boton.append(enlace)
-        $(selector).append(boton)
+        $(boton).insertAfter(selector)
+        
         $("#"+idBoton).click(function(e){            
-            e.preventDefault()            
-            var n=addOption(selector.split("-")[selector.split("-").length-1])
-            $(this).parent().parent().append(n)
-            $(this).parent().parent().height('200')
+            e.preventDefault()
+            
+            var n=addOption(selector.split("-")[selector.split("-").length-1],selector)
+            
+            $(selector).append(n)
+            
+            //$(this).parent().parent().height('200')
+            
         })
+        
         objIds++
     }
 
@@ -78,19 +85,33 @@ var EDITGS=(function () {
         var elemento= $(document.createElement("span"))
         var borra   = $(document.createElement("a"))
         var imput   = $(document.createElement("input"))
+        var lid='form-widgets-'+nombreLista+'-'+(100+privateVariable)
+        
+        var chk=$('<input id="'+lid+'" class="checkbox-widget list-field" name="form.widgets.'+nombreLista+':list" type="checkbox" checked="checked"  />')
+        
         var help    = $(document.createElement("label"))
         
-        imput.attr("name","form.widgets."+nombreLista+":list")
+        imput.attr("rel",lid)
         help.text(" borrar")
         borra.text("[X]")
         borra.attr("href","#")
 
         elemento.attr("id",nuevoID)
+        elemento.attr("class","option")
         elemento.attr("style","margin-right:15px")
+        chk.hide()
+        elemento.append(chk)
         elemento.append(imput)
         elemento.append(help)
         elemento.append(borra)
-
+        
+        imput.blur(function(e){
+            var valor=$(this).attr('value')
+            var idd=$(this).attr('rel')
+            
+            $("#"+idd).prop("value",valor)
+        })
+        
         borra.click(function(e){
             e.preventDefault();
             privateVariable-- ;

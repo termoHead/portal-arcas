@@ -28,7 +28,10 @@ class FSManager(object):
     xmlFileResto ='/import/co.1/se.1/su.1/ar.1/it.1/'
     xmlFileName='metadata.xml'    
     miXml=""
-
+    metadatoTipoPersona="ae.agentepersonatipo"
+    metadatoTipoPersonaValor=["creador","revisor"]
+    metadatoTipoNombre="ae.agentepersonanombre"
+    metadatoCrea="ae.datecreacion"
     
     def openF(self,ruta,coll):
         """ruta: es ruta al archivo greenston, desde el import,
@@ -95,8 +98,8 @@ class FSManager(object):
         return resultado
         
     def creatNewXmlMetadata(self,name,dato):
-        nodo=ET.Element('Metadata',{'mode':'accumulate','name':name})
-        nodo.text=dato
+        nodo=ET.Element('Metadata',{'mode':'accumulate','name':name})                
+        nodo.text=dato        
         return nodo
     
     
@@ -104,32 +107,36 @@ class FSManager(object):
         """Genera y guarda el xml del formulario Nuevo Item"""
         listlog=[]
         xcolec=obModificado["nombreColeccion"]
-        xserie=obModificado["nomSrie"]
+        xserie=obModificado["nomSerie"]
         xsubSerie=obModificado["nomSubSerie"]
         docTypeHeader=u'<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE DirectoryMetadata SYSTEM \"http://greenstone.org/dtd/DirectoryMetadata/1.0/DirectoryMetadata.dtd \">'
         root = ET.Element("DirectoryMetadata")
         fset = ET.SubElement(root, "FileSet")
-        fm= ET.SubElement(fset, "FileName")
+        fm=    ET.SubElement(fset, "FileName")
         fm.text=".*"
         desc= ET.SubElement(fset, "Description")
         
+       
         for itemForm in obModificado["metadatos"]:
             itFnom =  itemForm[0]
-            itFtext=  itemForm[1]
+            itFtext=  itemForm[1]            
             
-            if itFnom=="ae.itemcolaborador":
-                for colab in itFtext.split("\r\n"):                 
-                    tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)                          
+            
+            
+            if itFnom=="ae.itemcolaborador":                
+                for colab in itFtext.split("\r\n"):                                     
+                    tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)
                     tmpM.text=colab
             else:
-                tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)      
-                ttt=itFtext
-                tmpM.text=ttt
-                
-            if itFnom=="ae.itemlenguaiso" or itFnom=="ae.serielenguaiso":  
-                for elem in itFtext:
+                if itFnom=="ae.itemlenguaiso":                      
+                    for elem in itFtext:    
+                        tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)
+                        tmpM.text=elem
+                else:
                     tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)
-                    tmpM.text=elem
+                    tmpM.text=itFtext
+                
+            
                 
             
             
@@ -138,10 +145,10 @@ class FSManager(object):
         newfilename=obModificado["folder"]+"/metadata.xml"       
         newstr=docTypeHeader+xmlstr
 
-       
+        
         try:         
             
-            f=open(newfilename,"w+")            
+            f=open(newfilename,"wr+")            
             f.write(newstr.encode('utf8'))
             f.close()
             logstr=newfilename
@@ -155,7 +162,27 @@ class FSManager(object):
         return listlog
         
 
+    def componeDatos(self,indice,xmldata,formdata):
+        """dado una lista de metadatos, busca los valores en los datos llegados del formulario y en los datos
+           del XML y los devuelve en un diccionario.
+        """
+        dit={}
+        for ind in indice:
+            valorXML=xmldata.findall('.//Metadata[@name="'+ind+']')
+            if (valorXML)>0:                
+                valXML=valorXML
+            else:
+                valXML=""
                 
+            if ind in formdata.keys():
+                valForm=formdata[ind]
+            else:
+                valForm=""
+            dit[ind]=(valXML,valForm)
+            
+        return dit
+        
+        
     def saveFile(self,obModificado,tipoDato):
         """
             guarda los datos en el xml
@@ -182,10 +209,36 @@ class FSManager(object):
         copiXml=self.miXml.getroot()
         
         
+        #recorro buscando cambios
+       
+        if tipoDato =="serie":
+            listaDatos=componeDatos(FinfoMetadatosSerie.values(),copiXml,obModificado["metadatos"])           
+        elif tipoDato =="subSerie":
+            listaDatos=componeDatos(FinfoMetadatoSubSerie.values(),copiXml,obModificado["metadatos"])
+            
+        elif tipoDato=="item":
+            listaDatos=componeDatos(FinfoMetaItem.values(),copiXml,obModificado["metadatos"])
+
+            
+        import pdb
+        pdb.set_trace()
+        
+        return
+        for miMeta in FinfoMetadatosSerie.values():
+            numCampo=FinfoMetadatosSerie.values().index(miMeta)
+            tituloCampo=serieTitle[numCampo]
+        
+        
+        
+        
+        
+        
+        
+        
         #elemeino del XML los elementos multivalor, porque los agrego al final
-        for nomMet in multiplesValores:
-            for itemXml  in copiXml.find('.//FileSet/Description').findall('.//Metadata[@name="'+nomMet +'"]'):                
-                copiXml.find(".//FileSet/Description").remove(itemXml)
+        #for nomMet in multiplesValores:            
+        #    for itemXml  in copiXml.find('.//FileSet/Description').findall('.//Metadata[@name="'+nomMet +'"]'):                
+        #        copiXml.find(".//FileSet/Description").remove(itemXml)
                 
         #actualizo los que estan    
         for itemXml  in copiXml.find(".//FileSet/Description").findall(".//Metadata"):
@@ -216,7 +269,7 @@ class FSManager(object):
                             #logstr="%s quedó vacio y se eliminó del metadata.xml" %itFnom
                             #listlog.append(logstr)
                         else:
-                            #actualizo el dato en el XNL con el valor que viene del form
+                            #actualizo el dato en el XML con el valor que viene del form
                             #puede venir una lista por los idiomas o un str 
                             if type(itFtext)==type([]):
                                 if itXtext!=itFtext[0]:
@@ -236,17 +289,20 @@ class FSManager(object):
                                     listlog.append(logstr)
                             flagMatch=True
                         break
-                
-                
+
         ##agrego el elemento nuevo que no estaban en el FS XML mingshaobi     
         for itemForm in obModificado["metadatos"].keys():
             itFnom =  itemForm
             itFtext=  obModificado["metadatos"][itemForm]
             
             if itFnom in multiplesValores:
-                for elem in itFtext:                    
-                    no=self.creatNewXmlMetadata(itFnom,elem)
+                if isinstance(itFtext,unicode):
+                    no=self.creatNewXmlMetadata(itFnom,itFtext)       
                     copiXml.find(".//FileSet/Description").append(no)
+                elif isinstance(itFtext,list):
+                    for elem in itFtext:
+                        no=self.creatNewXmlMetadata(itFnom,elem)
+                        copiXml.find(".//FileSet/Description").append(no)
             else:
                 flagMatch=False
 
@@ -276,13 +332,15 @@ class FSManager(object):
                             logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext.decode('utf8'))
                         listlog.append(logstr)
         
-        xmlstr=ET.tostring(copiXml)
+         
+        xmlstrA=ET.tostring(copiXml)        
+        xmlstr=minidom.parseString(xmlstrA).toprettyxml(encoding='UTF-8')
         
         try:
-            #f=open(newfilename,"wr+")
-            #newstr=docTypeHeader+xmlstr
-            #f.write(newstr)
-            #f.close()
+            f=open(newfilename,"wr+")
+            newstr=docTypeHeader+xmlstr            
+            f.write(newstr)
+            f.close()
             logstr=newfilename
             listlog.insert(0,logstr)
             

@@ -12,20 +12,20 @@ class Cartero(object):
     def __init__(self, context):
         self.context=context
         self.sender=MAIL_ADMIN
-        mt=getToolByName(self.context,"portal_membership")   
-        self.operarioMail    = mt.getAuthenticatedMember().getProperty('email',None)
-        self.operarioNombre  = mt.getAuthenticatedMember().getProperty('fullname',None)      
+        mt=getToolByName(self.context,"portal_membership")
+        self.operarioMail   = mt.getAuthenticatedMember().getProperty('email',None)
+        self.operarioNombre = mt.getAuthenticatedMember().getProperty('fullname',None)      
         
-    def encabezado(self,dicDatos):
-        if self.operarioMail=='':
-            self.operarioMail="pablomusa@gmail.com"
-        if self.operarioNombre=='':
+    def encabezado(self):
+        if self.operarioMail    =='':
+            self.operarioMail   ="pablomusa@gmail.com"
+        if self.operarioNombre  =='':
             self.operarioNombre="Pablo Musa"
 
         coordinadorMail = MAIL_COORDINADOR
         reciver=[self.operarioMail,coordinadorMail]
         
-         # Create message container - the correct MIME type is multipart/alternative.
+        # Create message container - the correct MIME type is multipart/alternative.
         msg = MIMEMultipart('alternative')
         msg['Subject'] = "[ARCAS] Cambios en los metadatos de un registro"
         msg['From'] = self.sender
@@ -34,11 +34,12 @@ class Cartero(object):
     
     def sendModificacion(self,dicDatos):
         """Manda el mail de MODIFICACION DE UN REGISTRO"""
-        rutasItem =  dicDatos["ritem"]
-        rutasSerie =  dicDatos["rserie"]
-        rutasSubSerie =  dicDatos["rsubserie"]
-        nombreColeccion=dicDatos["nombreColeccion"]
-        msg=self.encabezado(dicDatos)        
+        rutasItem       =  dicDatos["ritem"]
+        rutasSerie      =  dicDatos["rserie"]
+        rutasSubSerie   =  dicDatos["rsubserie"]
+        nombreColeccion =  dicDatos["nombreColeccion"]
+        msg             =  self.encabezado()
+        
         # Cuerpo del mensaje solo texto
         text = "Hola!\nSe modificaron metadatos en el Greenston de ARCAS.\n Los Archivos son: %s\n %s \n%s" %(rutasSerie,rutasSubSerie,rutasItem)       
         
@@ -47,6 +48,7 @@ class Cartero(object):
         hhtml += u"El usuario: %s, realizó modificaciones en los matadatos de ARCAS.</br>" %self.operarioNombre.decode("utf8")
         hhtml += u"<p>Esto es un registro básico de lo realizado:</p>"
         hhtml += u"<ul><li><b>Serie:</b><li>"
+        
         for stra in rutasSerie:
             hhtml += '<li>%s</li>'%stra
         
@@ -55,8 +57,9 @@ class Cartero(object):
             
         hhtml += u"</ul></li><li><b>SubSerie:</b><ul>"
         
-        for stra in rutasSubSerie:  
+        for stra in rutasSubSerie:
             hhtml += '<li>%s</li>'%stra
+            
         if len(rutasSubSerie)==1:
             hhtml += '<li>Sin cambios</li>'           
         hhtml += u"</ul></li><li><b>Item:</b><ul>"        
@@ -99,19 +102,27 @@ class Cartero(object):
         """Manda el mail de un NUEVA OBRA"""       
         
         msg=self.encabezado()
-        # Cuerpo del mensaje solo texto
-        text = "Se agregó un nuevo Item en la Serie: %s" %datos["serie"]
+        nombreColeccion=unicode(datos["coleccion"])
+        serie=unicode(datos["serie"])
+        ruta=unicode(datos["ruta"])
+        
+        
         
         # Cuerpo del mensaje solo texto
-        hhtml = u"<html><head></head><body><h3>Alta de una obra en la coleccion: %s </h3>"%nombreColeccion
-        hhtml += u"El usuario: %s, realizó la incorporación.</br>" %operarioNombre.decode("utf8")
-        hhtml += u"<p>El documento y su adjunto se encuentrane en</p>"
+        text = u"Se agregó un nuevo Item en la Serie: "+serie
+        
+        # Cuerpo del mensaje solo texto
+        hhtml =  u"<html><head></head><body><h3>Alta de una obra en la coleccion: "+nombreColeccion+" </h3>"
+        hhtml += u"El usuario:"
+        hhtml += self.operarioNombre.decode("utf8")
+        hhtml += u", realizó la incorporación.</br><p>El documento y su adjunto se encuentrane en:</p>"
+        hhtml += u"<p>"+ruta+"</p>"
         hhtml += u"</br></br><p></p>"
         hhtml += u"</body></html>"
 
         #Record the MIME types of both parts - text/plain and text/html.
  
-        part1 = MIMEText(text, 'plain')
+        part1 = MIMEText(text.encode('utf8'), 'plain')
         part2 = MIMEText(hhtml.encode('utf8'), 'html')
         msg.attach(part1)
         msg.attach(part2)
@@ -120,10 +131,7 @@ class Cartero(object):
             s = smtplib.SMTP('localhost')
             # sendmail function takes 3 arguments: sender's address, recipient's address
             # and message to send - here it is sent as one string.
-            
-            
-            #s.sendmail(msg['From'], msg['To'], msg.as_string())
-            
+            #s.sendmail(msg['From'], msg['To'], msg.as_string())            
             s.quit()
             return True
         except Exception:

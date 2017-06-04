@@ -197,14 +197,14 @@ class IGsMetaItem(form.Schema):
     form.widget(f_idioma=CheckBoxFieldWidget)
     f_idioma= schema.List(
         title=u"Idioma",
-        description=u"Selecciones el o los idiomas.",
+        description=u"Seleccione él o los idiomas.",
         value_type=schema.Choice(vocabulary=iso_idiomas),
         required=False,
     )
     
     f_naturaleza= schema.TextLine(
         title=u"Naturaleza",
-        description=u"Naturaleza del documento",
+        description=u"Una característica del documento. Como ser: macanografiado, documento hológrafo, manuscrito.",
         required=False,
     )
     
@@ -217,11 +217,11 @@ class IGsMetaItem(form.Schema):
     directives.mode(f_ruta='hidden')
     f_ruta= schema.TextLine(
         title=u"Ruta al xml",
-        description=u"Información interna",
+        description=u"Información del sistema. No modificar",
         required=False,
     ) 
     form.widget('f_anotacion', klass='alcance',size=5)
-    f_anotacion = schema.Text(title=u"Anotación",required=True,description=u"Anotaciones sobre la obra",)
+    f_anotacion = schema.Text(title=u"Anotación",required=True,description=u"Descripción de la serie hecha por el coordinador de la colección",)
 
 class IGsSubSerie(form.Schema):
     model.fieldset('Subserie',
@@ -240,7 +240,7 @@ class IGsSubSerie(form.Schema):
         description=u"Alcance de la subserie",
         required=False,
     ) 
-    sub_anotacion=schema.Text(title=u"Anotación",required=True,description=u"Anotaciones sobre la obra",)
+    sub_anotacion=schema.Text(title=u"Anotación",required=True,description=u"Anotaciones sobre la sub serie",)
     
 class IGsMetaSerie(form.Schema):
     model.fieldset('Item',label=(u"Descripción de la Serie"),
@@ -255,7 +255,7 @@ fields=["s_titulo","s_temporal","s_autor","s_extension","s_caracteristicas",
         description=u"Extensión de tiempo que cubre la serie",required=False,) 
         
     s_autor= schema.TextLine(title=u"Autor",
-        description=u"Autor de la Serie",required=False,) 
+        description=u"Autor de la serie",required=False,) 
         
     s_extension= schema.TextLine(title=u"Extensión",
         description=u"no se que es... sera el título del documento",required=False,)

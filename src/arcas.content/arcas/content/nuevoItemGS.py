@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Paul'
 import os
-
+from arcas.content.coleccion import IColeccion
 from plone.autoform import directives
 from arcas.content.rootFolder import IRootFolder
 from Products.CMFPlone.utils import safe_unicode
@@ -121,7 +121,7 @@ class NuevoItemGS(form.SchemaForm):
             
         rutaObra=self.determinaRutaNivelSerie(self.widgets["f_ruta"].value,self.widgets["colecId"].value)        
         self.widgets["rutaNivelObra"].value=rutaObra
-      
+        self.widgets["f_ruta"].mode=HIDDEN_MODE
   
 
     def tmlpaaaaa(self):
@@ -186,8 +186,7 @@ class NuevoItemGS(form.SchemaForm):
         return vva        
         
     @button.buttonAndHandler(u'Guardar',condition=showSave)
-    def saveHandler(self, action):
-        print "guardando datos"
+    def saveHandler(self, action):        
         flagm=0
         infoMetadatos=infoMetaItem
         data, errors = self.extractData()
@@ -197,54 +196,77 @@ class NuevoItemGS(form.SchemaForm):
         rutaSerie=self.widgets["rutaNivelObra"].value
         xfile   =self.widgets['upFile'].value.headers.fp
         fileName=self.widgets['upFile'].value.filename
-        rutaSerie+='/nuevoItem'+numLastVersion      
-        
+        rutaSerie+='/nuevoItem'+numLastVersion
+
         if not os.path.exists(rutaSerie):
             os.makedirs(rutaSerie)
             
         #Recorro los campos y los agrego la lista tmpList
         tmpList=[]
         for x in infoMetadatos:
-            itFtext=self.widgets[x].value
+            itFtext=self.request.form["form.widgets."+x]
             if itFtext!="":
-                if type(itFtext)==type([]):                    
-                    itFtext=itFtext[0]
                 tmpList.append((infoMetaItem[x],itFtext))
-            
-        rutaItem= self.widgets["f_ruta"].value 
+
+        #if "form.widgets.%s"%x in self.request.form.keys():
+        #    itFtext=self.request.form["form.widgets."+x]
+        #tmpList.append((infoMetaItem[x],itFtext))
+        #    tmpList[infoMetaItem[x]]=itFtext
+        rutaItem= self.widgets["f_ruta"].value
         nomSerie=self.widgets["serie"].value
         nomSubSerie=self.widgets["subSerie"].value
-        
-        dicDatosItem={                   
+        nombreColeccion=self.dameTituloDeColeccionPorID_GS(self.request.form["form.widgets.colecId"])
+        dicDatosItem={
             "folder":rutaSerie,
-            "nombreColeccion":self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value),
+            "nombreColeccion":nombreColeccion,
             "nomSerie":nomSerie,
             "nomSubSerie":nomSubSerie,
             "ruta":rutaItem,
-            "metadatos":tmpList,            
+            "metadatos":tmpList,
             }
         
         #guardo el archivo adjunto
         with open(rutaSerie+'/'+fileName, "w+") as f:
             f.write(xfile.getvalue())
-        
-        
+
         #guardo el xml
         fsmanager=FSManager()
         itemsaved=fsmanager.saveFileNuevoFile(dicDatosItem)
-        
+
         if itemsaved[0]=="error":
                 msj="> No se pudo guardar el item en %s"%rutaSerie
                 flagm+=1
                 return
-                
-        mandoMail=self.emails({'itemTitulo':itemsaved,'serieTitulo':subSeriesaved,'rserie':seriesaved})
-        
-        if mandoMail:        
+
+        mandoMail=self.emails({'ruta':itemsaved[0],'serie':nomSubSerie,'coleccion':nombreColeccion})
+
+        if mandoMail:
             self.status = u"Se creó un nuevo registro"
         else:
             self.status = u"Se creó el nuevo registro, pero no se pudo enviar el correo"
+
+    def dameTituloDeColeccionPorID_GS(self,idGs):
+        """dado el id de una colección Greenstone devuelve el título del Objeto Coleccion
+        de Plone"""
         
+        catalogo=getToolByName(self.context,"portal_catalog")        
+        colecs=catalogo(object_provides=IColeccion.__identifier__)
+        for brain in colecs:
+            if brain.getObject().GS_ID == idGs:
+                return brain.Title
+        return ""
+        
+    def apagrupo(self,grupo):
+        for wid in grupo.widgets:
+            grupo.widgets[wid].mode=HIDDEN_MODE
+
+    def showSave(self):
+        vva=True
+        if 'cancel' in self.request.keys():
+            vva=False
+        return vva
+    
+    
     
     @button.buttonAndHandler(u"Cancel")
     def handleCancel(self, action):
@@ -257,6 +279,6 @@ class NuevoItemGS(form.SchemaForm):
 
 
     def emails(self,datos):        
-        msj=Cartero()
+        msj=Cartero(self.context)
         loMando=msj.sendAlta(datos)
-        return loMnando
+        return loMando

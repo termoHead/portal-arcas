@@ -210,25 +210,30 @@ class EditItem(form.SchemaForm):
         fsmanager=FSManager()
         
         itemLoaded=fsmanager.parseXmlFileMetadata(COLECCION,biruta)
-        
-        
         itemSerieLoaded=fsmanager.parseXmlFileMetadata(COLECCION,rutaSerie)
+        
         if subSerieOk:
             itemSubSerieLoaded=fsmanager.parseXmlFileMetadata(COLECCION,rutaSubSerie)
         
         for tupla in itemLoaded.items():
             try:
-                widgetNumber=infoMetaItem.values().index(tupla[0])                  
-                self.groups[0].widgets[infoMetaItem.keys()[widgetNumber]].value=tupla[1]
-                self.groups[0].widgets[infoMetaItem.keys()[widgetNumber]].update()
+                widgetNumber=infoMetaItem.values().index(tupla[0])
+                nombreW=  infoMetaItem.keys()[widgetNumber]              
+                self.groups[0].widgets[nombreW].value=tupla[1]
+                self.groups[0].widgets[nombreW].update()
             except:
                 pass
                 #print u"el elemento no está"
-
+        
+       
+        
         for tupla in itemSerieLoaded.items():
+    
             try:
-                widgetNumber=infoMetadatosSerie.values().index(tupla[0])     
-                self.groups[2].widgets[infoMetadatosSerie.keys()[widgetNumber]].value=tupla[1]
+                widgetNumber=infoMetadatosSerie.values().index(tupla[0]) 
+                nombreW=infoMetadatosSerie.keys()[widgetNumber]
+                self.groups[2].widgets[nombreW].value=tupla[1]
+                self.groups[2].widgets[nombreW].update()
             except:
                 pass
                 #print u"el elemento no está"
@@ -237,7 +242,9 @@ class EditItem(form.SchemaForm):
             for tupla in itemSubSerieLoaded.items():
                 try:
                     widgetNumber=infoMetadatoSubSerie.values().index(tupla[0])
-                    self.groups[1].widgets[infoMetadatoSubSerie.keys()[widgetNumber]].value=tupla[1]
+                    nambreW=infoMetadatoSubSerie.keys()[widgetNumber]
+                    self.groups[1].widgets[nambreW].value=tupla[1]
+                    self.groups[1].widgets[nambreW].update()
                 except:
                     pass
                     #print u"el elemento no está"
@@ -380,30 +387,40 @@ class EditItem(form.SchemaForm):
             seriesaved=self.fsmanager.saveFile(dicDatosSerie,"serie")
 
             if itemsaved[0]=="error":
-                msj="> No se pudo guardar el item en %s"%rutaItem
+                msj=u"> No se pudo guardar el item en %s"%rutaItem
                 flagm+=1
+            elif itemsaved[0]=="sin cambios":
+                msj=u"> No se encontraron cambios. "
+                flagm+=1
+                
             if seriesaved[0]=="error":
-                msj="> No se pudo guardar la serie en %s"%rutaSerie
+                msj=u"> No se pudo guardar la serie en %s"%rutaSerie
                 flagm+=1
-
+            elif seriesaved[0]=="sin cambios":
+                msj=u"> No se encontraron cambios. "
+                flagm+=1
+                
             if subSerieOk:                
                 subSeriesaved=self.fsmanager.saveFile(dicDatosSubSerie,"subSerie")
                 if subSeriesaved[0]=="error":
                     msj="> No se pudo guardar la sub serie en %s" %rutaSubSerie
                     flagm+=1
-                else:
-                    subSeriesaved='sin sub serie'
-                if flagm==0:
-                    mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved,'nombreColeccion':nombreColeccion})
-                    
-                    if mandoCorreo:
-                        self.msjForm =u"Los cambios fueron guardados correctamente. Se generó una nueva versión de metadatos y se envió un email para control."
-                    else:
-                        self.msjForm =u"Los cambios fueron guardados. Pero hubo un error al querer enviar el correo."
-                else:
-                    self.msjForm =u"No se pudieron guardar los cambios... se ha generando reporte"
+                elif subSeriesaved[0]=="sin cambios":
+                    msj="> No se encontraron cambios. "
+                    flagm+=1                    
             else:
-                self.status=self.msjForm
+                subSeriesaved='sin sub serie'
+                    
+            if flagm==0:
+                mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved,'nombreColeccion':nombreColeccion})                
+                if mandoCorreo:
+                    self.msjForm =u"Los cambios fueron guardados correctamente. Se generó una nueva versión de metadatos y se envió un email para control."
+                else:
+                    self.msjForm =u"Los cambios fueron guardados. Pero hubo un error al querer enviar el correo."
+            else:
+                self.msjForm=msj
+        else:
+            self.status=self.msjForm
         
         
         miurltmp=self.context.REQUEST.URL

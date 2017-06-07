@@ -168,16 +168,28 @@ class FSManager(object):
         """
         dit={}
         for ind in indice:
-            valorXML=xmldata.findall('.//Metadata[@name="'+ind+']')
-            if (valorXML)>0:                
-                valXML=valorXML
-            else:
-                valXML=""
+            valXML=""
+            valForm=""
+            
+            valorXML=xmldata.findall('.//Metadata[@name="'+ind+'"]')
+            
+            if len(valorXML)>0:
+                if len(valorXML)==1:
+                    valXML=valorXML[0].text
+                else:
+                    valXML=valorXML             
                 
-            if ind in formdata.keys():
+                
+            if ind in formdata.keys():                
                 valForm=formdata[ind]
-            else:
-                valForm=""
+                if isinstance(valForm,list):                    
+                    if len(valForm)==1:                   
+                        valForm=formdata[ind][0]
+                    else:
+                        valForm=formdata[ind]
+                
+
+                
             dit[ind]=(valXML,valForm)
             
         return dit
@@ -199,7 +211,7 @@ class FSManager(object):
         newfilename     =obModificado["ruta"].replace("metadata.xml","metadataV"+version+".xml")
         newfilename     =self.xmlFileBase+obModificado["idColec"]+"/"+newfilename
         rm              =self.openF(obModificado["ruta"],obModificado["idColec"])
-
+        hayCambios=False
         if rm == False:
             return False
         
@@ -209,30 +221,32 @@ class FSManager(object):
         copiXml=self.miXml.getroot()
         
         
-        #recorro buscando cambios
-       
+        #compongo en un lista los valores del xml y del formulario para
+        #compararlos        
         if tipoDato =="serie":
-            listaDatos=componeDatos(FinfoMetadatosSerie.values(),copiXml,obModificado["metadatos"])           
+            listaDatos=self.componeDatos(FinfoMetadatosSerie.values(),copiXml,obModificado["metadatos"])           
         elif tipoDato =="subSerie":
-            listaDatos=componeDatos(FinfoMetadatoSubSerie.values(),copiXml,obModificado["metadatos"])
+            listaDatos=self.componeDatos(FinfoMetadatoSubSerie.values(),copiXml,obModificado["metadatos"])
             
         elif tipoDato=="item":
-            listaDatos=componeDatos(FinfoMetaItem.values(),copiXml,obModificado["metadatos"])
+            listaDatos=self.componeDatos(FinfoMetaItem.values(),copiXml,obModificado["metadatos"])
 
+        for met in listaDatos.keys():
+            val1=listaDatos[met][0]
+            val2=listaDatos[met][1]
             
-        import pdb
-        pdb.set_trace()
-        
-        return
+            if val1!=val2:
+                hayCambios=True
+                
+
+        if not hayCambios:
+            print "no hay cambios"
+            listlog.insert(0,"sin cambios")
+            return listlog
+            
         for miMeta in FinfoMetadatosSerie.values():
             numCampo=FinfoMetadatosSerie.values().index(miMeta)
             tituloCampo=serieTitle[numCampo]
-        
-        
-        
-        
-        
-        
         
         
         #elemeino del XML los elementos multivalor, porque los agrego al final
@@ -240,7 +254,10 @@ class FSManager(object):
         #    for itemXml  in copiXml.find('.//FileSet/Description').findall('.//Metadata[@name="'+nomMet +'"]'):                
         #        copiXml.find(".//FileSet/Description").remove(itemXml)
                 
-        #actualizo los que estan    
+        #actualizo los que estan
+
+
+        
         for itemXml  in copiXml.find(".//FileSet/Description").findall(".//Metadata"):
             itXnom =itemXml.attrib["name"]
             itXtext=itemXml.text

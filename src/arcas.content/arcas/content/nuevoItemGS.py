@@ -139,9 +139,9 @@ class NuevoItemGS(form.SchemaForm):
         #self.rutaNivelSerie=self.determinaRutaNivelSerie(self.widgets["f_ruta"].value)
         if self.widgets["rutaNivelObra"].value!= "":
             self.widgets["rutaNivelObra"].value=self.determinaRutaNivelSerie(self.widgets["f_ruta"].value)                
-        print "----------------"        
+
         print self.widgets["f_ruta"].value
-        print "----------------"
+
         if subserie:
             self.description = u'<div class="descriForm">Se agregará una nueva obra a la colección <span class="destacado">%s</span>, serie: <span class="destacado">%s</span>, subserie: <span class="destacado">%s</span></div>.' %(colec,serie,subserie)
         else:
@@ -150,27 +150,25 @@ class NuevoItemGS(form.SchemaForm):
         
     def determinaRutaNivelSerie(self,tmpRuta,idColect):
         """determina la ruta en la que se creara la nueva carpeta"""
-        
         rutaItem=tmpRuta
         arTmp = rutaItem.split("/")
         del arTmp[-1]
         del arTmp[-1]
         rutaSerie = "/".join(arTmp)
         
-        #buscarNumeroDeVersion y sumarle un      
-        #rutaSerie+='/nuevoItem'+lasVersion        
+        #buscarNumeroDeVersion y sumarle un
+        #rutaSerie+='/nuevoItem'+lasVersion
         return self.xmlFileBase+idColect+"/"+rutaSerie
-        
 
     def dameSigVerisonFolder(self):
         rut=self.widgets["rutaNivelObra"].value
         listado =os.listdir(rut)
         tmp     =["1"]
         listR=[]
-        for elem in listado:            
+        for elem in listado:
             ex="nuevoItem"
             if elem.find(ex)>-1 and elem.find(".")<0:
-                tmpL=elem.split(ex)                
+                tmpL=elem.split(ex)
                 listR.append(tmpL[len(tmpL)-1])
 
         if len(listR)==0:
@@ -183,10 +181,14 @@ class NuevoItemGS(form.SchemaForm):
         vva=True
         if 'cancel' in self.request.keys():
             vva=False
-        return vva        
+        return vva
         
     @button.buttonAndHandler(u'Guardar',condition=showSave)
-    def saveHandler(self, action):        
+    def saveHandler(self, action):
+        mt=getToolByName(self.context,"portal_membership")   
+        operarioMail    = mt.getAuthenticatedMember().getProperty('email',None)
+        operarioNombre  = mt.getAuthenticatedMember().getProperty('fullname',None)
+        operarioDict={'nombre':operarioNombre,'mail':operarioMail}
         flagm=0
         infoMetadatos=infoMetaItem
         data, errors = self.extractData()
@@ -212,6 +214,7 @@ class NuevoItemGS(form.SchemaForm):
         #    itFtext=self.request.form["form.widgets."+x]
         #tmpList.append((infoMetaItem[x],itFtext))
         #    tmpList[infoMetaItem[x]]=itFtext
+
         rutaItem= self.widgets["f_ruta"].value
         nomSerie=self.widgets["serie"].value
         nomSubSerie=self.widgets["subSerie"].value
@@ -224,21 +227,21 @@ class NuevoItemGS(form.SchemaForm):
             "ruta":rutaItem,
             "metadatos":tmpList,
             }
-        
+
         #guardo el archivo adjunto
         with open(rutaSerie+'/'+fileName, "w+") as f:
             f.write(xfile.getvalue())
 
         #guardo el xml
         fsmanager=FSManager()
-        itemsaved=fsmanager.saveFileNuevoFile(dicDatosItem)
+        itemsaved=fsmanager.saveFileNuevoFile(dicDatosItem,operarioDict)
 
         if itemsaved[0]=="error":
                 msj="> No se pudo guardar el item en %s"%rutaSerie
                 flagm+=1
                 return
 
-        mandoMail=self.emails({'ruta':itemsaved[0],'serie':nomSubSerie,'coleccion':nombreColeccion})
+        mandoMail=self.emails({'ruta':itemsaved[0],'serie':nomSubSerie,'coleccion':nombreColeccion},operarioDict)
 
         if mandoMail:
             self.status = u"Se creó un nuevo registro"
@@ -278,7 +281,7 @@ class NuevoItemGS(form.SchemaForm):
         self.context.REQUEST.RESPONSE.redirect(miurl)
 
 
-    def emails(self,datos):        
-        msj=Cartero(self.context)
+    def emails(self,datos,operarioDict):        
+        msj=Cartero(self.context,operarioDict)
         loMando=msj.sendAlta(datos)
         return loMando

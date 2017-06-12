@@ -28,10 +28,7 @@ class FSManager(object):
     xmlFileResto ='/import/co.1/se.1/su.1/ar.1/it.1/'
     xmlFileName='metadata.xml'    
     miXml=""
-    metadatoTipoPersona="ae.agentepersonatipo"
-    metadatoTipoPersonaValor=["creador","revisor"]
-    metadatoTipoNombre="ae.agentepersonanombre"
-    metadatoCrea="ae.datecreacion"
+
     
     def openF(self,ruta,coll):
         """ruta: es ruta al archivo greenston, desde el import,
@@ -42,7 +39,7 @@ class FSManager(object):
         return result
                 
     def openFile(self, ruta):
-        print ruta
+        
         try:            
             xmlFile = ET.parse(ruta)
             self.miXml=xmlFile             
@@ -103,7 +100,7 @@ class FSManager(object):
         return nodo
     
     
-    def saveFileNuevoFile(self,obModificado):
+    def saveFileNuevoFile(self,obModificado,operarioD):
         """Genera y guarda el xml del formulario Nuevo Item"""
         listlog=[]
         xcolec=obModificado["nombreColeccion"]
@@ -114,6 +111,7 @@ class FSManager(object):
         fset = ET.SubElement(root, "FileSet")
         fm=    ET.SubElement(fset, "FileName")
         fm.text=".*"
+        fechaString     =time.strftime("%d/%m/%Y")+"_"+(time.strftime("%H:%M:%S"))
         desc= ET.SubElement(fset, "Description")
         
        
@@ -144,7 +142,13 @@ class FSManager(object):
         xmlstr=minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
         newfilename=obModificado["folder"]+"/metadata.xml"       
         newstr=docTypeHeader+xmlstr
-
+        
+        userNom = self.creatNewXmlMetadata("ae.agentepersonanombre",operarioD['nombre'])
+        tipoUser = self.creatNewXmlMetadata("ae.agentepersonatipo",'creador')
+        fechaS = self.creatNewXmlMetadata("ae.creacionfecha",fechaString)
+        copiXml.find(".//FileSet/Description").append(userNom)
+        copiXml.find(".//FileSet/Description").append(tipoUser)
+        copiXml.find(".//FileSet/Description").append(fechaS)
         
         try:         
             
@@ -195,7 +199,7 @@ class FSManager(object):
         return dit
         
         
-    def saveFile(self,obModificado,tipoDato):
+    def saveFile(self,obModificado,tipoDato,operarioD):
         """
             guarda los datos en el xml
         """
@@ -211,6 +215,7 @@ class FSManager(object):
         newfilename     =obModificado["ruta"].replace("metadata.xml","metadataV"+version+".xml")
         newfilename     =self.xmlFileBase+obModificado["idColec"]+"/"+newfilename
         rm              =self.openF(obModificado["ruta"],obModificado["idColec"])
+        fechaString     =time.strftime("%d/%m/%Y")+"_"+(time.strftime("%H:%M:%S"))
         hayCambios=False
         if rm == False:
             return False
@@ -227,17 +232,15 @@ class FSManager(object):
             listaDatos=self.componeDatos(FinfoMetadatosSerie.values(),copiXml,obModificado["metadatos"])           
         elif tipoDato =="subSerie":
             listaDatos=self.componeDatos(FinfoMetadatoSubSerie.values(),copiXml,obModificado["metadatos"])
-            
         elif tipoDato=="item":
             listaDatos=self.componeDatos(FinfoMetaItem.values(),copiXml,obModificado["metadatos"])
 
         for met in listaDatos.keys():
             val1=listaDatos[met][0]
             val2=listaDatos[met][1]
-            
+
             if val1!=val2:
                 hayCambios=True
-                
 
         if not hayCambios:
             print "no hay cambios"
@@ -338,7 +341,7 @@ class FSManager(object):
                     if itXnom == itFnom:
                         flagMatch=True
                         break
-                if flagMatch==False:                                
+                if flagMatch==False: 
                     if itFtext!="":
                         no=self.creatNewXmlMetadata(itFnom,itFtext)
                         copiXml.find(".//FileSet/Description").append(no)
@@ -348,8 +351,14 @@ class FSManager(object):
                             print u'error de codificación ... lo paso a utf8'
                             logstr="nuevo> %s[%s]: %s." %(itFnom,tituloCampo,itFtext.decode('utf8'))
                         listlog.append(logstr)
+
+        userNom = self.creatNewXmlMetadata("ae.agentepersonanombre",operarioD['nombre'])
+        tipoUser = self.creatNewXmlMetadata("ae.agentepersonatipo",'revisor')
+        fechaS = self.creatNewXmlMetadata("ae.edicionfecha",fechaString)
+        copiXml.find(".//FileSet/Description").append(userNom)
+        copiXml.find(".//FileSet/Description").append(tipoUser)
+        copiXml.find(".//FileSet/Description").append(fechaS)
         
-         
         xmlstrA=ET.tostring(copiXml)        
         xmlstr=minidom.parseString(xmlstrA).toprettyxml(encoding='UTF-8')
         

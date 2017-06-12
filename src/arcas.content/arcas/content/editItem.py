@@ -290,6 +290,10 @@ class EditItem(form.SchemaForm):
         self.saveFlag=self.saveFlag+1
    
         if self.saveFlag<2:
+            mt=getToolByName(self.context,"portal_membership")   
+            operarioMail    = mt.getAuthenticatedMember().getProperty('email',None)
+            operarioNombre  = mt.getAuthenticatedMember().getProperty('fullname',None)
+            operarioDict={'nombre':operarioNombre,'mail':operarioMail}
             msj=rutaItem=rutaSubSerie=rutaSerie=""
             subSerieOk=False
 
@@ -332,6 +336,8 @@ class EditItem(form.SchemaForm):
                     itFtext=self.request.form["form.widgets."+x]
                     #tmpList.append((infoMetaItem[x],itFtext))
                     tmpList[infoMetaItem[x]]=itFtext
+                    
+                    
                     
             nombreColeccion=self.dameTituloColeccionByGSID(self.groups[3].widgets["coleccion"].value)
             dicDatosItem={
@@ -383,8 +389,8 @@ class EditItem(form.SchemaForm):
             self.fsmanager=FSManager()
             flagm=0
 
-            itemsaved=self.fsmanager.saveFile(dicDatosItem,"item")
-            seriesaved=self.fsmanager.saveFile(dicDatosSerie,"serie")
+            itemsaved=self.fsmanager.saveFile(dicDatosItem,"item",operarioDict)
+            seriesaved=self.fsmanager.saveFile(dicDatosSerie,"serie",operarioDict)
 
             if itemsaved[0]=="error":
                 msj=u"> No se pudo guardar el item en %s"%rutaItem
@@ -401,7 +407,7 @@ class EditItem(form.SchemaForm):
                 flagm+=1
                 
             if subSerieOk:                
-                subSeriesaved=self.fsmanager.saveFile(dicDatosSubSerie,"subSerie")
+                subSeriesaved=self.fsmanager.saveFile(dicDatosSubSerie,"subSerie",operarioDict)
                 if subSeriesaved[0]=="error":
                     msj="> No se pudo guardar la sub serie en %s" %rutaSubSerie
                     flagm+=1
@@ -412,7 +418,7 @@ class EditItem(form.SchemaForm):
                 subSeriesaved='sin sub serie'
                     
             if flagm==0:
-                mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved,'nombreColeccion':nombreColeccion})                
+                mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved,'nombreColeccion':nombreColeccion},operarioDict)                
                 if mandoCorreo:
                     self.msjForm =u"Los cambios fueron guardados correctamente. Se generó una nueva versión de metadatos y se envió un email para control."
                 else:
@@ -457,8 +463,8 @@ class EditItem(form.SchemaForm):
 
         return nombreColeccion
            
-    def emails(self,datos):        
-        msj=Cartero(self.context)
+    def emails(self,datos,operarioDict):        
+        msj=Cartero(self.context,operarioDict)
         loMando=msj.sendModificacion(datos)
         return loMando
 

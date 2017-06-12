@@ -39,6 +39,8 @@ from arcas.content.GSWManager import ClienteGS
 from arcas.content.config import infoMetadatosSerie
 from arcas.content.config import infoMetadatoSubSerie
 from arcas.content.config import infoMetaItem
+from arcas.content.config import ISO_IDIOMAS as iso_idiomas
+
 from arcas.content.FSManager import FSManager
 COLECCION=""
 SERIE=""
@@ -96,19 +98,7 @@ token=pair["value"], title=pair["title"]))
             return SimpleVocabulary(terms)
     return  SimpleVocabulary([])
 
-iso_idiomas=SimpleVocabulary([
-    SimpleTerm(value=u'ay', title=(u'aimara')),
-    SimpleTerm(value=u'de', title=(u'alemán')),
-    SimpleTerm(value=u'es', title=(u'español (o castellano)')),
-    SimpleTerm(value=u'fr', title=(u'francés')),
-    SimpleTerm(value=u'el', title=(u'griego (moderno)')),
-    SimpleTerm(value=u'gn', title=(u'guaraní')),
-    SimpleTerm(value=u'en', title=(u'inglés')),
-    SimpleTerm(value=u'it', title=(u'italiano')),
-    SimpleTerm(value=u'la', title=(u'latín')),
-    SimpleTerm(value=u'pt', title=(u'portugués')),
-    SimpleTerm(value=u'qu', title=(u'quechua'))
-    ])
+
 
 def coleccionesVocab(context):
     "colecciones en "
@@ -240,7 +230,13 @@ class IGsSubSerie(form.Schema):
         description=u"Alcance de la subserie",
         required=False,
     ) 
-    sub_anotacion=schema.Text(title=u"Anotación",required=True,description=u"Anotaciones sobre la sub serie",)
+    form.widget('sub_anotacion', klass='alcanceSub',size=5)
+    sub_anotacion=schema.Text(title=u"Anotación",required=False,description=u"Anotaciones sobre la sub serie",)
+    
+    
+    
+    
+    
     
 class IGsMetaSerie(form.Schema):
     model.fieldset('Item',label=(u"Descripción de la Serie"),

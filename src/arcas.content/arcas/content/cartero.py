@@ -9,23 +9,23 @@ from arcas.content.config import MAIL_ADMIN , MAIL_COORDINADOR
 
 class Cartero(object):
     """Manda Mails de las modificaciones en los formilarios de greenstone"""    
-    def __init__(self, context):
+    def __init__(self, context,operarioDict):
         self.context=context
         self.sender=MAIL_ADMIN
-        mt=getToolByName(self.context,"portal_membership")
-        self.operarioMail   = mt.getAuthenticatedMember().getProperty('email',None)
-        self.operarioNombre = mt.getAuthenticatedMember().getProperty('fullname',None)      
+        #mt=getToolByName(self.context,"portal_membership")   
+        self.operarioMail    = operarioDict["mail"] #mt.getAuthenticatedMember().getProperty('email',None)
+        self.operarioNombre  = operarioDict["nombre"] #mt.getAuthenticatedMember().getProperty('fullname',None)      
         
     def encabezado(self):
-        if self.operarioMail    =='':
-            self.operarioMail   ="pablomusa@gmail.com"
-        if self.operarioNombre  =='':
+        if self.operarioMail=='':
+            self.operarioMail="pablomusa@gmail.com"
+        if self.operarioNombre=='':
             self.operarioNombre="Pablo Musa"
 
         coordinadorMail = MAIL_COORDINADOR
         reciver=[self.operarioMail,coordinadorMail]
         
-        # Create message container - the correct MIME type is multipart/alternative.
+         # Create message container - the correct MIME type is multipart/alternative.
         msg = MIMEMultipart('alternative')
         msg['Subject'] = "[ARCAS] Cambios en los metadatos de un registro"
         msg['From'] = self.sender
@@ -34,12 +34,11 @@ class Cartero(object):
     
     def sendModificacion(self,dicDatos):
         """Manda el mail de MODIFICACION DE UN REGISTRO"""
-        rutasItem       =  dicDatos["ritem"]
-        rutasSerie      =  dicDatos["rserie"]
-        rutasSubSerie   =  dicDatos["rsubserie"]
-        nombreColeccion =  dicDatos["nombreColeccion"]
-        msg             =  self.encabezado()
-        
+        rutasItem =  dicDatos["ritem"]
+        rutasSerie =  dicDatos["rserie"]
+        rutasSubSerie =  dicDatos["rsubserie"]
+        nombreColeccion=dicDatos["nombreColeccion"]
+        msg=self.encabezado()        
         # Cuerpo del mensaje solo texto
         text = "Hola!\nSe modificaron metadatos en el Greenston de ARCAS.\n Los Archivos son: %s\n %s \n%s" %(rutasSerie,rutasSubSerie,rutasItem)       
         
@@ -48,7 +47,6 @@ class Cartero(object):
         hhtml += u"El usuario: %s, realizó modificaciones en los matadatos de ARCAS.</br>" %self.operarioNombre.decode("utf8")
         hhtml += u"<p>Esto es un registro básico de lo realizado:</p>"
         hhtml += u"<ul><li><b>Serie:</b><li>"
-        
         for stra in rutasSerie:
             hhtml += '<li>%s</li>'%stra
         
@@ -57,9 +55,8 @@ class Cartero(object):
             
         hhtml += u"</ul></li><li><b>SubSerie:</b><ul>"
         
-        for stra in rutasSubSerie:
+        for stra in rutasSubSerie:  
             hhtml += '<li>%s</li>'%stra
-            
         if len(rutasSubSerie)==1:
             hhtml += '<li>Sin cambios</li>'           
         hhtml += u"</ul></li><li><b>Item:</b><ul>"        
@@ -83,31 +80,21 @@ class Cartero(object):
         try:
             s = smtplib.SMTP('localhost')
             # sendmail function takes 3 arguments: sender's address, recipient's address
-            # and message to send - here it is sent as one string.
-            
-            #s.sendmail(msg['From'], msg['To'], msg.as_string())
-            
+            # and message to send - here it is sent as one string.            
+            s.sendmail(msg['From'], msg['To'], msg.as_string())            
             s.quit()
             return True
         except Exception:
             print "Error: unable to send email"
             return False
-        
-        
-        
-        
-        
-        
+
     def sendAlta(self, datos):
-        """Manda el mail de un NUEVA OBRA"""       
-        
+        """Manda el mail de un NUEVA OBRA"""
         msg=self.encabezado()
         nombreColeccion=unicode(datos["coleccion"])
         serie=unicode(datos["serie"])
         ruta=unicode(datos["ruta"])
-        
-        
-        
+
         # Cuerpo del mensaje solo texto
         text = u"Se agregó un nuevo Item en la Serie: "+serie
         
@@ -131,7 +118,7 @@ class Cartero(object):
             s = smtplib.SMTP('localhost')
             # sendmail function takes 3 arguments: sender's address, recipient's address
             # and message to send - here it is sent as one string.
-            #s.sendmail(msg['From'], msg['To'], msg.as_string())            
+            s.sendmail(msg['From'], msg['To'], msg.as_string())            
             s.quit()
             return True
         except Exception:

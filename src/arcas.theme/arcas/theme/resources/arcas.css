@@ -251,3 +251,8 @@ div.field.error .formHelp {color:#666 !important}
     width: 19px;
 }
 #agregaOp .holdimage{background-image:url(++theme++arcas.theme/img/additem1.gif) right center}
+.template-formsok_view .texto {
+    background-color: #59544c;
+    padding: 20px;
+}
+.template-formsok_view h3{ color:white}

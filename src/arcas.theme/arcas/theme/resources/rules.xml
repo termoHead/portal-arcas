@@ -112,8 +112,7 @@
         <rules css:if-content=".template-document_view"> 
             <before css:theme=".cabezalInterno .clr" css:content="h1"/>
         </rules>
-        <rules css:if-content=".template-edititem"> 
-        
+        <rules css:if-content=".template-edititem">        
           <replace css:theme=".cabezalInterno h2">
                         <xsl:copy-of select="//*[@class='documentFirstHeading']" />
              </replace>
@@ -125,7 +124,10 @@
                         <xsl:copy-of select="//*[@class='documentFirstHeading']" />
              </replace>
         </rules>
-        
+         <rules css:if-content=".template-formsok_view"> 
+          <replace css:theme-children="#contenido" css:content-children="#container"/>
+
+        </rules>
         
         <rules css:if-content=".template-edititem">
             <theme href="estandar.html" />            

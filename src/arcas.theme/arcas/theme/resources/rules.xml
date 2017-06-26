@@ -22,6 +22,14 @@
             <replace css:theme-children="#contenido .presentacion .pie" css:content-children="div#contenido div.presentacion .pie" />
 
         </rules>
+        <rules css:if-content=".template-login_form">        
+            <replace css:theme-children="#content-core" css:content-children="#content-core"/>
+            
+        </rules>
+        
+        
+        
+        
     </rules>
 
 
@@ -154,7 +162,8 @@
 
              <drop css:content=".documentFirstHeading"></drop>
         </rules>
-
+        
+       
     </rules>
 
 

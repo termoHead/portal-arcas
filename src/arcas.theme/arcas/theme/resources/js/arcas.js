@@ -725,4 +725,19 @@ $("#enlace0 .item").each(
 
 }
 
-
+function loginOn(){
+    
+    
+    
+    /*$('#enviarFormLogin').click(function(e){
+        e.preventDefault()
+        var miurl=$("#enviarFormLogin").attr("action")
+        console.log(miurl)
+        $.ajax({
+            url: miurl,
+            context: document.body
+        }).done(function() {
+            $( this ).addClass( "done" );
+        });
+    })*/
+}

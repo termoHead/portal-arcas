@@ -338,12 +338,12 @@ float:left;<span tal:></span>
 .bloqueColeccion .textoInterno .links a.der{
 float:right;
 } 
+/*background:url(images/bgBuscarColecciones.png) left top no-repeat transparent;*/
 .buscarEnColecciones{
 float:left;
 width:100%;
-background:url(images/bgBuscarColecciones.png) left top no-repeat transparent;
 margin:5px 0;
-height:27px;
+height:10px;
 }
 .buscarEnColecciones input{
     background-color: transparent;
@@ -354,6 +354,7 @@ height:27px;
     font-size: 12px;
     margin: 5px 93px 0;
     width: 180px;
+    display:none;
 }
 #contenido{
 border-bottom:1px solid #99928b;

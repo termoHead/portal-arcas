@@ -38,6 +38,14 @@
 		/>
 	-*-
 	-->
+	
+    <browser:page
+        for=".coleccion.IColeccion"
+        name="edit"
+        class=".coleccion.EditForm"
+        permission="cmf.ModifyPortalContent"
+    />
+	
     <browser:page
         for="*"
         name="formsOk_view"

@@ -156,13 +156,15 @@
                 </div>
                 <div class="centro" tal:condition="noticias">
 
-                    <tal:li tal:repeat="noticia noticias">
+                    <tal:li tal:repeat="noticia python:noticias[0:2]">
+                        <span style="color:#999; font-size:.8em" tal:content="python:noticia.EffectiveDate[:10]"></span>
                         <h4>
                             <a href="#"
                            tal:attributes="href noticia/getURL;
                                            title noticia/Title"
                            tal:content="noticia/Title">aaaa</a>
                         </h4>
+                        
                         <p tal:content="noticia/Description"></p>
                     </tal:li>
 

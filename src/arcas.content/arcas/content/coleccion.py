@@ -18,6 +18,8 @@ from z3c.relationfield.schema import RelationList, RelationChoice
 import unicodedata
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from plone.autoform import directives
+from z3c.form.interfaces import HIDDEN_MODE, DISPLAY_MODE, INPUT_MODE
+from plone.dexterity.browser import edit
 
 class IColeccion(form.Schema):
     """Esquema básico de la colección. 
@@ -344,3 +346,21 @@ class ColeccionDataView(grok.View):
     grok.name('colecciondataview')
     grok.layer(IArcasTheme)
 
+
+
+class EditForm(edit.DefaultEditForm):    
+    
+    def update(self):
+        super(EditForm, self).update()        
+        
+        widgImagen1=self.groups[5].widgets["IColDerSeccion.picture1"]
+        widgImagen2=self.groups[6].widgets["IColDerSeccion.picture2"]
+        
+        if self.groups[5].widgets["IColDerSeccion.tipoSecc1"].value[0]!="imagen":
+            widgImagen1.mode=HIDDEN_MODE
+            widgImagen1.update()
+            
+        if self.groups[6].widgets["IColDerSeccion.tipoSecc2"].value[0]!="imagen":
+            widgImagen2.mode=HIDDEN_MODE
+            widgImagen2.update()
+            

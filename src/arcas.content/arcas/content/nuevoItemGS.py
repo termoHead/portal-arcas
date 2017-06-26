@@ -31,6 +31,7 @@ from plone.namedfile.field import NamedFile
 from z3c.form import field, group
 from arcas.content.config import infoMetaItem, MAIL_ADMIN ,MAIL_COORDINADOR
 from arcas.content.cartero import Cartero
+#from patoolib import *
 
 class IAddFiles(form.Schema):
     upFile = NamedFile(title=u"Subir archivo",
@@ -95,7 +96,13 @@ class NuevoItemGS(form.SchemaForm):
     ignoreContext = True
     label       = u"Nueva obra"
     description = u'<div class="formuDescri">Se está agregando una obra nueva </div>'
-    
+    description = u'<div class="formuDescri">Los datos que usted va a editar se actualizarán una vez hayan sido revisados y aceptados\
+                    para su inclusión/modificación por el equipo técnico de ARCAS. Recibirá un mail con la modificación \
+                    por Usted realizada y cuando haya sido actualizado en el Portal público.<br \/>\
+                    En todos los casos, el formulario mostrará para editar la versión pública. Si necesita modificar \
+                    una versión generada por usted aún no publicada, utilice la información recibida por mail para \
+                    recuperar los datos de las versiones intermedias.</div>\
+                    '
     
     def update(self):
         super(NuevoItemGS, self).update()
@@ -114,7 +121,7 @@ class NuevoItemGS(form.SchemaForm):
             self.widgets["serie"].value=serie
             
             if subserie:
-                self.description = u'<div class="descriForm">Se agregará una nueva obra a la colección <span class="destacado">%s</span>, serie: <span class="destacado">%s</span>, subserie: <span class="destacado">%s</span>.</div>' %(colec,serie,subserie)
+                self.description += u'<div class="descriForm">Se agregará una nueva obra a la colección <span class="destacado">%s</span>, serie: <span class="destacado">%s</span>, subserie: <span class="destacado">%s</span>.</div>' %(colec,serie,subserie)
                 self.widgets["subSerie"].value=subserie
             else:
                 self.description = '<div class="descriForm">Se agregará una nueva obra a la colección <span class="destacado">%s</span>, serie: <span class="destacado">%s</span></div>.'%(colec,serie)
@@ -214,7 +221,15 @@ class NuevoItemGS(form.SchemaForm):
         #    itFtext=self.request.form["form.widgets."+x]
         #tmpList.append((infoMetaItem[x],itFtext))
         #    tmpList[infoMetaItem[x]]=itFtext
-
+        import pdb
+        pdb.set_trace()
+        
+        #patoolib.extract_archive("foo_bar.rar", outdir=".")
+        
+        
+        
+        
+        
         rutaItem= self.widgets["f_ruta"].value
         nomSerie=self.widgets["serie"].value
         nomSubSerie=self.widgets["subSerie"].value

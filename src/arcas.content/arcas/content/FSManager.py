@@ -11,6 +11,7 @@ from arcas.content.config import infoMetaItem as FinfoMetaItem
 from arcas.content.config import itemTitles,subSerieTitles,serieTitle
 from xml.dom import minidom
 
+
 class FSManager(object):
     """
         Abre el archivo y lo guarda en miXml
@@ -106,6 +107,11 @@ class FSManager(object):
         xcolec=obModificado["nombreColeccion"]
         xserie=obModificado["nomSerie"]
         xsubSerie=obModificado["nomSubSerie"]
+        
+        
+      
+        
+        
         docTypeHeader=u'<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE DirectoryMetadata SYSTEM \"http://greenstone.org/dtd/DirectoryMetadata/1.0/DirectoryMetadata.dtd \">'
         root = ET.Element("DirectoryMetadata")
         fset = ET.SubElement(root, "FileSet")

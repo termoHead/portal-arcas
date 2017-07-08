@@ -112,33 +112,30 @@ class EditItem(form.SchemaForm):
     
     
     #lsw=["f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones","f_idioma","f_naturaleza","f_alcance","f_anotacion","f_ruta"]
-
-   
     editOk=False
-    
+
     def update(self):
         global COLECCION
         global SERIE
-        global SUBSERIE        
+        global SUBSERIE
+        
         super(EditItem, self).update()
         
         if 'HTTP_REFERER' in self.request.keys():
             self.vengoDe=self.request.HTTP_REFERER
-        
-        
+
         dictForm= self.request.form
         if 'cancel' in dictForm.keys():
             self.status="Los cambios fueron cancelados"
             return
         if 'formOk' in dictForm.keys():
             self.status=dictForm['formOk']
-            return 
-            
+            return
             
         if 'obra' in dictForm.keys():
             tituloC=self.dameTituloDeColeccionPorID_GS(dictForm["coleccion"])
             self.label=u'Editando la obra %s, de la colección: %s' %(dictForm["obra"],tituloC)
-            
+
         COLECCION=SERIE=SUBSERIE=""        
 
         if "biruta" in dictForm:
@@ -155,7 +152,7 @@ class EditItem(form.SchemaForm):
             colecId=dictForm["colec"]
         else:
             colecId=None
-            
+
         if "coleccion" in dictForm:
             COLECCION=dictForm["coleccion"]
             self.groups[3].widgets["coleccion"].value=COLECCION
@@ -182,23 +179,20 @@ class EditItem(form.SchemaForm):
             SUBSERIE=None
 
         rutaItem = biruta
-   
-        
-            
-        
+
         #averigua si tiene subserie 
-        if len(biruta.split("/")[3:])>4:
+        if len(biruta.split("/")[3:])>=4:
             subSerieOk=True
         else:
-             subSerieOk=Flase
-             
+            subSerieOk=False
+
         
-        if subSerieOk:            
+        
+        if subSerieOk:
             arTmp = rutaItem.split("/")
             del arTmp[-2]
             del arTmp[-2]
             rutaSerie = "/".join(arTmp)
-            
             arTmp = rutaItem.split("/")
             del arTmp[-2]
             rutaSubSerie = "/".join(arTmp)
@@ -206,31 +200,27 @@ class EditItem(form.SchemaForm):
             arTmp = rutaItem.split("/")
             del arTmp[-2]
             rutaSerie = "/".join(arTmp)
-            
+
         fsmanager=FSManager()
-        
         itemLoaded=fsmanager.parseXmlFileMetadata(COLECCION,biruta)
         itemSerieLoaded=fsmanager.parseXmlFileMetadata(COLECCION,rutaSerie)
-        
+
         if subSerieOk:
             itemSubSerieLoaded=fsmanager.parseXmlFileMetadata(COLECCION,rutaSubSerie)
-        
+
         for tupla in itemLoaded.items():
             try:
                 widgetNumber=infoMetaItem.values().index(tupla[0])
-                nombreW=  infoMetaItem.keys()[widgetNumber]              
+                nombreW=  infoMetaItem.keys()[widgetNumber]
                 self.groups[0].widgets[nombreW].value=tupla[1]
                 self.groups[0].widgets[nombreW].update()
             except:
                 pass
                 #print u"el elemento no está"
-        
-       
-        
+
         for tupla in itemSerieLoaded.items():
-    
             try:
-                widgetNumber=infoMetadatosSerie.values().index(tupla[0]) 
+                widgetNumber=infoMetadatosSerie.values().index(tupla[0])
                 nombreW=infoMetadatosSerie.keys()[widgetNumber]
                 self.groups[2].widgets[nombreW].value=tupla[1]
                 self.groups[2].widgets[nombreW].update()
@@ -248,24 +238,28 @@ class EditItem(form.SchemaForm):
                 except:
                     pass
                     #print u"el elemento no está"
+		
+		
+		
 
+		
         self.groups[3].mode='hidden'
         
+        
+        
+        
+		#super(EditItem, self).update()
+		#self.groups[3].widgets["tituColec"].value=self.dameTituloColeccionByGSID(COLECCION)
+		#if len(self.groups[3].widgets["tituColec"].value) >0:
+		#    self.label="Formulario para edición de datos descriptivos de las fuentes primarias de la colección %s"%self.groups[3].widgets["tituColec"].value
 
-
-        #super(EditItem, self).update()
-        #self.groups[3].widgets["tituColec"].value=self.dameTituloColeccionByGSID(COLECCION)
-        #if len(self.groups[3].widgets["tituColec"].value) >0:
-        #    self.label="Formulario para edición de datos descriptivos de las fuentes primarias de la colección %s"%self.groups[3].widgets["tituColec"].value
-
-        #if colec:
-        #    self.groups[3].widgets["coleccion"].value = colec.encode('utf-8')
-        #    COLECCION=self.groups[3].widgets["coleccion"].value
-        #    self.groups[3].widgets["coleccion"].mode = HIDDEN_MODE
+		#if colec:
+		#    self.groups[3].widgets["coleccion"].value = colec.encode('utf-8')
+		#    COLECCION=self.groups[3].widgets["coleccion"].value
+		#    self.groups[3].widgets["coleccion"].mode = HIDDEN_MODE
 
     def dameTituloDeColeccionPorID_GS(self,idGs):
-        """dado el id de una colección Greenstone devuelve el título del Objeto Coleccion
-        de Plone"""
+        """dado el id de una colección Greenstone devuelve el título del Objeto Coleccion de Plone"""
         
         catalogo=getToolByName(self.context,"portal_catalog")
         
@@ -274,7 +268,7 @@ class EditItem(form.SchemaForm):
             if brain.getObject().GS_ID == idGs:
                 return brain.Title
         return ""
-        
+
     def apagrupo(self,grupo):
         for wid in grupo.widgets:
             grupo.widgets[wid].mode=HIDDEN_MODE
@@ -284,17 +278,16 @@ class EditItem(form.SchemaForm):
         if 'cancel' in self.request.keys():
             vva=False
         return vva
-        
+
     @button.buttonAndHandler(u'Guardar',condition=showSave)
     def saveHandler(self, action):
         self.saveFlag=self.saveFlag+1
-   
         if self.saveFlag<2:
             mt=getToolByName(self.context,"portal_membership")   
             operarioMail    = mt.getAuthenticatedMember().getProperty('email',None)
             operarioNombre  = mt.getAuthenticatedMember().getProperty('fullname',None)
             operarioDict={'nombre':operarioNombre,'mail':operarioMail}
-            msj=rutaItem=rutaSubSerie=rutaSerie=""
+            msj=rutaItem = rutaSubSerie = rutaSerie = ""
             subSerieOk=False
 
             infoMetadatos=infoMetaItem
@@ -311,7 +304,7 @@ class EditItem(form.SchemaForm):
                 return
 
             #rutaArchivos
-            rutaItem = self.groups[0].widgets["f_ruta"].value        
+            rutaItem = self.groups[0].widgets["f_ruta"].value
 
             if subSerieOk:
                 arTmp = rutaItem.split("/")
@@ -326,11 +319,8 @@ class EditItem(form.SchemaForm):
                 arTmp = rutaItem.split("/")
                 del arTmp[-2]
                 rutaSerie = "/".join(arTmp)
-
-            #-------- cargo ITEM
+            #cargo ITEM
             tmpList={}
-
-
             for x in infoMetadatos:                
                 if "form.widgets.%s"%x in self.request.form.keys():
                     itFtext=self.request.form["form.widgets."+x]

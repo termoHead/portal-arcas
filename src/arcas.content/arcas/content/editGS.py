@@ -145,17 +145,25 @@ class IGsMetaItem(form.Schema):
         description=u"Título del documento",
         required=True,
     )
-    f_autor= schema.TextLine(
-        title=u"Autor",  
-        description=u"Autor del documento",
-        required=True,
-    )
+    f_autor=schema.List(
+         title=u"Autor/es",          
+        description=u'Agregar un autor por linea, en formato: apellido, nombre ',
+        value_type=schema.TextLine(),
+        required=False,)
     
-    f_colaborador= schema.Text(
-        title=u'Colaboradore/s',
+    #f_colaborador= schema.Text(
+    #    title=u'Colaboradore/s',
+    #    description=u'Agregar un colaborador por linea, en formato: apellido, nombre',
+    #    required=False,
+    #)
+    
+    f_colaborador=schema.List(
+        title=u'Colaboradore/s', 
         description=u'Agregar un colaborador por linea, en formato: apellido, nombre',
-        required=False,
-    )
+        value_type=schema.TextLine(),
+        required=False,)
+
+    
     f_edicion= schema.TextLine(
         title=u"Edición",  
         description=u"Edición a la que pertenence el documento",
@@ -198,7 +206,7 @@ class IGsMetaItem(form.Schema):
         required=False,
     )
     
-    f_alcance= schema.TextLine(
+    f_alcance= schema.Text(
         title=u"Alcance",
         description=u"Alcance de la obra",
         required=False,
@@ -211,7 +219,7 @@ class IGsMetaItem(form.Schema):
         required=False,
     ) 
     form.widget('f_anotacion', klass='alcance',size=5)
-    f_anotacion = schema.Text(title=u"Anotación",required=True,description=u"Descripción de la serie hecha por el coordinador de la colección",)
+    f_anotacion = schema.Text(title=u"Anotación",required=False,description=u"Descripción de la serie hecha por el coordinador de la colección",)
 
 class IGsSubSerie(form.Schema):
     model.fieldset('Subserie',
@@ -225,7 +233,7 @@ class IGsSubSerie(form.Schema):
         required=False,
     )  
     form.widget('sub_alcance', klass='alcanceSub',size=5)
-    sub_alcance= schema.TextLine(
+    sub_alcance= schema.Text(
         title=u"Alcance",
         description=u"Alcance de la subserie",
         required=False,
@@ -250,16 +258,19 @@ fields=["s_titulo","s_temporal","s_autor","s_extension","s_caracteristicas",
     s_temporal= schema.TextLine(title=u"Cobertura temporal",
         description=u"Extensión de tiempo que cubre la serie",required=False,) 
         
-    s_autor= schema.TextLine(title=u"Autor",
-        description=u"Autor de la serie",required=False,) 
-        
+    s_autor=schema.List(
+         title=u"Autor/es de la serie",          
+        description=u'Agregar un autor por linea, en formato: apellido, nombre ',
+        value_type=schema.TextLine(),
+        required=False,)
+
     s_extension= schema.TextLine(title=u"Extensión",
         description=u"no se que es... sera el título del documento",required=False,)
    
     s_caracteristicas= schema.TextLine(title=u"Descripción física",
         description=u"Cantidad de items de la serie",required=False,)
         
-    s_alcance= schema.TextLine(title=u"Alcance",
+    s_alcance= schema.Text(title=u"Alcance",
         description=u"no se que es... sera el título del documento",required=False,)
     form.widget(s_lenguaiso=CheckBoxFieldWidget)
     s_lenguaiso = schema.Choice(title=u"Idioma",vocabulary=iso_idiomas,description=u"Idioma de la serie",required=False,)

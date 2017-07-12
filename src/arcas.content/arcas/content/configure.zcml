@@ -29,29 +29,37 @@
       />
   <include package="plone.directives.form" file="meta.zcml" />
   <include package="plone.directives.form" />
-	<!-- 
-	-*- extra stuff goes here <plone:behavior
-		title="GroupColeccion"
-		description="Agrega un campo nombre de grupo."
-		provides=".behaviors.IColecGroupName"
-		factory =".behaviors.ColecGroupName"
-		/>
-	-*-
-	-->
-	
+  
+    <!-- 
+    -*- extra stuff goes here <plone:behavior
+    title="GroupColeccion"
+    description="Agrega un campo nombre de grupo."
+    provides=".behaviors.IColecGroupName"
+    factory =".behaviors.ColecGroupName"
+    />
+    -*-
+    -->
+
     <browser:page
         for=".coleccion.IColeccion"
         name="edit"
         class=".coleccion.EditForm"
         permission="cmf.ModifyPortalContent"
     />
-	
+
     <browser:page
         for="*"
         name="formsOk_view"
         permission="zope2.Public"
         class=".formsOk_view.FormsOkView"
         template="templates/formsOk_view.pt"
+    />
+    <browser:page
+        for="*"
+        name="formsCancel_view"
+        permission="zope2.Public"
+        class=".formsCancel_view.FormsCancelView"
+        template="templates/formsCancel_view.pt"
     />
     <browser:viewletManager
         name="arcas.coleccion.seccion1"

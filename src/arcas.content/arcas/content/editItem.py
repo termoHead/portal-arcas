@@ -209,10 +209,17 @@ class EditItem(form.SchemaForm):
             itemSubSerieLoaded=fsmanager.parseXmlFileMetadata(COLECCION,rutaSubSerie)
 
         for tupla in itemLoaded.items():
+            
             try:
                 widgetNumber=infoMetaItem.values().index(tupla[0])
                 nombreW=  infoMetaItem.keys()[widgetNumber]
-                self.groups[0].widgets[nombreW].value=tupla[1]
+                valor=tupla[1]
+                
+                if isinstance(tupla[1],list):                    
+                    valor = ""
+                    for bloqtext in tupla[1]:
+                        valor += bloqtext+"\r"
+                self.groups[0].widgets[nombreW].value=valor
                 self.groups[0].widgets[nombreW].update()
             except:
                 pass
@@ -238,11 +245,7 @@ class EditItem(form.SchemaForm):
                 except:
                     pass
                     #print u"el elemento no está"
-		
-		
-		
 
-		
         self.groups[3].mode='hidden'
         
         
@@ -319,13 +322,16 @@ class EditItem(form.SchemaForm):
                 arTmp = rutaItem.split("/")
                 del arTmp[-2]
                 rutaSerie = "/".join(arTmp)
+                
+                
             #cargo ITEM
             tmpList={}
-            for x in infoMetadatos:                
-                if "form.widgets.%s"%x in self.request.form.keys():
-                    itFtext=self.request.form["form.widgets."+x]
+            for mxx in infoMetadatos:            
+                if "form.widgets.%s"%mxx in self.request.form.keys():
+                    itFtext=self.request.form["form.widgets."+mxx]
+                    
                     #tmpList.append((infoMetaItem[x],itFtext))
-                    tmpList[infoMetaItem[x]]=itFtext
+                    tmpList[infoMetaItem[mxx]]=itFtext
                     
                     
                     
@@ -383,31 +389,32 @@ class EditItem(form.SchemaForm):
             seriesaved=self.fsmanager.saveFile(dicDatosSerie,"serie",operarioDict)
 
             if itemsaved[0]=="error":
-                msj=u"> No se pudo guardar el item en %s"%rutaItem
+                msj+=u"> No se pudo guardar el item en %s \r"%rutaItem
                 flagm+=1
             elif itemsaved[0]=="sin cambios":
-                msj=u"> No se encontraron cambios. "
-                flagm+=1
+                msj+=u"> No se encontraron cambios. \r"
+                flagm+=10
                 
             if seriesaved[0]=="error":
-                msj=u"> No se pudo guardar la serie en %s"%rutaSerie
+                msj+=u"> No se pudo guardar la serie en %s \r"%rutaSerie
                 flagm+=1
             elif seriesaved[0]=="sin cambios":
-                msj=u"> No se encontraron cambios. "
-                flagm+=1
+                msj+=u"> No se encontraron cambios en la Serie.\r"
+                flagm+=10
                 
             if subSerieOk:                
                 subSeriesaved=self.fsmanager.saveFile(dicDatosSubSerie,"subSerie",operarioDict)
                 if subSeriesaved[0]=="error":
-                    msj="> No se pudo guardar la sub serie en %s" %rutaSubSerie
+                    msj+="> No se pudo guardar la sub serie en %s\r" %rutaSubSerie
                     flagm+=1
                 elif subSeriesaved[0]=="sin cambios":
-                    msj="> No se encontraron cambios. "
-                    flagm+=1                    
+                    msj+="> No se encontraron cambios en la subsetire.\r"
+                    flagm+=10
             else:
                 subSeriesaved='sin sub serie'
-                    
-            if flagm==0:
+
+
+            if flagm<30:
                 mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved,'nombreColeccion':nombreColeccion},operarioDict)                
                 if mandoCorreo:
                     self.msjForm =u"Los cambios fueron guardados correctamente. Se generó una nueva versión de metadatos y se envió un email para control."
@@ -417,8 +424,7 @@ class EditItem(form.SchemaForm):
                 self.msjForm=msj
         else:
             self.status=self.msjForm
-        
-        
+
         miurltmp=self.context.REQUEST.URL
         miurl   ="/".join(miurltmp.split("/")[:-2])
         self.context.REQUEST.RESPONSE.redirect(miurl+"/formsOk_view?mensaje="+self.msjForm.encode('utf8'))
@@ -427,21 +433,13 @@ class EditItem(form.SchemaForm):
     @button.buttonAndHandler(u"Cancel")
     def handleCancel(self, action):
         """User cancelled. Redirect back to the front page."""
-        
-        global COLECCION
-        global SERIE
-        global SUBSERIE
 
         COLECCION=SERIE=SUBSERIE=""
-        
-        self.editOk = False
+        self.status = "Cambios cancelados"
         self.form._finishedAdd = True
-        miurl=self.context.REQUEST.URL+"?cancel=ok"
-            
+        miurl="/".join(self.context.REQUEST.URL.split("/")[:-1])+"/formsCancel_view?mensaje= La edición fue cancelar"
         self.context.REQUEST.RESPONSE.redirect(miurl)
-        
 
-        
     def dameTituloColeccionByGSID(self,gsid):
         cata=getToolByName(self.context,"portal_catalog")
         brains=cata(portal_type="arcas.coleccion")

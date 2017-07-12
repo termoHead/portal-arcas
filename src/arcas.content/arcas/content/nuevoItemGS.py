@@ -292,7 +292,7 @@ class NuevoItemGS(form.SchemaForm):
         COLECCION=SERIE=SUBSERIE=""        
         self.status = "Cambios cancelados"        
         self.form._finishedAdd = True
-        miurl=self.context.REQUEST.URL+"?cancel=ok"            
+        miurl=self.context.REQUEST.URL+"/formsCancel_view?cancel= La edición fue cancelada"            
         self.context.REQUEST.RESPONSE.redirect(miurl)
 
 

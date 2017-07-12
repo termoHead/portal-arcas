@@ -76,7 +76,8 @@ class Cartero(object):
         part2 = MIMEText(hhtml.encode('utf8'), 'html')
         msg.attach(part1)
         msg.attach(part2)
-        
+        import pdb
+        pdb.set_trace
         try:
             s = smtplib.SMTP('localhost')
             # sendmail function takes 3 arguments: sender's address, recipient's address

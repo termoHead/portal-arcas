@@ -208,8 +208,7 @@ class EditItem(form.SchemaForm):
         if subSerieOk:
             itemSubSerieLoaded=fsmanager.parseXmlFileMetadata(COLECCION,rutaSubSerie)
 
-        for tupla in itemLoaded.items():
-            
+        for tupla in itemLoaded.items():            
             try:
                 widgetNumber=infoMetaItem.values().index(tupla[0])
                 nombreW=  infoMetaItem.keys()[widgetNumber]

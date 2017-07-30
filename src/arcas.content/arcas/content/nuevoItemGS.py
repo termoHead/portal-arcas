@@ -172,6 +172,8 @@ class NuevoItemGS(form.SchemaForm):
         listado =os.listdir(rut)
         tmp     =["1"]
         listR=[]
+
+        
         for elem in listado:
             ex="nuevoItem"
             if elem.find(ex)>-1 and elem.find(".")<0:
@@ -181,8 +183,8 @@ class NuevoItemGS(form.SchemaForm):
         if len(listR)==0:
             return "1"
         else:
-            sum=int(listR[len(listR)-1])+1
-            return(str(sum))
+            sum=int(listR[0])+1
+            return str(sum)
         
     def showSave(self):
         vva=True
@@ -209,31 +211,28 @@ class NuevoItemGS(form.SchemaForm):
 
         if not os.path.exists(rutaSerie):
             os.makedirs(rutaSerie)
-            
+
         #Recorro los campos y los agrego la lista tmpList
         tmpList=[]
         for x in infoMetadatos:
             itFtext=self.request.form["form.widgets."+x]
+            
+            
+            if x == "f_autor" and len(itFtext)>0:
+                tmpC=[]
+                for elem in itFtext.split("\r\n"):
+                    tmpC.append(elem)                    
+                tmpList.append((infoMetaItem[x],tmpC))
+                
             if itFtext!="":
                 tmpList.append((infoMetaItem[x],itFtext))
 
-        #if "form.widgets.%s"%x in self.request.form.keys():
-        #    itFtext=self.request.form["form.widgets."+x]
-        #tmpList.append((infoMetaItem[x],itFtext))
-        #    tmpList[infoMetaItem[x]]=itFtext
-        import pdb
-        pdb.set_trace()
-        
-        #patoolib.extract_archive("foo_bar.rar", outdir=".")
-        
-        
-        
-        
-        
         rutaItem= self.widgets["f_ruta"].value
         nomSerie=self.widgets["serie"].value
         nomSubSerie=self.widgets["subSerie"].value
         nombreColeccion=self.dameTituloDeColeccionPorID_GS(self.request.form["form.widgets.colecId"])
+        
+        
         dicDatosItem={
             "folder":rutaSerie,
             "nombreColeccion":nombreColeccion,

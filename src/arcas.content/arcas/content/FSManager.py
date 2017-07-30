@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 import os
 import sys
 import time
+import string
 from arcas.content.config import infoMetadatosSerie as FinfoMetadatosSerie
 from arcas.content.config import infoMetadatoSubSerie as FinfoMetadatoSubSerie
 from arcas.content.config import infoMetaItem as FinfoMetaItem
@@ -138,10 +139,6 @@ class FSManager(object):
         xserie=obModificado["nomSerie"]
         xsubSerie=obModificado["nomSubSerie"]
 
-
-
-
-
         docTypeHeader=u'<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE DirectoryMetadata SYSTEM \"http://greenstone.org/dtd/DirectoryMetadata/1.0/DirectoryMetadata.dtd \">'
         root = ET.Element("DirectoryMetadata")
         fset = ET.SubElement(root, "FileSet")
@@ -150,44 +147,37 @@ class FSManager(object):
         fechaString     =time.strftime("%d/%m/%Y")+"_"+(time.strftime("%H:%M:%S"))
         desc= ET.SubElement(fset, "Description")
 
-
+        
         for itemForm in obModificado["metadatos"]:
             itFnom =  itemForm[0]
             itFtext=  itemForm[1]
 
-
-
-            if itFnom=="ae.itemcolaborador":
-
-
-
-                for colab in itFtext.split("\r\n"):
+            
+            if isinstance(itFtext,list):                                
+                for dato in itFtext:
                     tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)
-                    tmpM.text=colab
-            else:
-                if itFnom=="ae.itemlenguaiso":
-                    for elem in itFtext:
-                        tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)
-                        tmpM.text=elem
-                else:
-                    tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)
-                    tmpM.text=itFtext
+                    tmpM.text=dato
+            else:                
+                tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)
+                tmpM.text=itFtext
+            
 
+        
+        tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)
+        tmpM.text=itFtext
 
-
-
-
+        tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name="ae.agentepersonanombre")
+        tmpM.text=operarioD['nombre']
+        
+        tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name="ae.agentepersonatipo")
+        tmpM.text=u"creador"
+        
+        tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name="ae.creacionfecha")
+        tmpM.text=fechaString
 
         xmlstr=minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
         newfilename=obModificado["folder"]+"/metadata.xml"
         newstr=docTypeHeader+xmlstr
-
-        userNom = self.creatNewXmlMetadata("ae.agentepersonanombre",operarioD['nombre'])
-        tipoUser = self.creatNewXmlMetadata("ae.agentepersonatipo",'creador')
-        fechaS = self.creatNewXmlMetadata("ae.creacionfecha",fechaString)
-        copiXml.find(".//FileSet/Description").append(userNom)
-        copiXml.find(".//FileSet/Description").append(tipoUser)
-        copiXml.find(".//FileSet/Description").append(fechaS)
 
         try:
             f=open(newfilename,"wr+")
@@ -246,10 +236,16 @@ class FSManager(object):
                         for autor in responsables:
                             if autor!="":
                                 valForm.append(u"%s"%autor)
-            if valXML==u"" and isinstance(valForm,list):
-                valXML=[u""]
-            if valForm==u"" and isinstance(valXML,list):
-                valForm=[u""]
+                                
+
+            if isinstance(valForm,list) and not isinstance(valXML,list):
+                tmp=[valXML,]
+                valXML=tmp
+            if isinstance(valXML,list) and not isinstance(valForm,list):
+                tmp=[valForm,]
+                valForm=tmp
+           
+                
             dit[ind]=(valXML,valForm)
         return dit
 
@@ -294,6 +290,14 @@ class FSManager(object):
         for met in listaDatos.keys():
             val1=listaDatos[met][0]
             val2=listaDatos[met][1]
+            
+            
+            if "ae.itemalcance" == met or  "ae.itemanotacion" == met: 
+                if not isinstance(val1,list) and not isinstance(val2,list):
+                    val1 = string.replace(val1, '\r\n', '\n')
+                    val1 = string.replace(val1, '\r', '\n')                
+                    val2 = string.replace(val2, '\r\n', '\n')
+                    val2 = string.replace(val2, '\r', '\n')                
 
             if val1!=val2:
                 hayCambios=True
@@ -303,92 +307,83 @@ class FSManager(object):
             listlog.insert(0,"sin cambios")
             return listlog
 
+
+
         for nomMeta in listaDatos.keys():
             valorDelXML=listaDatos[nomMeta][0]
             valorDelFORM=listaDatos[nomMeta][1]
             textareaDistintos="iguales"
             itemXml=copiXml.findall('.//Metadata[@name="'+nomMeta+'"]')
             
+            #borro todos los nodos
+            for nodoX in itemXml:
+                copiXml.find(".//FileSet/Description").remove(nodoX)            
             
             
-            if nomMeta == "ae.itemalcance" or nomMeta == "ae.itemanotacion":
-                #separo en lineas porque hay un error de parseo del xml para levantar
-                #los /r o los /n
-                ii=0
-                lineasA=valorDelXML.splitlines()
-                lineasB=valorDelFORM.splitlines()
+                
+            
+            
+            if isinstance(valorDelFORM,list):                
+                
+                if len(valorDelFORM)>0:
+                        if len(valorDelXML)>0:
+                            if len(valorDelXML[0])>0:         
+                                if valorDelFORM!=valorDelXML:                            
+                                    logstr="%s, actualizado: %s" %(nomMeta,valorDelFORM)
+                                    listlog.append(logstr)
+                            
+                            else:
+                                logstr="%s, nuevo metadato: %s" %(nomMeta,valorDelFORM)
+                                listlog.append(logstr)
 
-                if len(lineasA)==len(lineasB):
-                    for linea in lineasA:
-                        if lineasA[ii] !=  lineasB[ii]:
-                            textareaDistintos="modifico"
-                            break;
-                        ii+=1
-
-                    if textareaDistintos == "modifico":
-                        #aca modifico
-                        itemXml[0].text(valorDelFORM)
-
-                elif len(lineasA)==0 and len(lineasB)>0:
-                    textareaDistintos="agrego"
-                    no=self.creatNewXmlMetadata(nitemXmlomMeta,valorDelFORM)
-                    copiXml.find(".//FileSet/Description").append(no)
-                elif len(lineasA)>0 and len(lineasB)==0:
-                    textareaDistintos="elimino"
-                    copiXml.find(".//FileSet/Description").remove(itemXml[0])
-            else:
-                accion=""
-                if valorDelXML!=valorDelFORM:
-                    if isinstance(valorDelXML,list):
-                        #borro todos los elementos del xml
-
-                        for nodoX in itemXml:
-                            copiXml.find(".//FileSet/Description").remove(nodoX)
-
-                        if len(valorDelFORM)>0:
-                            for valFM in valorDelFORM:
-                                no=self.creatNewXmlMetadata(nomMeta,valFM)
-                                copiXml.find(".//FileSet/Description").append(no)
-
-                    elif isinstance(valorDelXML,str) or isinstance(valorDelXML,unicode):
-
-                        if valorDelXML=="" and valorDelFORM!="":
-                            #agrego
-                            no=self.creatNewXmlMetadata(nomMeta,valorDelFORM)
+                        #agrego los nuevos nodos
+                        for valFM in valorDelFORM:
+                            no=self.creatNewXmlMetadata(nomMeta,valFM)
                             copiXml.find(".//FileSet/Description").append(no)
 
-                        if valorDelXML[0]!="" and valorDelForm[0]=="":
-                            #borro
-                            pass
-                            
-                        if valorDelXML[0]!="" and valorDelForm[0]!="":
-                            #modifico
-                            itemXml.text=valFM
-                            pass
+                else:
+                    if len(valorDelXML)>0:
+                        logstr="%s, metadato eliminado" %(nomMeta)
+                        listlog.append(logstr)
+                        
+                        
 
-            #----ACtualizo DATOS
-            #Si estan en el XML y el FORM y son distintos
+            else:
+                if len(valorDelFORM.strip())>0:
+                    #agrego los nuevos nodos
 
+                    if bool(valorDelXML.strip()):
+                        if (valorDelXML!=valorDelFORM):
+                            cm=True
+                            if "ae.itemalcance" == nomMeta or  "ae.itemanotacion" == nomMeta: 
+                                val1=valorDelFORM
+                                val2=valorDelXML
+                                
+                                val1 = string.replace(val1, '\r\n', '\n')
+                                val1 = string.replace(val1, '\r', '\n')                
+                                val2 = string.replace(val2, '\r\n', '\n')
+                                val2 = string.replace(val2, '\r', '\n')
+                                
+                                if val1 == val2:
+                                    cm=False
 
-
-
-
-            #----Agrego Nuevos DATOS
-            #Si estan en el FORM y no estan en el XML
-
-
-
-
-
-            #----Elimino Nuevos DATOS
-            #Si estan en el XML y en el FORM está vacios
-
-
-
-
-
-
-        return ""
+                            if cm:                       
+                                logstr="%s, actualizado: %s" %(nomMeta,valorDelFORM)
+                                listlog.append(logstr)
+                    else:                        
+                        logstr=" %s, nuevo metadato: %s" %(nomMeta,valorDelFORM)
+                        listlog.append(logstr)
+                    
+                    
+                        
+                    no=self.creatNewXmlMetadata(nomMeta,valorDelFORM)
+                    copiXml.find(".//FileSet/Description").append(no)
+                else:
+                    if len(valorDelXML.strip())>0:
+                        logstr="%s, metadato eliminado" %(nomMeta)
+                        listlog.append(logstr)
+                    
+        
         userNom = self.creatNewXmlMetadata("ae.agentepersonanombre",operarioD['nombre'])
         tipoUser = self.creatNewXmlMetadata("ae.agentepersonatipo",'revisor')
         fechaS = self.creatNewXmlMetadata("ae.edicionfecha",fechaString)
@@ -398,8 +393,7 @@ class FSManager(object):
 
         xmlstrA=ET.tostring(copiXml)
         xmlstr=minidom.parseString(xmlstrA).toprettyxml(encoding='UTF-8')
-
-
+        
         try:
             f=open(newfilename,"wr+")
             newstr=docTypeHeader+xmlstr

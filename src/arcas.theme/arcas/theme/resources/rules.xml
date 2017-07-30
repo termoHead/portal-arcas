@@ -4,37 +4,41 @@
         xmlns:css="http://namespaces.plone.org/diazo/css"
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         xmlns:xi="http://www.w3.org/2001/XInclude">
-		
+
     <!-- Rules applying to standard Plone pages  -->
 
-	<drop css:content="#portaltab-index_html"/>
+    <drop css:content="#portaltab-index_html"/>
 
     <rules if-path="/arcas/portada/">
-        <rules css:if-not-content=".template-login_form">        
-            <xi:include href="arcas-header.xml" />
-            <theme href="index.html" />
-            <replace css:theme-children="#exhibicionHome" css:content-children="div.exhiV"></replace>
-            <drop    css:content-children=".buscadorColecciones"></drop>
-            <before  css:theme=".cabezalInterno .clr" css:content-children="#seccion"></before>
-            <replace css:theme-children="div#vi" css:content-children="div#boxColecciones"/>
-            <replace css:theme-children="#contenido .novedades" css:content-children="#contenido .novedades"/>
-            <replace css:theme-children="#contenido .presentacion .centro" css:content-children="div#contenido div.presentacion .centro" />
-            <replace css:theme-children="#contenido .presentacion .pie" css:content-children="div#contenido div.presentacion .pie" />
 
-        </rules>
         <rules css:if-content=".template-login_form">        
-            <replace css:theme-children="#content-core" css:content-children="#content-core"/>
-            
+            <replace css:theme-children="#content-core" css:content-children="#content-core"/>            
         </rules>
-        
-        
-        
-        
+
+       
+        <rules css:if-not-content=".template-login_form">
+            <rules css:if-not-content=".template-categorias_arcas">
+                <xi:include href="arcas-header.xml" />
+                <theme href="index.html" />
+                <replace css:theme-children="#exhibicionHome" css:content-children="div.exhiV"></replace>
+                <drop    css:content-children=".buscadorColecciones"></drop>
+                <before  css:theme=".cabezalInterno .clr" css:content-children="#seccion"></before>
+                <replace css:theme-children="div#vi" css:content-children="div#boxColecciones"/>
+                <replace css:theme-children="#contenido .novedades" css:content-children="#contenido .novedades"/>
+                <replace css:theme-children="#contenido .presentacion .centro" css:content-children="div#contenido div.presentacion .centro" />
+                <replace css:theme-children="#contenido .presentacion .pie" css:content-children="div#contenido div.presentacion .pie" />
+            </rules>
+        </rules>
+
     </rules>
 
 
     <rules if-not-path="/arcas/portada/">		
         <xi:include href="arcas-header.xml" />
+
+        
+       
+        
         <rules if-not-path="@@gsSearch">
             <rules css:if-content=".markColeccion">
                 <xi:include href="arcas_coleccion.xml" />
@@ -57,6 +61,7 @@
                                    not(//div[@class='markExhibicion']) and
                                    not(//div[@class='markListColeccion']) and
                                    not(//div[@class='markListExhibicion'])">
+                                   
                     <theme href="estandar.html" />
 
 
@@ -65,16 +70,21 @@
                     <replace css:theme=".cabezalInterno h2" 
                              css:if-not-content=".portaltype-news-item">
                         <xsl:copy-of select="//*[@id='parent-fieldname-title']" />
+                        <xsl:copy-of css:select="h2.label"/>                        
                     </replace>
-					
-					<replace css:theme=".texto"
+			
+                    <replace css:theme=".texto"
                              css:if-content=".template-document_view">
-						<div class="texto">
-							<xsl:copy-of select="//h2" />
-							<xsl:copy-of select="//p[@class='descri']" />
-							<xsl:copy-of select="//div[@id='bodyBox']" />
-						</div>
-					</replace>					
+                            <div class="texto">
+                                    <xsl:copy-of select="//h2"/>
+                                    <xsl:copy-of select="//p[@class='descri']" />
+                                    <xsl:copy-of select="//div[@id='bodyBox']" />
+                            </div>
+                    </replace>			
+                                        
+                    
+
+                    
                     <replace css:theme=".texto" 
                              css:if-not-content=".template-document_view">
                         <div class="texto">
@@ -132,11 +142,12 @@
                         <xsl:copy-of select="//*[@class='documentFirstHeading']" />
              </replace>
         </rules>
-         <rules css:if-content=".template-formsok_view"> 
-          <replace css:theme-children="#contenido" css:content-children="#container"/>
-
+         <rules css:if-content=".template-formsok_view">
+             <replace css:theme-children="#contenido" css:content-children="#container"/>
         </rules>
-        
+        <rules css:if-content=".template-formscancel_view">
+             <replace css:theme-children="#contenido" css:content-children="#container"/>
+        </rules>
         <rules css:if-content=".template-edititem">
             <theme href="estandar.html" />            
              <prepend css:theme=".cabezalInterno ">

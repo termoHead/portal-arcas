@@ -62,7 +62,7 @@ var EDITGS=(function () {
         enlace.append(holdimg)        
         //boton.attr("class","option")
         boton.attr("id","masoption"+objIds)
-        boton.attr("style","width:400px;margin-top:65px")
+        boton.attr("style","width:400px")
         boton.append(enlace)
         $(boton).insertAfter(selector)
         

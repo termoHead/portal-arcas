@@ -260,3 +260,12 @@ h3.western {
     color: white !important;
     font-size: 1.1em !important;
 }
+#formfield-form-widgets-f_alcance{
+	width:100% !important;
+	clear:both;
+}
+#form-widgets-f_alcance{ width:98%; height: 250px}
+.listaCat { margin-top:20px;}
+.listaCat li{display:block;}
+.listaCat li .catTitulo{font-size:14px; margin-top:10px; font-weight:bold}
+.listaCat li span{display:block;}

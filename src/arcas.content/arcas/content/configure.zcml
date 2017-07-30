@@ -46,7 +46,13 @@
         class=".coleccion.EditForm"
         permission="cmf.ModifyPortalContent"
     />
-
+    <browser:page
+        for="*"
+        name="categorias_arcas"
+        permission="zope2.Public"
+        class=".listaCategoria_view.ListaCategoriaView"
+        template="templates/listaCategoria_view.pt"
+    />
     <browser:page
         for="*"
         name="formsOk_view"

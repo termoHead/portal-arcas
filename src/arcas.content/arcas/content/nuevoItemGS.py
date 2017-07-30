@@ -33,6 +33,7 @@ from arcas.content.config import infoMetaItem, MAIL_ADMIN ,MAIL_COORDINADOR
 from arcas.content.cartero import Cartero
 #from patoolib import *
 
+    
 class IAddFiles(form.Schema):
     upFile = NamedFile(title=u"Subir archivo",
     description=u"El archivo con la fuente primaria. Si son muchos, por favor comprima los mismos en un archivo ZIP")
@@ -74,7 +75,7 @@ class IAddFiles(form.Schema):
         value_type=schema.Choice(vocabulary=iso_idiomas),
         required=False,
     )
-    
+
 from plone.z3cform.fieldsets.utils import move
 
 class NuevoItemGS(form.SchemaForm):
@@ -82,7 +83,7 @@ class NuevoItemGS(form.SchemaForm):
     folderNameBase='nuevo_item'
     xmlFileResto ='/import/co.1/se.1/su.1/ar.1/it.1/'
     xmlFileName='metadata.xml'    
-    
+    autoGroups = False
     version=0
 
     grok.name('nuevoItemGS')
@@ -90,9 +91,10 @@ class NuevoItemGS(form.SchemaForm):
     #grok.require('cmf.ListFolderContents')
     #grok.require('arcas.addExhibicion')
     grok.context(IRootFolder)
-    schema = IAddFiles
-    fields=field.Fields(IGsMetaItem).select("f_titulo","f_autor","f_colaborador","f_edicion","f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones",
-        "f_naturaleza","f_alcance","f_ruta","f_anotacion")
+    #schema = IAddFiles
+    schema =IAddFiles    
+    fields=field.Fields(IGsMetaItem).select("f_titulo","f_autor","f_colaborador","f_edicion","f_fechaCreacion","f_lugarCreacion","f_descFisica","f_dimensiones","f_naturaleza","f_alcance","f_ruta","f_anotacion")
+    
     ignoreContext = True
     label       = u"Nueva obra"
     description = u'<div class="formuDescri">Se está agregando una obra nueva </div>'
@@ -214,6 +216,8 @@ class NuevoItemGS(form.SchemaForm):
 
         #Recorro los campos y los agrego la lista tmpList
         tmpList=[]
+        
+        
         for x in infoMetadatos:
             itFtext=self.request.form["form.widgets."+x]
             
@@ -222,10 +226,16 @@ class NuevoItemGS(form.SchemaForm):
                 tmpC=[]
                 for elem in itFtext.split("\r\n"):
                     tmpC.append(elem)                    
-                tmpList.append((infoMetaItem[x],tmpC))
+                tmpList.append((infoMetaItem[x],tmpC))  
                 
-            if itFtext!="":
+            elif x == "f_colaborador" and len(itFtext)>0:
+                tmpC=[]
+                for elem in itFtext.split("\r\n"):
+                    tmpC.append(elem) 
+                tmpList.append((infoMetaItem[x],tmpC))
+            elif itFtext!="":
                 tmpList.append((infoMetaItem[x],itFtext))
+
 
         rutaItem= self.widgets["f_ruta"].value
         nomSerie=self.widgets["serie"].value

@@ -24,6 +24,7 @@ logger.setLevel(logging.DEBUG)
 
 class JSONGS_WS(View):
     """
+    
     Devuleve un listado json de  documentos o fuente
     /json_gs?series=puig
     /json_gs?docs=boquitas pintadas
@@ -296,3 +297,26 @@ class JSONExportMenu(View):
             available=False,
         )
         return data
+
+class JSONAddCat(View):
+    from plone.dexterity.utils import createContent
+    grok.context(Interface)
+    grok.name("json_addCat")
+    #agrega una categoria al listado de categorias
+    
+    
+    def update(self):
+        self.contexto = aq_inner(self.context)
+        folderCategorias= self.context.aq_parent["categorias"]
+        
+        
+        
+        
+        if self.request.form.has_key("titulo"):
+            idT=self.request.form["titulo"]
+            idD=self.request.form["descri"]
+            ids=idT
+            
+            context = createContent('example.type', title=u"Foo")
+            folder['some_id'] = context
+        

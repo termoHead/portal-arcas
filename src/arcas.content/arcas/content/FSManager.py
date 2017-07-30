@@ -148,23 +148,20 @@ class FSManager(object):
         desc= ET.SubElement(fset, "Description")
 
         
+        
         for itemForm in obModificado["metadatos"]:
             itFnom =  itemForm[0]
             itFtext=  itemForm[1]
 
-            
-            if isinstance(itFtext,list):                                
+
+            if isinstance(itFtext,list):                               
                 for dato in itFtext:
                     tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)
                     tmpM.text=dato
             else:                
                 tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)
                 tmpM.text=itFtext
-            
 
-        
-        tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name=itFnom)
-        tmpM.text=itFtext
 
         tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name="ae.agentepersonanombre")
         tmpM.text=operarioD['nombre']

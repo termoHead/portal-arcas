@@ -145,6 +145,7 @@ class IGsMetaItem(form.Schema):
         description=u"Título del documento",
         required=True,
     )
+    
     f_autor=schema.List(
          title=u"Autor/es",          
         description=u'Agregar un autor por linea, en formato: apellido, nombre ',

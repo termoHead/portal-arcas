@@ -1,0 +1,18 @@
+<html metal:use-macro="views/standard_macros/view">
+<meta charset="utf-8">
+<body>
+<div metal:fill-slot="body">
+
+<div id="container">
+    <div class="texto">
+        <h3 class="label">El usuario canceló la edición del formulario.</h3>
+        <div>
+			Ningún cambio fue realizado.
+        </div>
+        <div class="msj">Para volver, <a href="#" onclick="javascript:window.close()"> cierre esta pestaña</a></div>
+    </div>
+    <div class="clr"></div>
+    </div>
+</div>
+</body>
+</html>

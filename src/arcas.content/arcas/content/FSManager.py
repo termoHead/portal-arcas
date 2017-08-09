@@ -172,7 +172,7 @@ class FSManager(object):
         tmpM= ET.SubElement(desc, "Metadata",mode="accumulate" ,name="ae.creacionfecha")
         tmpM.text=fechaString
 
-        xmlstr=minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
+        xmlstr=minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")[22:]
         newfilename=obModificado["folder"]+"/metadata.xml"
         newstr=docTypeHeader+xmlstr
 

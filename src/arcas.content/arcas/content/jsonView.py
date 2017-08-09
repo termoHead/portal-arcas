@@ -18,6 +18,7 @@ from urllib2 import HTTPError
 import logging
 from arcas.content.editGS import ClienteGS
 from arcas.content.editGS import FSManager
+from plone.dexterity.utils import createContent
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -297,9 +298,45 @@ class JSONExportMenu(View):
             available=False,
         )
         return data
+class JSONADelCat(View):
+    from Products.CMFPlone.utils import _createObjectByType
+    grok.context(Interface)
+    grok.name("json_delCat")
+    #agrega una categoria al listado de categorias
+    def update(self):
+        self.contexto = aq_inner(self.context)
+        
+    def render(self):
+        listing = self.datos_contexto();        
+        pretty  = json.dumps(listing);
+        self.request.response.setHeader("Content-type", "application/json");
+        self.request.response.setHeader('Access-Control-Allow-Origin', '*');
+        return pretty;
+      
+    def datos_contexto(self):
+        result={}
+        borrado=False        
+        
+        folderCategorias= self.context.aq_parent["categorias"]
+        
+        if self.request.form.has_key("idCat"):           
+            idT=self.request.form["idCat"]
+            
+            try:
+                folderCategorias.manage_delObjects([idT,])
+                result["msj"]=u"Objeto borrado"
+            except Exception, e:
+                # E.g. linkintegrityerror or some other
+                result["msj"]=u"Error %s" %e
+               
+        else:
+            result["msj"]=u"no se paso el dato idCat"
+            
+        return result
 
+      
 class JSONAddCat(View):
-    from plone.dexterity.utils import createContent
+    from Products.CMFPlone.utils import _createObjectByType
     grok.context(Interface)
     grok.name("json_addCat")
     #agrega una categoria al listado de categorias
@@ -307,16 +344,42 @@ class JSONAddCat(View):
     
     def update(self):
         self.contexto = aq_inner(self.context)
+       
+            
+    def render(self):
+        listing = self.datos_contexto();        
+        pretty  = json.dumps(listing);
+        self.request.response.setHeader("Content-type", "application/json");
+        self.request.response.setHeader('Access-Control-Allow-Origin', '*');
+        return pretty;
+
+    def datos_contexto(self):
+        result={}
+        publicado=False
+        workflowTool = getToolByName(self.context, "portal_workflow")
         folderCategorias= self.context.aq_parent["categorias"]
-        
-        
-        
-        
-        if self.request.form.has_key("titulo"):
+        if self.request.form.has_key("titulo") and self.request.form.has_key("descri"):           
             idT=self.request.form["titulo"]
             idD=self.request.form["descri"]
             ids=idT
+            from plone.dexterity.utils import createContentInContainer
+            item=createContentInContainer(folderCategorias, 'arcas.content.categoria', title=idT)
+            item.description=idD
             
-            context = createContent('example.type', title=u"Foo")
-            folder['some_id'] = context
-        
+            try:
+                workflowTool.doActionFor(item, "publish") 
+                publicado=True
+            except WorkflowException:
+                # a workflow exception is risen if the state transition is not available
+                # (the sampleProperty content is in a workflow state which
+                # does not have a "submit" transition)
+                print u"error al cambiar el estado del documento"
+                pass
+            
+            
+            result["titulo"]=item.title
+            result["descri"]=item.description
+            result["publicado"]=publicado
+            result["ruta"]=item.absolute_url()
+            
+        return result

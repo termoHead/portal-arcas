@@ -1,0 +1,50 @@
+<html metal:use-macro="views/standard_macros/view">
+<meta charset="utf-8">
+<body>
+<div metal:fill-slot="body">
+    <div id="content">
+        <h2 class="label">Categorias de Colecciones</h2>
+        <div id="contenido">
+            
+            <div>
+                La siguiente es la lista de categorias en las que se dividen las colecciones en ARCAS.
+                Si va a crear una nueva coleccion verifique que el alcance de estos tópicos se ajuste a dicha colección.
+                De lo contrario es necesario pedir al administrador que genere una nueva categoría.            
+            </div>
+            <div>
+                <ul class="listaCat">
+                <tal:r tal:repeat="cat view/getCat">
+                    <li> 
+                    <div class="rawC">
+                        <div class="col1">
+                            <input type="checkbox"  tal:attributes="name cat/titulo;value cat/id" />
+                        </div>
+                        <div class="col2">
+                            <span class="catTitulo" tal:content="cat/titulo">titulo</span>
+                            <span class="catDescri" tal:content="cat/descri">descri</span>
+                        </div>
+                    </div>
+                    </li>
+                </tal:r>
+                </ul>
+                
+                <form action="#">
+                    <div style="display:none">
+                    <label for="titulo"> Titulo</label>
+                    <input type="text" id="titulo"/>
+                    <label for="decri"> Descripción</label>
+                    <textarea type="text" id="descri"></textarea>
+                    <input value="Crear"/>
+                    </div>
+                </form>
+                
+            </div>
+            <div class="formControl">
+                <input type="button" value="Agregar nueva"/> <span class="separador">|</span><input type="button" value="Borrar Seleccionado"/>
+            </div>
+        </div>
+    
+    </div>
+</div>
+</body>
+</html>

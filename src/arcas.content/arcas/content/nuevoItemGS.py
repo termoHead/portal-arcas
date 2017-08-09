@@ -33,11 +33,16 @@ from arcas.content.config import infoMetaItem, MAIL_ADMIN ,MAIL_COORDINADOR
 from arcas.content.cartero import Cartero
 #from patoolib import *
 
-    
+
+
 class IAddFiles(form.Schema):
-    upFile = NamedFile(title=u"Subir archivo",
-    description=u"El archivo con la fuente primaria. Si son muchos, por favor comprima los mismos en un archivo ZIP")
-    directives.mode(rutaNivelObra='hidden')
+    upFile = NamedFile(
+        title=u"Subir archivo",
+        description=u"El archivo con la fuente primaria. Si son muchos, por favor comprima los mismos en un archivo ZIP",
+        required=True,)
+        
+        
+    directives.mode(rutaNivelObra='hidden')    
     rutaNivelObra= schema.TextLine(
         title=u"Ruta de la obra",
         description=u"ruta para armar la carpeta nueva",
@@ -207,6 +212,7 @@ class NuevoItemGS(form.SchemaForm):
         #genera el nombre de la nueva carpeta
         numLastVersion=self.dameSigVerisonFolder()
         rutaSerie=self.widgets["rutaNivelObra"].value
+
         xfile   =self.widgets['upFile'].value.headers.fp
         fileName=self.widgets['upFile'].value.filename
         rutaSerie+='/nuevoItem'+numLastVersion
@@ -261,16 +267,21 @@ class NuevoItemGS(form.SchemaForm):
         itemsaved=fsmanager.saveFileNuevoFile(dicDatosItem,operarioDict)
 
         if itemsaved[0]=="error":
-                msj="> No se pudo guardar el item en %s"%rutaSerie
+                self.msjForm="> No se pudo guardar el item en %s"%rutaSerie
                 flagm+=1
                 return
 
         mandoMail=self.emails({'ruta':itemsaved[0],'serie':nomSubSerie,'coleccion':nombreColeccion},operarioDict)
 
         if mandoMail:
-            self.status = u"Se creó un nuevo registro"
+            self.msjForm = u"El registro se creó con éxito."
         else:
-            self.status = u"Se creó el nuevo registro, pero no se pudo enviar el correo"
+            self.msjForm = u"Se creó un nuevo registro, pero no se pudo enviar el correo."
+
+        miurltmp=self.context.REQUEST.URL
+        miurl   ="/".join(miurltmp.split("/")[:-2])
+        self.context.REQUEST.RESPONSE.redirect(miurl+"/formsOk_view?mensaje="+self.msjForm.encode('utf8'))
+
 
     def dameTituloDeColeccionPorID_GS(self,idGs):
         """dado el id de una colección Greenstone devuelve el título del Objeto Coleccion

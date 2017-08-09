@@ -269,3 +269,6 @@ h3.western {
 .listaCat li{display:block;}
 .listaCat li .catTitulo{font-size:14px; margin-top:10px; font-weight:bold}
 .listaCat li span{display:block;}
+
+.template-categorias_arcas .col1{width:25px; float:left}
+.template-categorias_arcas .listaCat{margin-bottom:20px}

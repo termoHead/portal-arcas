@@ -410,90 +410,7 @@ function correCarIzq(e) {
 		}, "slow")
 }
 
-$(document).ready(function () {
-	/*carrusel home */
-	/*--------------*/
-	if ($(".bloqueColeccion").length > -1) {
-		//Step para el slider del HOME
-		HomeSlider.stepSlide = $(".bloqueColeccion").width() + 40
-			if ($(".bloqueColeccion").length > 1) {
-				//ACTIVA BOTONES PARA EL SLIDER
-				$(".carrD").click(correCarDer)
-				$(".carrI").click(correCarIzq)
-			}
-	}
 
-	var lastSlide = ""
-
-		if ($(".thumbnails li")[0]) {
-			hojaActiva = $(".thumbnails li")[0]
-		}
-		$(".thumbnails li").click(
-			function (ev) {
-			ev.preventDefault()
-			cambiaSlide(ev)
-			return false;
-		})
-		if ($(".listadoRecomendacion")[0]) {
-			activaSolapas();
-		}
-		//if($("#carrusel")){ carruselHome()}
-		if ($("#buscaTexto")) {
-			$(".buscaTexto").focus(function () {
-				if ($(this).val() == 'Buscar en la colección') {
-					$(this).val("")
-				}
-			});
-			$(".buscaTexto").blur(function () {
-				if ($(this).val() == '' || $(this).val() == ' ') {
-					$(this).val("Buscar en la colección")
-				}
-			});
-		}
-		if ($(".introExhibicion").length > 0) {
-			$(".pie a").prepOverlay({
-				subtype : 'ajax',
-				filter : '#container .introExhibicion'
-			})
-		}
-
-		if ($("#fieldset-colderecha").length > 0) {
-			initFormColeccion()
-		}
-
-		if ($(".template-editgs").length > 0) {
-			//estoy en el formulario edicion greenstone
-			var objEGS = MOD_GSEDIT
-			objEGS.inicia()
-		}
-		if ($(".template-edititem").length > 0 || $(".template-nuevoitemgs").length > 0 ) {
-			//estoy en el formulario edicion greenstone            
-			var objEGS = EDITGS
-			objEGS.inicia()
-		}
-        
-		
-        /*IMagenes de la Galeria en una Coleccion */
-        $('.photoAlbumEntry a').prepOverlay({
-            subtype: 'image',
-            urlmatch: '/image_view_fullscreen$',
-            urlreplace: '_preview',
-            width:'70%',
-        });
-        
-        $("input[name*='s1.query']").focus(foco) 
-        $("input[name*='s1.query']").blur(esfumado) 
-        
-        
-        if($(".template-edititem").length>0){
-            $("#fieldsetlegend-seleccia3n-de-atem-serie").parent().hide()
-        }
-        
-        /*agrega QUIK ADD*/
-        
-        //agregaChekbox()
-        
-});
 function foco(e){    
     var valor=$(this).attr("value")
     if (valor=="Buscar en las colecciones"){
@@ -741,3 +658,93 @@ function loginOn(){
         });
     })*/
 }
+$(document).ready(function () {
+	/*carrusel home */
+	/*--------------*/
+	if ($(".bloqueColeccion").length > -1) {
+		//Step para el slider del HOME
+		HomeSlider.stepSlide = $(".bloqueColeccion").width() + 40
+			if ($(".bloqueColeccion").length > 1) {
+				//ACTIVA BOTONES PARA EL SLIDER
+				$(".carrD").click(correCarDer)
+				$(".carrI").click(correCarIzq)
+			}
+	}
+
+	var lastSlide = ""
+
+        if ($(".thumbnails li")[0]) {
+                hojaActiva = $(".thumbnails li")[0]
+        }
+        $(".thumbnails li").click(
+                function (ev) {
+                ev.preventDefault()
+                cambiaSlide(ev)
+                return false;
+        })
+        if ($(".listadoRecomendacion")[0]) {
+                activaSolapas();
+        }
+        //if($("#carrusel")){ carruselHome()}
+        if ($("#buscaTexto")) {
+                $(".buscaTexto").focus(function () {
+                        if ($(this).val() == 'Buscar en la colección') {
+                                $(this).val("")
+                        }
+                });
+                $(".buscaTexto").blur(function () {
+                        if ($(this).val() == '' || $(this).val() == ' ') {
+                                $(this).val("Buscar en la colección")
+                        }
+                });
+        }
+        if ($(".introExhibicion").length > 0) {
+                $(".pie a").prepOverlay({
+                        subtype : 'ajax',
+                        filter : '#container .introExhibicion'
+                })
+        }
+
+        if ($("#fieldset-colderecha").length > 0) {
+                initFormColeccion()
+        }
+
+        if ($(".template-editgs").length > 0) {
+                //estoy en el formulario edicion greenstone
+                var objEGS = MOD_GSEDIT
+                objEGS.inicia()
+        }
+        if ($(".template-edititem").length > 0 || $(".template-nuevoitemgs").length > 0 ) {
+                //estoy en el formulario edicion greenstone            
+                var objEGS = EDITGS
+                objEGS.inicia()
+        }
+        
+		
+        /*IMagenes de la Galeria en una Coleccion */
+        $('.photoAlbumEntry a').prepOverlay({
+            subtype: 'image',
+            urlmatch: '/image_view_fullscreen$',
+            urlreplace: '_preview',
+            width:'70%',
+        });
+        
+        $("input[name*='s1.query']").focus(foco) 
+        $("input[name*='s1.query']").blur(esfumado) 
+        
+        
+        if($(".template-edititem").length>0){
+            $("#fieldsetlegend-seleccia3n-de-atem-serie").parent().hide()
+        }
+        
+        
+        /*EDITOR DE CATEGORIAS*/
+        if($(".template-categorias_arcas").leng>0){
+            
+            
+        }
+        /*agrega QUIK ADD*/
+        
+        //agregaChekbox()
+        
+});

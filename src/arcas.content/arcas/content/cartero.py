@@ -18,7 +18,7 @@ class Cartero(object):
         
     def encabezado(self):
         if self.operarioMail=='':
-            self.operarioMail="pablomusa@gmail.com"
+            self.operarioMail="pvmusa@yahoo.com"
         if self.operarioNombre=='':
             self.operarioNombre="Pablo Musa"
 
@@ -29,7 +29,8 @@ class Cartero(object):
         msg = MIMEMultipart('alternative')
         msg['Subject'] = "[ARCAS] Cambios en los metadatos de un registro"
         msg['From'] = self.sender
-        msg['To'] = reciver[0]+','+reciver[1]        
+        msg['To'] = reciver[1]+','+reciver[0]
+        
         return msg
     
     def sendModificacion(self,dicDatos):
@@ -43,9 +44,11 @@ class Cartero(object):
         text = "Hola!\nSe modificaron metadatos en el Greenston de ARCAS.\n Los Archivos son: %s\n %s \n%s" %(rutasSerie,rutasSubSerie,rutasItem)       
         
         # Cuerpo del mensaje solo texto
-        hhtml = u"<html><head></head><body><h3>Modificación en la coleccion: %s </h3>"%nombreColeccion
+        hhtml = u"<html><head><title>Formulario Edicion ARCAS</title>"
+        hhtml += u'<meta charset="utf-8" />'
+        hhtml +=u"</head><body><h3>Modificación en la coleccion: %s </h3>"%nombreColeccion
         hhtml += u"El usuario: %s, realizó modificaciones en los matadatos de ARCAS.</br>" %self.operarioNombre.decode("utf8")
-        hhtml += u"<p>Esto es un registro básico de lo realizado:</p>"
+        hhtml += u"<p>Este es un registro básico de lo realizado:</p>"
         hhtml += u"<ul><li><b>Serie:</b><li>"
         for stra in rutasSerie:
             hhtml += '<li>%s</li>'%stra
@@ -76,8 +79,6 @@ class Cartero(object):
         part2 = MIMEText(hhtml.encode('utf8'), 'html')
         msg.attach(part1)
         msg.attach(part2)
-        import pdb
-        pdb.set_trace
         try:
             s = smtplib.SMTP('localhost')
             # sendmail function takes 3 arguments: sender's address, recipient's address

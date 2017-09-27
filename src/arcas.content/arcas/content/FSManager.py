@@ -42,7 +42,6 @@ class FSManager(object):
         return result
 
     def openFile(self, ruta):
-
         try:
             xmlFile = ET.parse(ruta)
             self.miXml=xmlFile
@@ -75,8 +74,7 @@ class FSManager(object):
 
 
                 if metaN not in metaUsados:
-                    metaUsados.append(metaN)
-                    print len(elem.text)
+                    metaUsados.append(metaN)                    
                     dicc[metaN]=elem.text
                 else:
                     #si metaN está cargado,
@@ -248,8 +246,15 @@ class FSManager(object):
 
 
     def saveFile(self,obModificado,tipoDato,operarioD):
-        """guarda los datos en el xml"""
-        #los elementos que vienen en un array y que es necesario guardarlo con un tag metadata independiente
+        """guarda los datos en el xml:
+        
+        los elementos que vienen en un array y que es necesario guardarlo con un tag metadata independiente
+        devuelve una lista que en la 
+        posicion 0 tiene el estatus 
+        y en la posicion 1 el mensaje...
+        despues el registro de los cambios.
+        
+        """
         multiplesValores=["ae.itemlenguaiso","ae.serielenguaiso","ae.itemcolaborador"]
 
         listlog=[]
@@ -279,7 +284,7 @@ class FSManager(object):
         #compararlos
         if tipoDato =="serie":
             listaDatos=self.componeDatos(FinfoMetadatosSerie.values(),copiXml,obModificado["metadatos"])
-        elif tipoDato =="subSerie":
+        elif tipoDato=="subSerie":
             listaDatos=self.componeDatos(FinfoMetadatoSubSerie.values(),copiXml,obModificado["metadatos"])
         elif tipoDato=="item":
             listaDatos=self.componeDatos(FinfoMetaItem.values(),copiXml,obModificado["metadatos"])
@@ -299,9 +304,9 @@ class FSManager(object):
             if val1!=val2:
                 hayCambios=True
 
-        if not hayCambios:
-            print "no hay cambios"
+        if not hayCambios:            
             listlog.insert(0,"sin cambios")
+            listlog.append("No se guradaron cambios")
             return listlog
 
 
@@ -314,12 +319,8 @@ class FSManager(object):
             
             #borro todos los nodos
             for nodoX in itemXml:
-                copiXml.find(".//FileSet/Description").remove(nodoX)            
-            
-            
-                
-            
-            
+                copiXml.find(".//FileSet/Description").remove(nodoX)      
+
             if isinstance(valorDelFORM,list):                
                 
                 if len(valorDelFORM)>0:
@@ -396,14 +397,19 @@ class FSManager(object):
             newstr=docTypeHeader+xmlstr
             f.write(newstr)
             f.close()
-            logstr=newfilename
-            listlog.insert(0,logstr)
-
-        except:
+            lstr=u"cambios guardados en "+newfilename
+            listlog.insert(0,"ok")
+            listlog.insert(1,lstr)
+        except IOError:
             e = sys.exc_info()[0]
-            print "Problema: %s"% e
-            logstr=newfilename
             listlog.insert(0,"error")
+            listlog.insert(1,e.__doc__)
+        except:
+            print('An error occured.')
+            e = sys.exc_info()[0]
+            #logstr=newfilename
+            listlog.insert(0,"error")
+            listlog.insert(1,e)
 
         return listlog
 

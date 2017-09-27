@@ -33,6 +33,8 @@ from arcas.content.config import infoMetaItem, MAIL_ADMIN ,MAIL_COORDINADOR
 from arcas.content.cartero import Cartero
 #from patoolib import *
 
+from ZODB.blob import Blob
+
 
 
 class IAddFiles(form.Schema):
@@ -208,7 +210,9 @@ class NuevoItemGS(form.SchemaForm):
         flagm=0
         infoMetadatos=infoMetaItem
         data, errors = self.extractData()
-        
+        if errors:
+            self.status = self.formErrorsMessage
+            return
         #genera el nombre de la nueva carpeta
         numLastVersion=self.dameSigVerisonFolder()
         rutaSerie=self.widgets["rutaNivelObra"].value
@@ -222,32 +226,29 @@ class NuevoItemGS(form.SchemaForm):
 
         #Recorro los campos y los agrego la lista tmpList
         tmpList=[]
-        
-        
+
         for x in infoMetadatos:
-            itFtext=self.request.form["form.widgets."+x]
-            
-            
-            if x == "f_autor" and len(itFtext)>0:
-                tmpC=[]
-                for elem in itFtext.split("\r\n"):
-                    tmpC.append(elem)                    
-                tmpList.append((infoMetaItem[x],tmpC))  
-                
-            elif x == "f_colaborador" and len(itFtext)>0:
-                tmpC=[]
-                for elem in itFtext.split("\r\n"):
-                    tmpC.append(elem) 
-                tmpList.append((infoMetaItem[x],tmpC))
-            elif itFtext!="":
-                tmpList.append((infoMetaItem[x],itFtext))
+            if "form.widgets."+x in self.request.form:
+                itFtext=self.request.form["form.widgets."+x]
 
-
-        rutaItem= self.widgets["f_ruta"].value
-        nomSerie=self.widgets["serie"].value
-        nomSubSerie=self.widgets["subSerie"].value
+                if x == "f_autor" and len(itFtext)>0:
+                    tmpC=[]
+                    for elem in itFtext.split("\r\n"):
+                        tmpC.append(elem) 
+                    tmpList.append((infoMetaItem[x],tmpC))
+                    
+                elif x == "f_colaborador" and len(itFtext)>0:
+                    tmpC=[]
+                    for elem in itFtext.split("\r\n"):
+                        tmpC.append(elem) 
+                    tmpList.append((infoMetaItem[x],tmpC))
+                elif itFtext!="":
+                    tmpList.append((infoMetaItem[x],itFtext))
+                    
+        rutaItem    = self.widgets["f_ruta"].value
+        nomSerie    =self.widgets["serie"].value
+        nomSubSerie =self.widgets["subSerie"].value
         nombreColeccion=self.dameTituloDeColeccionPorID_GS(self.request.form["form.widgets.colecId"])
-        
         
         dicDatosItem={
             "folder":rutaSerie,
@@ -259,8 +260,17 @@ class NuevoItemGS(form.SchemaForm):
             }
 
         #guardo el archivo adjunto
-        with open(rutaSerie+'/'+fileName, "w+") as f:
-            f.write(xfile.getvalue())
+        rutaFinal=rutaSerie+'/'+fileName
+        
+        try:
+            ppax=xfile.getvalue()
+            with open(rutaFinal, "w+") as f:
+                f.write(xfile.getvalue())            
+            # Method exists, and was used.  
+        except AttributeError:
+            # Method does not exist.  What now?
+            print "error"
+        
 
         #guardo el xml
         fsmanager=FSManager()

@@ -81,7 +81,7 @@ import!   """
 
 class EditItem(form.SchemaForm):
     """
-       Edita un documento de Greenstone3 desde el import!
+       Edita un documento de Greenstone3 desde el import!Pablo Musa
     """
     xmlFileBase  ='/usr/local/Greenstone3/web/sites/localsite/collect/'
     xmlFileResto ='/import/co.1/se.1/su.1/ar.1/it.1/'
@@ -187,7 +187,6 @@ class EditItem(form.SchemaForm):
             subSerieOk=False
 
         
-        
         if subSerieOk:
             arTmp = rutaItem.split("/")
             del arTmp[-2]
@@ -207,7 +206,15 @@ class EditItem(form.SchemaForm):
 
         if subSerieOk:
             itemSubSerieLoaded=fsmanager.parseXmlFileMetadata(COLECCION,rutaSubSerie)
-
+        
+        
+        if isinstance(itemLoaded,str) or isinstance(itemSerieLoaded,str) or isinstance(itemSubSerieLoaded,str):
+      
+            
+            miurltmp=self.context.REQUEST.URL
+            miurl   ="/".join(miurltmp.split("/")[:-2])
+            self.context.REQUEST.RESPONSE.redirect(miurl+"/formsCancel_view?mensaje=&tipo=1")
+            return 
         for tupla in itemLoaded.items():            
             try:
                 widgetNumber=infoMetaItem.values().index(tupla[0])
@@ -217,7 +224,7 @@ class EditItem(form.SchemaForm):
                 if isinstance(tupla[1],list):                    
                     valor = ""
                     for bloqtext in tupla[1]:
-                        valor += bloqtext+"\r"
+                        valor += bloqtext+"\itemSubSerieLoadedr"
                 self.groups[0].widgets[nombreW].value=valor
                 self.groups[0].widgets[nombreW].update()
             except:
@@ -235,6 +242,7 @@ class EditItem(form.SchemaForm):
                 #print u"el elemento no está"
 
         if subSerieOk:
+
             for tupla in itemSubSerieLoaded.items():
                 try:
                     widgetNumber=infoMetadatoSubSerie.values().index(tupla[0])
@@ -246,19 +254,34 @@ class EditItem(form.SchemaForm):
                     #print u"el elemento no está"
 
         self.groups[3].mode='hidden'
-        
-        
-        
-        
-		#super(EditItem, self).update()
-		#self.groups[3].widgets["tituColec"].value=self.dameTituloColeccionByGSID(COLECCION)
-		#if len(self.groups[3].widgets["tituColec"].value) >0:
-		#    self.label="Formulario para edición de datos descriptivos de las fuentes primarias de la colección %s"%self.groups[3].widgets["tituColec"].value
 
-		#if colec:
-		#    self.groups[3].widgets["coleccion"].value = colec.encode('utf-8')
-		#    COLECCION=self.groups[3].widgets["coleccion"].value
-		#    self.groups[3].widgets["coleccion"].mode = HIDDEN_MODE
+        
+        for tupla in itemLoaded.items():            
+            try:
+                widgetNumber=infoMetaItem.values().index(tupla[0])
+                nombreW=  infoMetaItem.keys()[widgetNumber]
+                valor=tupla[1]
+                
+                if isinstance(tupla[1],list):                    
+                    valor = ""
+                    for bloqtext in tupla[1]:
+                        valor += bloqtext+"\r"
+                self.groups[0].widgets[nombreW].value=valor
+                self.groups[0].widgets[nombreW].update()
+            except:
+                pass
+                #print u"el elemento no está"
+        
+        
+                #super(EditItem, self).update()
+                #self.groups[3].widgets["tituColec"].value=self.dameTituloColeccionByGSID(COLECCION)
+                #if len(self.groups[3].widgets["tituColec"].value) >0:
+                #    self.label="Formulario para edición de datos descriptivos de las fuentes primarias de la colección %s"%self.groups[3].widgets["tituColec"].value
+
+                #if colec:
+                #    self.groups[3].widgets["coleccion"].value = colec.encode('utf-8')
+                #    COLECCION=self.groups[3].widgets["coleccion"].value
+                #    self.groups[3].widgets["coleccion"].mode = HIDDEN_MODE
 
     def dameTituloDeColeccionPorID_GS(self,idGs):
         """dado el id de una colección Greenstone devuelve el título del Objeto Coleccion de Plone"""
@@ -285,7 +308,7 @@ class EditItem(form.SchemaForm):
     def saveHandler(self, action):
         self.saveFlag=self.saveFlag+1
         if self.saveFlag<2:
-            mt=getToolByName(self.context,"portal_membership")   
+            mt=getToolByName(self.context,"portal_membership")
             operarioMail    = mt.getAuthenticatedMember().getProperty('email',None)
             operarioNombre  = mt.getAuthenticatedMember().getProperty('fullname',None)
             operarioDict={'nombre':operarioNombre,'mail':operarioMail}
@@ -389,6 +412,7 @@ class EditItem(form.SchemaForm):
 
             if itemsaved[0]=="error":
                 msj+=u"> No se pudo guardar el item en %s \r"%rutaItem
+                itemsaved[2]=rutaItem
                 flagm+=1
             elif itemsaved[0]=="sin cambios":
                 msj+=u"> No se encontraron cambios. \r"
@@ -396,7 +420,8 @@ class EditItem(form.SchemaForm):
                 
             if seriesaved[0]=="error":
                 msj+=u"> No se pudo guardar la serie en %s \r"%rutaSerie
-                flagm+=1
+                seriesaved[2]=rutaSerie
+                flagm+=1                
             elif seriesaved[0]=="sin cambios":
                 msj+=u"> No se encontraron cambios en la Serie.\r"
                 flagm+=10
@@ -405,6 +430,7 @@ class EditItem(form.SchemaForm):
                 subSeriesaved=self.fsmanager.saveFile(dicDatosSubSerie,"subSerie",operarioDict)
                 if subSeriesaved[0]=="error":
                     msj+="> No se pudo guardar la sub serie en %s\r" %rutaSubSerie
+                    subSeriesaved[2]=rutaSubSerie
                     flagm+=1
                 elif subSeriesaved[0]=="sin cambios":
                     msj+="> No se encontraron cambios en la subsetire.\r"
@@ -413,15 +439,16 @@ class EditItem(form.SchemaForm):
                 subSeriesaved='sin sub serie'
 
 
-            if flagm<30:
-                mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved,'nombreColeccion':nombreColeccion},operarioDict)                
+            if flagm<29:
+                mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved,'nombreColeccion':nombreColeccion},operarioDict)
                 if mandoCorreo:
                     self.msjForm =u"Los cambios fueron guardados correctamente. Se generó una nueva versión de metadatos y se envió un email para control."
                 else:
                     self.msjForm =u"Los cambios fueron guardados. Pero hubo un error al querer enviar el correo."
             else:
                 self.msjForm=msj
-        else:
+        else:            
+            print "aca pase!!!"
             self.status=self.msjForm
 
         miurltmp=self.context.REQUEST.URL

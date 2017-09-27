@@ -227,15 +227,19 @@ class JSONAutenticado(View):
         lsC=[]
         listColeccionesHabilitado=[]
         mt=getToolByName(self.context,"portal_membership")        
-        cat=getToolByName(self.context,"portal_catalog")        
-        
+        cat=getToolByName(self.context,"portal_catalog")
         
         session_id=mt.getAuthenticatedMember().id
+        
+
         
         if session_id == 'acl_users':
             return [{'id':session_id,'colecciones_ok':'false'}]
         
         agrupos=mt.getAuthenticatedMember().getGroups()
+        
+        if "Site Administrators" in agrupos or "Administrators" in agrupos:
+            return [{'id':session_id,'colecciones_ok':'true'}]
         
         for grid in agrupos:
             if grid.find("_g")>-1:

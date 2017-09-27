@@ -11,9 +11,11 @@ URL_GREENSTON_DOC="/greenstone3/library/collection/"
 #se usan en nuevoItemGs.py y editItem.py
 #---------------------------
 MAIL_ADMIN= u"admin@arcas.unlp.edu.ar"
-#Dirección de correo a quien se envía copia de la edición y creación de Registros Greenstone
-MAIL_COORDINADOR= u"cgonzalez@fahce.unlp.edu.ar"
-#MAIL_COORDINADOR= u"pablomusa@gmail.com"
+#Dirección de correo a quien se envía copia de la edición y creación de 
+#Registros Greenstone
+MAIL_COORDINADOR= u"mariana@fahce.unlp.edu.ar"
+#MAIL_COORDINADOR= u"termo_head@hotmail.com"
+
 
 
 

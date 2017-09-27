@@ -10,12 +10,10 @@
     <drop css:content="#portaltab-index_html"/>
 
     <rules if-path="/arcas/portada/">
-
-        <rules css:if-content=".template-login_form">        
-            <replace css:theme-children="#content-core" css:content-children="#content-core"/>            
-        </rules>
-
-       
+        
+        
+               
+        
         <rules css:if-not-content=".template-login_form">
             <rules css:if-not-content=".template-categorias_arcas">
                 <xi:include href="arcas-header.xml" />
@@ -29,30 +27,30 @@
                 <replace css:theme-children="#contenido .presentacion .pie" css:content-children="div#contenido div.presentacion .pie" />
             </rules>
         </rules>
-
+        
     </rules>
 
 
     <rules if-not-path="/arcas/portada/">		
         <xi:include href="arcas-header.xml" />
-
-        
-       
         
         <rules if-not-path="@@gsSearch">
             <rules css:if-content=".markColeccion">
                 <xi:include href="arcas_coleccion.xml" />
             </rules>
+            
             <rules if-content="//div[@class='markListExhibicion']">
                 <theme href="listadoExhibiciones.html" />
                 <replace css:content-children=".lista" css:theme-children=".lista"/>
             </rules>
+            
             <rules if-content="//div[@class='markListColeccion'] or //div[@class='markListExhibicion']">
                 <theme href="listadoColecciones.html" />
                 <replace css:content-children=".cabezalInterno" css:theme-children=".cabezalInterno"/>
                 <replace css:content-children=".texto" css:theme-children=".texto"/>
                 <replace css:content-children=".cuerpoListado" css:theme-children=".lista"/>
             </rules>
+            
             <rules if-not-path="@@overview-controlpanel and edit
                     and @@syndication-settings and plone_control_panel and
                     @@navigation-controlpanel and
@@ -177,99 +175,5 @@
        
     </rules>
 
-
-	<!--
-	<rules if-not-path="/arca/home/">
-		<xi:include href="arcas_interna_head.xml" />
-	</rules>
-	
-	<rules css:if-content=".template-gssearch">			
-			<replace css:theme="#contenedorColumnas" css:content="#viewlet-above-content"/>
-	</rules>
-	
-
-    <rules css:if-content=".portaltype-arcas-coleccion">
-
-        <replace css:theme-children="#exhibicionHome" css:content-children="div.exhiV"></replace>
-        <replace css:theme-children=".tituloColeccion" css:content-children=".tituloColeccion"></replace>
-        <replace css:theme-children=".busquedaColeccion" css:content-children=".colecBox"/>
-        <replace css:theme-children=".columnaIzquierda .acerca" css:content-children=".descriColect"/>
-        <replace css:content-children=".boxCoord" css:theme-children=".coordinador"></replace>
-        <drop css:content-children=".buscadorColecciones"></drop>
-        <drop css:theme-children=".produccion"></drop>
-        <replace css:theme-children=".centro" css:content-children=".centro"/>
-        <replace css:theme-children=".top" css:content-children=".top"/>
-        <replace css:theme-children=".galeriaImagenes" css:content-children=".galeriaBox"/>
-        <replace css:theme-children=".biografia" css:content-children=".boxBio"/>
-
-        <merge attributes="style" css:theme="#presentacionColeccion" css:content=".boxHeader" />
-        <replace css:theme-children=".bannerExhibicion" css:content-children=".bannerExhibicion"/>
-        <replace
-                css:theme-children="div#vi"
-                css:content-children="div#boxColecciones"
-                />
-        <replace css:theme-children="#contenido .novedades" css:content-children="#contenido .novedades"/>
-        <replace css:theme-children="#contenido .presentacion .centro" css:content-children="div#contenido div.presentacion .centro  " />
-        <replace css:theme-children="#contenido .presentacion .pie" css:content-children="div#contenido div.presentacion .pie" />
-
-    </rules>
-
-    <rules css:if-content=".portaltype-arcas-exhibicion">
-        <theme href="internaExhibicion.html" />
-        <xi:include href="arcas-header.xml" />
-
-        <merge attributes="style" css:theme="#presentacionExhibicion" css:content=".boxHeader" />
-
-        <replace css:content-children=".boxTitulo" css:theme-children=".tituloExhibicion"/>
-        <replace css:theme-children=".datosExtra" css:content-children=".boxResponsables"/>
-        <replace css:theme-children=".introExhibicion" css:content-children=".boxDescri"/>
-
-        <replace css:content-children=".boxSlide" css:theme-children=".obra"/>
-        <replace css:content-children=".columnaIzquierda .indice" css:theme-children=".columnaIzquierda .indice"/>
-        <replace css:content-children=".listadoEnlaces" css:theme-children=".listadoEnlaces"/>
-
-
-    </rules>
-
-    <rules css:if-content=".portaltype-arcas-coleccionesfolder">
-        <theme href="listadoColecciones.html" />
-        <xi:include href="arcas-header.xml" />
-        <replace css:content-children=".texto" css:theme-children=".texto"/>
-        <replace css:content-children=".lista" css:theme-children=".lista"/>
-    </rules>
-
-    <rules css:if-content=".portaltype-arcas-exhibicionesfolder">
-        <theme href="listadoExhibiciones.html" />
-        <xi:include href="arcas-header.xml" />
-        <replace css:content-children=".texto" css:theme-children=".texto"/>
-        <replace css:content-children=".lista" css:theme-children=".lista"/>
-    </rules>
-
-    <rules if-path="folder_contents" >
-        <theme href="internaExhibicion.html"  />
-        <replace
-                theme-children="//div[@id='header']/ul"
-                css:content-children="ul#portal-globalnav"
-                />
-        <after theme-children="//link">
-            <xsl:copy-of css:select="link"/>
-            <link href="++theme++arcas.theme/arcas.css" media="screen" type="text/css" rel="stylesheet" />
-            <link href="++theme++arcas.theme/style.css" media="screen" type="text/css" rel="stylesheet" />
-        </after>
-        <after theme-children="//link">
-            <xsl:copy-of css:select="head script"/>
-        </after>
-        <after theme-children="//div[@id='header']/ul">
-            <li><xsl:copy-of css:select="#portal-personaltools"/></li>
-        </after>
-        <replace css:theme-children="div.breadcrumb" css:content-children="#portal-breadcrumbs"></replace>
-        <replace css:theme-children="#header h1">
-            <xsl:copy-of css:select="#portal-logo"/>
-        </replace>
-        <drop theme-children="//*/div[@id='presentacionExhibicion']"></drop>
-        <strip css:theme="#presentacionExhibicion" />
-        <replace css:theme-children="#contenido" css:content-children="#portal-column-content"/>
-    </rules>
--->
 
 </rules>

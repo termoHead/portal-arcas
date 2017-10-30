@@ -37,7 +37,7 @@ function getQueryParams(qs) {
     return params;
 }
 
-var EDITGS=(function () { 
+var EDITGS=(function () {
     var my = {},
     objIds=0,
 	privateVariable = 1;        
@@ -45,8 +45,7 @@ var EDITGS=(function () {
         agregaIdioma("#formfield-form-widgets-f_idioma")
         agregaIdioma("#formfield-form-widgets-s_lenguaiso")
     }
-    
-    
+
     function agregaIdioma(selector){
         var boton=$(document.createElement("div"))
         var enlace=$(document.createElement("a"))
@@ -128,6 +127,97 @@ var EDITGS=(function () {
     }
     return my
 })()
+
+
+var CATManager=(function(){ 
+    var my={}	    
+    function init(){
+        hideForm()
+        $("#botNuevo").click(showForm)
+		$("#botBorrar").click(borrar)
+        $("#botCrear").click(crea)
+    }
+    function agrega(){
+        showForm()        
+    }    
+    function crea(){
+        var titu=$("#inpuTitulo").attr("value")
+        var descri=$("#tareaDescri").attr("value")
+        
+        if(titu!= "" || descri!=""){
+            $.ajax({
+              url: "json_addCat?titulo="+titu+"&descri="+descri,              
+              context: document.body,
+              dataType : "json",
+            })
+            .done(function() {
+              location.reload(); 		 
+			});
+        }
+    }
+    function borrar(){
+		var ids="idsCat="
+        $('input[type="checkbox"]').each(function (a,e){
+            if($(e).attr('checked')=='checked'){
+                  ids+= $(e).attr("value")+","
+            }             		
+        });
+        
+		if(ids=="ids="){
+			alert("Selecciones un item para borrar")            
+		}else{
+            ids=ids.substr(0,ids.length-1)
+            $.ajax({
+              url: "json_delCat?"+ids,              
+              context: document.body,
+              dataType : "json",
+            }).done(function(data) {
+                if(data.msj=="Objeto borrado"){
+                    location.reload();     
+                }else{
+                    msjw(data.msj)
+                }
+			});
+		}
+    }
+    function msjw(texto){       
+        var cartel,dt,dd
+        
+        
+    
+         if($("#infoCartel").length>0){
+             $("#infoCartel").text(texto)
+             cartel=$("#msjCartel")
+             cartel.show()
+         }else{
+            cartel=$(document.createElement('dl'))
+            dt=$(document.createElement('dt'))
+            dd=$(document.createElement('dd'))
+            cartel.attr('id','msjCartel')
+            cartel.attr('class','portalMessage')
+            dt.text("Error")
+            dd.text(texto)
+            dd.attr("id","infoCartel")
+            cartel.append(dt)
+            cartel.append(dd)
+            $("#contenido:first-child").after().prepend(cartel)    
+         }
+         
+         setTimeout(function(){ cartel.hide('slow') }, 3000);
+    }
+    function showForm(){
+        $("#nCatForm").show()
+    }
+    function hideForm(){
+        $("#nCatForm").hide()
+    }  
+    
+    my.inicia=function(){        
+        init()
+    }    
+    return my
+})()
+
 
 
 
@@ -739,8 +829,10 @@ $(document).ready(function () {
         
         
         /*EDITOR DE CATEGORIAS*/
-        if($(".template-categorias_arcas").leng>0){
+        if($(".template-categorias_arcas").length>0){
             
+            var  catManager= CATManager
+            catManager.inicia()
             
         }
         /*agrega QUIK ADD*/
@@ -748,3 +840,4 @@ $(document).ready(function () {
         //agregaChekbox()
         
 });
+

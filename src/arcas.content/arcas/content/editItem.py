@@ -209,12 +209,13 @@ class EditItem(form.SchemaForm):
         
         
         if isinstance(itemLoaded,str) or isinstance(itemSerieLoaded,str) or isinstance(itemSubSerieLoaded,str):
-      
-            
             miurltmp=self.context.REQUEST.URL
             miurl   ="/".join(miurltmp.split("/")[:-2])
-            self.context.REQUEST.RESPONSE.redirect(miurl+"/formsCancel_view?mensaje=&tipo=1")
+            self.context.REQUEST.RESPONSE.redirect(miurl+"/formsCancel_view?mensaje=Error al leer el xml orginal&titulo=Error en la edic&oacute;n")
             return 
+            
+            
+            
         for tupla in itemLoaded.items():            
             try:
                 widgetNumber=infoMetaItem.values().index(tupla[0])
@@ -307,6 +308,7 @@ class EditItem(form.SchemaForm):
     @button.buttonAndHandler(u'Guardar',condition=showSave)
     def saveHandler(self, action):
         self.saveFlag=self.saveFlag+1
+        flagResult=""
         if self.saveFlag<2:
             mt=getToolByName(self.context,"portal_membership")
             operarioMail    = mt.getAuthenticatedMember().getProperty('email',None)
@@ -322,6 +324,7 @@ class EditItem(form.SchemaForm):
 
             if len(self.groups[3].widgets["subserie"].value)>0:
                 subSerieOk=True
+                
                 #infoMetadatoSubSerie=infoMetadatoSubSerie
 
             if errors:
@@ -345,7 +348,7 @@ class EditItem(form.SchemaForm):
                 del arTmp[-2]
                 rutaSerie = "/".join(arTmp)
                 
-                
+            
             #cargo ITEM
             tmpList={}
             for mxx in infoMetadatos:            
@@ -406,54 +409,77 @@ class EditItem(form.SchemaForm):
                 }
             self.fsmanager=FSManager()
             flagm=0
-
+            
+            #una lista para controlar si se guardo, si dio error o sin cambios
+            saveStatusArr=[0,0]
+            
             itemsaved=self.fsmanager.saveFile(dicDatosItem,"item",operarioDict)
             seriesaved=self.fsmanager.saveFile(dicDatosSerie,"serie",operarioDict)
 
             if itemsaved[0]=="error":
                 msj+=u"> No se pudo guardar el item en %s \r"%rutaItem
                 itemsaved[2]=rutaItem
-                flagm+=1
+                saveStatusArr[0]=1
             elif itemsaved[0]=="sin cambios":
                 msj+=u"> No se encontraron cambios. \r"
-                flagm+=10
+                saveStatusArr[0]=10
                 
             if seriesaved[0]=="error":
                 msj+=u"> No se pudo guardar la serie en %s \r"%rutaSerie
                 seriesaved[2]=rutaSerie
-                flagm+=1                
+                saveStatusArr[1]=1
             elif seriesaved[0]=="sin cambios":
                 msj+=u"> No se encontraron cambios en la Serie.\r"
-                flagm+=10
+                saveStatusArr[1]=10
                 
-            if subSerieOk:                
+            if subSerieOk:         
                 subSeriesaved=self.fsmanager.saveFile(dicDatosSubSerie,"subSerie",operarioDict)
+                saveStatusArr.append(0)
                 if subSeriesaved[0]=="error":
                     msj+="> No se pudo guardar la sub serie en %s\r" %rutaSubSerie
                     subSeriesaved[2]=rutaSubSerie
-                    flagm+=1
+                    saveStatusArr[2]=1
                 elif subSeriesaved[0]=="sin cambios":
                     msj+="> No se encontraron cambios en la subsetire.\r"
-                    flagm+=10
+                    saveStatusArr[2]=10
             else:
                 subSeriesaved='sin sub serie'
 
+            miurltmp=self.context.REQUEST.URL
+            miurl   ="/".join(miurltmp.split("/")[:-2])
 
-            if flagm<29:
-                mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved,'nombreColeccion':nombreColeccion},operarioDict)
-                if mandoCorreo:
-                    self.msjForm =u"Los cambios fueron guardados correctamente. Se generó una nueva versión de metadatos y se envió un email para control."
+            
+            if 0 in saveStatusArr:
+                mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved,'nombreColeccion':nombreColeccion},operarioDict)            
+                tituloMail=u"Cambios guardados correctamente"
+                if 1 in saveStatusArr:
+                    self.msjForm =u"Los cambios fueron guardados, pero surgieron errores. Se envió un email para control."                    
+                    tituloMail=u"No todos los formularios fueron guardados"
+                    if not mandoCorreo:
+                        self.msjForm =u"Los cambios fueron guardados, pero surgieron errores. No pudo enviarse un email para control."
                 else:
-                    self.msjForm =u"Los cambios fueron guardados. Pero hubo un error al querer enviar el correo."
-            else:
-                self.msjForm=msj
-        else:            
-            print "aca pase!!!"
-            self.status=self.msjForm
+                    self.msjForm =u"Los cambios fueron guardados correctamente. Se generó una nueva versión de metadatos y se envió un email para control."                    
+                    if not mandoCorreo:                                    
+                        self.msjForm =u"Los cambios fueron guardados correctamente.  No pudo enviarse un email para control.."           
+            
 
-        miurltmp=self.context.REQUEST.URL
-        miurl   ="/".join(miurltmp.split("/")[:-2])
-        self.context.REQUEST.RESPONSE.redirect(miurl+"/formsOk_view?mensaje="+self.msjForm.encode('utf8'))
+                self.context.REQUEST.RESPONSE.redirect(miurl+"/formsOk_view?mensaje="+self.msjForm.encode('utf8')+"&titulo="+tituloMail.encode('utf8'))
+            
+            elif 0 not in saveStatusArr:
+                #Todo fue error
+                
+                if not 1 in saveStatusArr:
+                    #sin cambios, form Ok, no se guardo nada.            
+                    print u"sin cambios "
+                    self.context.REQUEST.RESPONSE.redirect(miurl+"/formsOk_view?mensaje=No se encontraron cambios. No se envió ningú correo de control.&titulo=Formulario sin procesar")                                             
+                else:
+                    print u"No se pudo guardar nada... error de permisos?"
+                    mandoCorreo=self.emails({'ritem':itemsaved,'rsubserie':subSeriesaved,'rserie':seriesaved,'nombreColeccion':nombreColeccion},operarioDict)
+                    self.msjForm =u"No pudo guardase ningún dato. Puede haber un error de permisos en los directorios, o problemas con el metadato bi.ruta"
+                    self.context.REQUEST.RESPONSE.redirect(miurl+"/formsCancel_view?mensaje="+self.msjForm.encode('utf8')+"&titulo=Error al guardar")                               
+                
+                    
+            
         
 
     @button.buttonAndHandler(u"Cancel")
@@ -463,7 +489,7 @@ class EditItem(form.SchemaForm):
         COLECCION=SERIE=SUBSERIE=""
         self.status = "Cambios cancelados"
         self.form._finishedAdd = True
-        miurl="/".join(self.context.REQUEST.URL.split("/")[:-1])+"/formsCancel_view?mensaje= La edición fue cancelar"
+        miurl="/".join(self.context.REQUEST.URL.split("/")[:-1])+"/formsCancel_view?mensaje= La edición fue cancelar&titulo=Formulario cancelado por el usuario"
         self.context.REQUEST.RESPONSE.redirect(miurl)
 
     def dameTituloColeccionByGSID(self,gsid):

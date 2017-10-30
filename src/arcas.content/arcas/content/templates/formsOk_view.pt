@@ -5,8 +5,8 @@
 
 <div id="container">
     <div class="texto">
-        <h3 class="label">El formulario se procesó correctamente.</h3>
-        <div tal:content="view/mensaje">
+        <h3 class="label" tal:content="view/dameTitulo">El formulario se procesó correctamente.</h3>
+        <div tal:content="view/dameDescri">
         Se ha enviado un email a su cuenta y al coordinador de ARCAS.
         Para seguir editando otro documento, cierre esta pestaña y vuelva a las fuentes de la colección
         </div>

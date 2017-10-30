@@ -188,11 +188,12 @@ class NuevoItemGS(form.SchemaForm):
             if elem.find(ex)>-1 and elem.find(".")<0:
                 tmpL=elem.split(ex)
                 listR.append(tmpL[len(tmpL)-1])
-
+        import pdb
+        pdb.set_trace()
         if len(listR)==0:
             return "1"
         else:
-            sum=int(listR[0])+1
+            sum=len(listR)+1
             return str(sum)
         
     def showSave(self):

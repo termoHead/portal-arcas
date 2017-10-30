@@ -95,8 +95,7 @@ class CatColecVocabulary(object):
 
         site = context
         return self._data(site)
-
-    @memoize
+    
     def _data(self,contexto):
         """devuleve los resultados de la base"""
         catalogo = getToolByName(contexto, 'portal_catalog', None)

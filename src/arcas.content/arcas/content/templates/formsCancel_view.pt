@@ -9,7 +9,7 @@
         <h3 class="label" tal:content="view/dameTitulo">El usuario canceló la edición del formulario.</h3>
         <div>
                 <p tal:content="view/dameDescri"></p>
-		<p>	Ningún cambio fue realizado.</p>
+                <p>	Ningún cambio fue realizado.</p>
         </div>
         <div class="msj">Para volver, <a href="#" onclick="javascript:window.close()"> cierre esta pestaña</a></div>
     </div>

@@ -18,7 +18,17 @@ class FormsOkView(BrowserView):
     # to ViewPageTemplateFile specified in ZCML
     #def __call__():
     #
-    def mensaje(self):        
-        miurl=self.context.REQUEST.URL+"/formsOk_view?mensaje=Perfecto!"            
-        dato=self.request.form["mensaje"]
-        return dato
+    
+    def dameDescri(self):
+        if "mensaje" in self.request.form.keys():
+            return self.request.form["mensaje"]
+        else:
+            return ""
+        
+    def dameTitulo(self):
+
+        if "titulo" in self.request.form.keys():
+            return self.request.form["titulo"]
+        else:
+            return "Todo salio oK"
+    

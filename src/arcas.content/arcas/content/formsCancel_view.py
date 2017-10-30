@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+__author__ = 'Paul'
 # We must use BrowserView from view, not from zope.browser
 from Products.Five.browser import BrowserView
 
@@ -18,7 +20,17 @@ class FormsCancelView(BrowserView):
     # to ViewPageTemplateFile specified in ZCML
     #def __call__():
     #
-    def mensaje(self):        
-        miurl=self.context.REQUEST.URL+"/formsCancel_view?mensaje=cancelado"            
-        dato=self.request.form["mensaje"]
-        return dato
+    def dameDescri(self):
+        if "mensaje" in self.request.form.keys():
+            return self.request.form["mensaje"]
+        else:
+            return ""
+        
+    def dameTitulo(self):
+
+        if "titulo" in self.request.form.keys():
+            return self.request.form["titulo"]
+        else:
+            return "Error en el formulario"
+        
+

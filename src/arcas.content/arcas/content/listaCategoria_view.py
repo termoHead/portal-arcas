@@ -34,4 +34,3 @@ class ListaCategoriaView(BrowserView):
         
         return dato
 
-    

@@ -302,6 +302,7 @@ class JSONExportMenu(View):
             available=False,
         )
         return data
+
 class JSONADelCat(View):
     from Products.CMFPlone.utils import _createObjectByType
     grok.context(Interface)
@@ -323,11 +324,20 @@ class JSONADelCat(View):
         
         folderCategorias= self.context.aq_parent["categorias"]
         
-        if self.request.form.has_key("idCat"):           
-            idT=self.request.form["idCat"]
+        if self.request.form.has_key("idsCat"):           
+            idT=self.request.form["idsCat"]
+            listId=[]
+            
+            if idT.find(',')>-1:
+                for valor in idT.split(','):
+                    listId.append(valor)
+            else:
+                listId.append(idT)
+            
             
             try:
-                folderCategorias.manage_delObjects([idT,])
+                folderCategorias.manage_delObjects(listId)
+                folderCategorias.reindexObject()
                 result["msj"]=u"Objeto borrado"
             except Exception, e:
                 # E.g. linkintegrityerror or some other
@@ -335,7 +345,8 @@ class JSONADelCat(View):
                
         else:
             result["msj"]=u"no se paso el dato idCat"
-            
+        
+       
         return result
 
       
@@ -362,6 +373,7 @@ class JSONAddCat(View):
         publicado=False
         workflowTool = getToolByName(self.context, "portal_workflow")
         folderCategorias= self.context.aq_parent["categorias"]
+
         if self.request.form.has_key("titulo") and self.request.form.has_key("descri"):           
             idT=self.request.form["titulo"]
             idD=self.request.form["descri"]
@@ -373,6 +385,7 @@ class JSONAddCat(View):
             try:
                 workflowTool.doActionFor(item, "publish") 
                 publicado=True
+                folderCategorias.reindexObject()
             except WorkflowException:
                 # a workflow exception is risen if the state transition is not available
                 # (the sampleProperty content is in a workflow state which

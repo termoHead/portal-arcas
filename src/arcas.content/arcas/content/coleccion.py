@@ -356,11 +356,12 @@ class EditForm(edit.DefaultEditForm):
         widgImagen1=self.groups[5].widgets["IColDerSeccion.picture1"]
         widgImagen2=self.groups[6].widgets["IColDerSeccion.picture2"]
         
-        if self.groups[5].widgets["IColDerSeccion.tipoSecc1"].value[0]!="imagen":
-            widgImagen1.mode=HIDDEN_MODE
-            widgImagen1.update()
-            
-        if self.groups[6].widgets["IColDerSeccion.tipoSecc2"].value[0]!="imagen":
-            widgImagen2.mode=HIDDEN_MODE
-            widgImagen2.update()
+        if len(self.groups[5].widgets["IColDerSeccion.tipoSecc1"].value)>0:
+            if self.groups[5].widgets["IColDerSeccion.tipoSecc1"].value[0]!="imagen":
+                widgImagen1.mode=HIDDEN_MODE
+                widgImagen1.update()
+        if len(self.groups[6].widgets["IColDerSeccion.tipoSecc2"].value)>0:
+            if self.groups[6].widgets["IColDerSeccion.tipoSecc2"].value[0]!="imagen":
+                widgImagen2.mode=HIDDEN_MODE
+                widgImagen2.update()
             

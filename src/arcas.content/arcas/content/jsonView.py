@@ -349,7 +349,6 @@ class JSONADelCat(View):
        
         return result
 
-      
 class JSONAddCat(View):
     from Products.CMFPlone.utils import _createObjectByType
     grok.context(Interface)
@@ -377,7 +376,9 @@ class JSONAddCat(View):
         if self.request.form.has_key("titulo") and self.request.form.has_key("descri"):           
             idT=self.request.form["titulo"]
             idD=self.request.form["descri"]
+            idD=self.request.form["color"]
             ids=idT
+            
             from plone.dexterity.utils import createContentInContainer
             item=createContentInContainer(folderCategorias, 'arcas.content.categoria', title=idT)
             item.description=idD
@@ -396,6 +397,7 @@ class JSONAddCat(View):
             
             result["titulo"]=item.title
             result["descri"]=item.description
+            result["color"]=item.color
             result["publicado"]=publicado
             result["ruta"]=item.absolute_url()
             

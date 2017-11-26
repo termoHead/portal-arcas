@@ -132,13 +132,30 @@ var EDITGS=(function () {
 var CATManager=(function(){ 
     var my={}	    
     function init(){
-        hideForm()
+        
         $("#botNuevo").click(showForm)
-		$("#botBorrar").click(borrar)
+        $("#botBorrar").click(borrar)
         $("#botCrear").click(crea)
+        /*$("form input[name='edButon']").each(            
+            function(a,e){                
+                $(this).click(edita)
+            }
+        )*/
+        
+        $('.microTool .bot_edit a').click(edita)
+        $('.microTool .bot_trash  a').click(borraSolo)
+        $( "input:checkbox" ).each(function(){
+            $(this).change(function() {
+                toggleBotonera(this)        
+            });
+        })
+        hideForm()
+    }
+    function toggleBotonera(elemento){        
+        $('.microTool',elemento.parentNode.parentNode).toggle("slow")
     }
     function agrega(){
-        showForm()        
+        showForm()
     }    
     function crea(){
         var titu=$("#inpuTitulo").attr("value")
@@ -155,30 +172,64 @@ var CATManager=(function(){
 			});
         }
     }
+    function borraSolo(e){
+        e.preventDefault()
+        var valor=$('input[type="checkbox"]',e.currentTarget.parentNode.parentNode.parentNode.parentNode).attr('value')
+        var ids="idsCat="
+        ids+= valor
+        enviaBorrar(ids) 
+    }
     function borrar(){
-		var ids="idsCat="
+        var ids="idsCat="
         $('input[type="checkbox"]').each(function (a,e){
             if($(e).attr('checked')=='checked'){
                   ids+= $(e).attr("value")+","
             }             		
         });
         
-		if(ids=="ids="){
-			alert("Selecciones un item para borrar")            
-		}else{
+        if(ids=="ids="){
+            alert("Seleccione un item para borrar")            
+        }else{
             ids=ids.substr(0,ids.length-1)
+            enviaBorrar(ids)    
+        }
+            
+    }
+    function enviaBorrar(ids){
+        console.log(ids)
+        return 
+        $.ajax({
+            url: "json_delCat?"+ids,              
+            context: document.body,
+            dataType : "json",
+        }).done(function(data) {
+            msjw(data.msj)
+            setTimeout(function(){ location.reload() }, 5000);
+            
+            });
+    }
+    
+    
+    
+    function edita(e){
+        e.preventDefault()
+             var id=$("input[name='idEd']",this.parentNode).attr('value');
+             var titulo=$("input[name='titulo']",this.parentNode).attr('value');
+             var descri=$("input[name='descri']").attr('value');
+             var color="";
+            $("select[name='color'] option:selected",this.parentNode).each(function() {
+                color += $( this ).attr("value");
+            });
+            console.log(id+","+titulo+","+descri+","+color)
+          return
             $.ajax({
-              url: "json_delCat?"+ids,              
+              url: "json_modCat?tituloE="+titu+"&descriE="+descri+"&colorE="+color+"&idE="+id,              
               context: document.body,
               dataType : "json",
-            }).done(function(data) {
-                if(data.msj=="Objeto borrado"){
-                    location.reload();     
-                }else{
-                    msjw(data.msj)
-                }
-			});
-		}
+            })
+            .done(function() {
+              location.reload(); 		 
+            });
     }
     function msjw(texto){       
         var cartel,dt,dd
@@ -212,7 +263,7 @@ var CATManager=(function(){
         $("#nCatForm").hide()
     }  
     
-    my.inicia=function(){        
+    my.inicia=function(){   
         init()
     }    
     return my
@@ -827,11 +878,12 @@ $(document).ready(function () {
             $("#fieldsetlegend-seleccia3n-de-atem-serie").parent().hide()
         }
         
-        
+  
         /*EDITOR DE CATEGORIAS*/
         if($(".template-categorias_arcas").length>0){
             
             var  catManager= CATManager
+            
             catManager.inicia()
             
         }

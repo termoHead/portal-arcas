@@ -355,11 +355,9 @@ class JSONAddCat(View):
     grok.name("json_addCat")
     #agrega una categoria al listado de categorias
     
-    
     def update(self):
         self.contexto = aq_inner(self.context)
        
-            
     def render(self):
         listing = self.datos_contexto();        
         pretty  = json.dumps(listing);
@@ -402,3 +400,39 @@ class JSONAddCat(View):
             result["ruta"]=item.absolute_url()
             
         return result
+        
+class JSONModCat(View):
+    from Products.CMFPlone.utils import _createObjectByType
+    grok.context(Interface)
+    grok.name("json_modCat")
+    
+    def update(self):
+        self.contexto = aq_inner(self.context)
+        
+    def render(self):
+        listing = self.datos_contexto();        
+        pretty  = json.dumps(listing);
+        self.request.response.setHeader("Content-type", "application/json");
+        self.request.response.setHeader('Access-Control-Allow-Origin', '*');
+        return pretty;
+        
+    def datos_contexto(self):
+        result={}
+        
+        if self.request.form.has_key("idE"):
+            idE=self.request.form["idE"]
+            
+            catalog = getToolByName(self.context, 'portal_catalog')
+            result  = catalog.searchResults(Id=(idE))
+            
+            if len(result)>0:
+                miOB=result[0].getObject()
+                miOB.title=self.request.form["tituloE"]
+                miOB.description=self.request.form["descriE"]
+                miOB.color=self.request.form["colorE"]
+                miOB.reindexObject()                
+            else:
+                print "no se recuperaoron elementos"
+                return "error"
+           
+        return "ok"

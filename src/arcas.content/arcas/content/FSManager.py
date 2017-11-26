@@ -275,7 +275,7 @@ class FSManager(object):
              return listlog
 
         #Nuevo Encabezado para el xml
-        docTypeHeader='<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE DirectoryMetadata SYSTEM \"http://greenstone.org/dtd/DirectoryMetadata/1.0/DirectoryMetadata.dtd \">'
+        docTypeHeader='<!DOCTYPE DirectoryMetadata SYSTEM \"http://greenstone.org/dtd/DirectoryMetadata/1.0/DirectoryMetadata.dtd \">'
         #Copio el XML base
         copiXml=self.miXml.getroot()
 
@@ -389,12 +389,12 @@ class FSManager(object):
         copiXml.find(".//FileSet/Description").append(tipoUser)
         copiXml.find(".//FileSet/Description").append(fechaS)
 
-        xmlstrA=ET.tostring(copiXml)
+        xmlstrA=docTypeHeader+ET.tostring(copiXml)
         xmlstr=minidom.parseString(xmlstrA).toprettyxml(encoding='UTF-8')
-        
+
         try:
             f=open(newfilename,"wr+")
-            newstr=docTypeHeader+xmlstr
+            newstr=xmlstr
             f.write(newstr)
             f.close()
             lstr=u"cambios guardados en "+newfilename

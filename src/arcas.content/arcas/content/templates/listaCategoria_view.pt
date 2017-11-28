@@ -11,28 +11,43 @@
                 De lo contrario, agregue una nueva categoría a la lista.
             </div>
             <div>
-                <ul class="listaCat">
+                <div class="listaCat">
                 <tal:r tal:repeat="cat view/getCat">
-                    <li> 
-                    <div class="rawC" tal:define="numV repeat/cat/index" >                    
+                    <div> 
+                    <div class="rawC" tal:define="numV repeat/cat/index" >
                         <div class="col1" tal:condition="python:not autorizado"><img src="arcas/++resource++arcas.content/categoria.png" alt=""/></div>
                         <div class="col1" tal:condition="autorizado">
                             <input type="checkbox"  tal:attributes="name cat/titulo;value cat/id" />
                         </div>
-                        <div class="col2">                            
-                            <span class="catTitulo" tal:content="cat/titulo" >titulo</span>
-                           [<span tal:replace="cat/colorN"></span>]
-                            <span class="catDescri" tal:content="cat/descri">descri</span>
+                        <div class="col2">
+
+                        <form action="#" tal:condition="autorizado"
+                            tal:attributes="id string:nCat${numV}">
+                            
+                            <input name="idEd" type="text"  tal:attributes="value cat/id" style="display:none"/>
+                            <input name="titulo" type="text" tal:attributes="value cat/titulo" disabled/>
+                            <textarea name="descri" disabled><tal:V tal:replace="cat/descri" /></textarea>
+                            
+                            <select name="color" disabled>
+                                <option selected tal:attributes="value cat/color">      <tal:co tal:replace="cat/colorN"/>
+                                </option>
+                                <tal:r tal:repeat="color python:view.dameColores()">
+                                        <option tal:attributes="value color/value"><tal:co tal:replace="color/title"/></option>
+                                </tal:r>
+                            </select>
+                            <input name="edButon" type="button" value="modificar"/>
+                        </form>
+
                             <div class="microTool" style="display:none">
                                 <div class="bot_edit boton_of">
-                                    <a href="#" class="boton" tal:attributes="rel string:nCat${numV}">
+                                    <a href="#" class="boton" tal:attributes="rel string:nCat${numV}"  title="Editar">
                                         <span class="holdimage">                                        
                                             <img src="++theme++arcas.theme/img/empty.gif"/>
                                         </span>
                                     </a>
                                 </div>
                                 <div class="bot_trash boton_of">
-                                    <a href="#" class="boton" rel="edita">
+                                    <a href="#" class="boton" rel="edita"  title="Borrar">
                                         <span class="holdimage">                                    
                                             <img src="++theme++arcas.theme/img/empty.gif"/>
                                         </span>
@@ -42,24 +57,12 @@
                             </div>
                            <div class="clear">&nbsp; </div>
                         </div>
-                        <form action="#"  tal:condition="autorizado"
-                            tal:attributes="id string:nCat${numV}" style="display:none">
-                            <input name="idEd" type="text"  tal:attributes="value cat/id"/>
-                            <input name="titulo" type="text" tal:attributes="value cat/titulo"/>
-                            <input name="descri" type="text" tal:attributes="value cat/descri"/>
-                            <select name="color">
-                                <option selected tal:attributes="value cat/color"><tal:co tal:replace="cat/colorN"/></option>
-                                    <tal:r tal:repeat="color python:view.dameColores()">                            
-                                        <option tal:attributes="value color/value"><tal:co tal:replace="color/title"/></option>
-                                    </tal:r>                            
-                            </select>
-                            <input name="edButon" type="button" value="modificar"/>
-                        </form>
+
                     </div>
-                    </li>
+                    </div>
                 </tal:r>
-                </ul>
-                
+                </div>
+
                 <form action="#" id="nCatForm" tal:condition="autorizado">
                
                     <div class="wrapperform">

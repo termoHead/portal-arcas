@@ -373,14 +373,14 @@ class JSONAddCat(View):
 
         if self.request.form.has_key("titulo") and self.request.form.has_key("descri"):           
             idT=self.request.form["titulo"]
-            idD=self.request.form["descri"]
-            idD=self.request.form["color"]
+            idDesc=self.request.form["descri"]
+            idC=self.request.form["color"]
             ids=idT
             
             from plone.dexterity.utils import createContentInContainer
-            item=createContentInContainer(folderCategorias, 'arcas.content.categoria', title=idT)
-            item.description=idD
-            
+            item=createContentInContainer(folderCategorias, 'arcas.content.categoria', title=idT,description=idDesc)
+            item.color=idC
+
             try:
                 workflowTool.doActionFor(item, "publish") 
                 publicado=True
@@ -423,8 +423,8 @@ class JSONModCat(View):
             idE=self.request.form["idE"]
             
             catalog = getToolByName(self.context, 'portal_catalog')
-            result  = catalog.searchResults(Id=(idE))
-            
+            result  = catalog.searchResults(id=idE)
+
             if len(result)>0:
                 miOB=result[0].getObject()
                 miOB.title=self.request.form["tituloE"]

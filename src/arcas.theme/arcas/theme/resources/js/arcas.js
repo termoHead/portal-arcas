@@ -160,15 +160,22 @@ var CATManager=(function(){
     function crea(){
         var titu=$("#inpuTitulo").attr("value")
         var descri=$("#tareaDescri").attr("value")
+        var Mcolor=""
         
+        $( "#colores option:selected" ).each(function() {
+            Mcolor += $( this ).val();
+        });
+        var urlpaht= "json_addCat?titulo="+titu+"&descri="+descri+"&color="+Mcolor
+        alert(urlpaht)
         if(titu!= "" || descri!=""){
             $.ajax({
-              url: "json_addCat?titulo="+titu+"&descri="+descri,              
+              url: urlpaht,              
               context: document.body,
               dataType : "json",
             })
-            .done(function() {
-              location.reload(); 		 
+            .done(function(data) {
+                console.log(data)
+              //location.reload(); 		 
 			});
         }
     }
@@ -196,8 +203,7 @@ var CATManager=(function(){
             
     }
     function enviaBorrar(ids){
-        console.log(ids)
-        return 
+        
         $.ajax({
             url: "json_delCat?"+ids,              
             context: document.body,
@@ -213,29 +219,50 @@ var CATManager=(function(){
     
     function edita(e){
         e.preventDefault()
-             var id=$("input[name='idEd']",this.parentNode).attr('value');
-             var titulo=$("input[name='titulo']",this.parentNode).attr('value');
-             var descri=$("input[name='descri']").attr('value');
-             var color="";
-            $("select[name='color'] option:selected",this.parentNode).each(function() {
-                color += $( this ).attr("value");
-            });
-            console.log(id+","+titulo+","+descri+","+color)
-          return
-            $.ajax({
-              url: "json_modCat?tituloE="+titu+"&descriE="+descri+"&colorE="+color+"&idE="+id,              
-              context: document.body,
-              dataType : "json",
+             var contexto=this.parentNode.parentNode.parentNode
+             var idInput=$("input[name='idEd']",contexto)
+             var tituInput=$("input[name='titulo']",contexto)
+             var descInput=$("textarea[name='descri']",contexto)
+             var colorSelect=$("select[name='color']",contexto)
+             var sendB=$('input[name="edButon"]',contexto)
+             
+             idInput.removeAttr("disabled")
+             tituInput.removeAttr("disabled")
+             descInput.removeAttr("disabled")
+             colorSelect.removeAttr("disabled")
+             
+            
+            tituInput.focus()
+                sendB.click(function(){
+                    var id=idInput.attr('value');
+                    var titulo=tituInput.attr('value');
+                    var descri=descInput.attr('value');
+                    var color="";
+                    
+                    $("select[name='color'] option:selected",contexto).each(function() {
+                        color += $( this ).attr("value");
+                    });
+                        
+                    
+                    $.ajax({
+                    url: "json_modCat?tituloE="+titulo+"&descriE="+descri+"&colorE="+color+"&idE="+id,              
+                    context: document.body,
+                    dataType : "json",
+                })
+                .done(function(data) {
+                    
+                    if (data=="ok"){location.reload(true);}
+                    else{
+                        alert("Erro al intentar modificar la categoria, intente luego")
+                    }
+                });
             })
-            .done(function() {
-              location.reload(); 		 
-            });
+          return
+           
     }
     function msjw(texto){       
         var cartel,dt,dd
         
-        
-    
          if($("#infoCartel").length>0){
              $("#infoCartel").text(texto)
              cartel=$("#msjCartel")
